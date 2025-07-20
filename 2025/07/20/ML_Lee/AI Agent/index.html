@@ -19,27 +19,27 @@
   <meta name="author" content="Yima Gu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="AI Agent：人类&#x3D;&#x3D;只给AI目标&#x3D;&#x3D;，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的">
+    <meta name="description" content="AI Agent：人类&#x3D;&#x3D;只给AI目标&#x3D;&#x3D;，AI自己想办法完成某个研究问题。   |450  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AI Agent Notes">
 <meta property="og:url" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="AI Agent：人类&#x3D;&#x3D;只给AI目标&#x3D;&#x3D;，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的">
+<meta property="og:description" content="AI Agent：人类&#x3D;&#x3D;只给AI目标&#x3D;&#x3D;，AI自己想办法完成某个研究问题。   |450  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/Pasted%20image%2020250720102659.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/Pasted%20image%2020250720102659.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
 <meta property="article:published_time" content="2025-07-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-20T06:02:34.614Z">
+<meta property="article:modified_time" content="2025-07-20T09:43:05.082Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="李宏毅机器学习">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/attachments/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
   
   
   
@@ -287,9 +287,12 @@
                 
                 <p><strong>AI
 Agent</strong>：人类==只给AI目标==，AI自己想办法完成某个研究问题。</p>
-<p><img src="%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png" srcset="/img/loading.gif" lazyload
+<figure>
+<img src="attachments/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png" srcset="/img/loading.gif" lazyload
 alt="|450" />
-整个图示清晰地展现了强化学习的核心循环：智能体观察环境的<strong>状态</strong>
+<figcaption aria-hidden="true">|450</figcaption>
+</figure>
+<p>整个图示清晰地展现了强化学习的核心循环：智能体观察环境的<strong>状态</strong>
 (棋盘布局)，基于其策略和<strong>目标</strong> (赢棋)
 来选择一个<strong>行动</strong>
 (下一步棋)，该行动改变了环境的<strong>状态</strong>，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。
@@ -302,8 +305,12 @@ alt="|450" />
 <blockquote>
 <p>但是上面的问题在于<strong>需要为每一个任务训练特定的模型</strong>，而且需要大量的计算资源。==能不能使用一个模型来完成所有的任务？==</p>
 </blockquote>
-<p><img src="%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png" srcset="/img/loading.gif" lazyload
-alt="|450" /> 上面的过程就是LLM擅长的文字接龙功能。</p>
+<figure>
+<img src="attachments/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png" srcset="/img/loading.gif" lazyload
+alt="|450" />
+<figcaption aria-hidden="true">|450</figcaption>
+</figure>
+<p>上面的过程就是LLM擅长的文字接龙功能。</p>
 <h3 id="ai-agent-llm">AI Agent&amp; LLM</h3>
 <p><strong>优势</strong>：能够理解和利用“丰富的、人类可读的”反馈信息，而不仅仅是“稀疏的、数字化的”奖励信号，从而极大地提升了学习和纠错的效率。==在下面过程中都不涉及AI的训练过程==。</p>
 <h4 id="computer-use-operator">Computer Use Operator</h4>
@@ -333,7 +340,8 @@ class="hint--top hint--rounded"
 aria-label="[Accelerating scientific breakthroughs with an AI co-scientist](https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/)">[6]</span></a></sup></p>
 <h3 id="ai-agent如何根据经验调整行为">AI Agent如何根据经验调整行为</h3>
 <figure>
-<img src="%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png" srcset="/img/loading.gif" lazyload alt="|450" />
+<img src="attachments/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png" srcset="/img/loading.gif" lazyload
+alt="|450" />
 <figcaption aria-hidden="true">|450</figcaption>
 </figure>
 <p>当AI行动时，现实世界会发生变化（上图中的<em>obs</em>），在AI下一次行动时会根据以前的经验来作出更好的决策。
@@ -354,7 +362,8 @@ aria-label="[[2312.10997] Retrieval-Augmented Generation for Large Language Mode
 <p><strong>StreamBench</strong>是<strong>第一个专门为评估LLM智能体持续改进能力而设计的基准测试</strong>。它模拟了一个在线学习环境，让智能体不断接收新的任务和反馈流，从而可以衡量其性能是否能随着时间的推移而不断增强。</p>
 <h4 id="write-reflection-read">Write &amp; Reflection &amp; Read</h4>
 <figure>
-<img src="%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png" srcset="/img/loading.gif" lazyload alt="|450" />
+<img src="attachments/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png" srcset="/img/loading.gif" lazyload
+alt="|450" />
 <figcaption aria-hidden="true">|450</figcaption>
 </figure>
 <ul>
@@ -381,7 +390,7 @@ aria-label="[[2405.14831] HippoRAG: Neurobiologically Inspired Long-Term Memory 
 <p><strong>Tool Use</strong>：AI
 Agent使用工具的能力是其核心特征之一。通过调用外部工具，AI可以扩展其能力，完成更复杂的任务。</p>
 <figure>
-<img src="Pasted%20image%2020250720102659.png" srcset="/img/loading.gif" lazyload alt="|450" />
+<img src="attachments/Pasted%20image%2020250720102659.png" srcset="/img/loading.gif" lazyload alt="|450" />
 <figcaption aria-hidden="true">|450</figcaption>
 </figure>
 <p><strong>语言模型本身并不“执行”工具，而是“生成”一段代表工具调用的文本</strong>。</p>
@@ -422,7 +431,7 @@ Using)</strong>：在解决实际问题的过程中，AI会识别出那些频繁
 3. <strong>定期修剪
 (Trim)</strong>：为了防止工具箱变得臃肿，系统会定期清理，移除那些不常用、冗余或效果不佳的函数，始终保持工具箱小而精悍。</p>
 <p>但是使用工具带来的问题是：Agent可能会因为<strong>过度相信工具而犯错</strong>。尤其是当外部知识用冲突，或者与LLM训练时获得的知识冲突时，Agent可能会错误地依赖工具的输出，而不是自己的判断。即使所有找到的资料都是正确的，不代表AI就不会犯错。</p>
-<p><img src="%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png" srcset="/img/loading.gif" lazyload
+<p><img src="attachments/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png" srcset="/img/loading.gif" lazyload
 alt="|450" /> <em>研究什么样的外部知识比较容易说服AI</em></p>
 <h3 id="ai能不能做计划">AI能不能做计划</h3>
 <p>AI

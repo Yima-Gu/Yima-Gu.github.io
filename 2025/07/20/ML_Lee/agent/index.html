@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/agent/Pasted%20image%2020250720102659.png">
 <meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/agent/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
 <meta property="article:published_time" content="2025-07-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-21T08:03:32.157Z">
+<meta property="article:modified_time" content="2025-07-21T08:20:12.744Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta property="article:tag" content="AI">
@@ -361,11 +361,13 @@ Prompt工程”的组合，利用历史智慧指导当前决策</li>
 <p><strong>GraphRAG</strong>：标准的<strong>RAG (检索增强生成)</strong>
 方法擅长回答“具体问题”，因为它可以直接从知识库中检索到包含答案的一小部分文档。但是，当面对需要理解和总结<strong>整个文档集合</strong>的“全局性问题”时，标准RAG会失效，因为它不知道该检索哪一小块信息来回答这种开放式的问题。<sup id="fnref:8" class="footnote-ref"><a href="#fn:8" rel="footnote"><span
 class="hint--top hint--rounded"
-aria-label="[[2404.16130] From Local to Global: A Graph RAG Approach to Query-Focused Summarization](https://arxiv.org/abs/2404.16130)">[8]</span></a></sup>
-- <strong>构建实体知识图谱</strong>:
-首先，用一个大型语言模型（LLM）通读所有源文档，提取出关键的实体（如人物、地点、概念），并建立它们之间的关系，形成一个网络状的知识图谱。
-- <strong>预生成社群摘要</strong>:
-接着，在图谱中自动识别出那些关联非常紧密的“实体社群”（可以理解为主题簇），然后再次使用LLM为<strong>每一个社群</strong>都预先生成一份高质量的摘要</p>
+aria-label="[[2404.16130] From Local to Global: A Graph RAG Approach to Query-Focused Summarization](https://arxiv.org/abs/2404.16130)">[8]</span></a></sup></p>
+<ul>
+<li><p><strong>构建实体知识图谱</strong>:
+首先，用一个大型语言模型（LLM）通读所有源文档，提取出关键的实体（如人物、地点、概念），并建立它们之间的关系，形成一个网络状的知识图谱。</p></li>
+<li><p><strong>预生成社群摘要</strong>:
+接着，在图谱中自动识别出那些关联非常紧密的“实体社群”（可以理解为主题簇），然后再次使用LLM为<strong>每一个社群</strong>都预先生成一份高质量的摘要</p></li>
+</ul>
 <p><strong>HippoRAG</strong>：传统RAG回答复杂问题时，往往需要反复提问、多次检索（这被称为迭代式检索），就像一个新手管理员跑好几趟书架。而HippoRAG凭借其图算法，<strong>一次检索</strong>就能理清复杂的关系链，性能因此<strong>提升高达20%</strong>。<sup id="fnref:9" class="footnote-ref"><a href="#fn:9" rel="footnote"><span
 class="hint--top hint--rounded"
 aria-label="[[2405.14831] HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models](https://arxiv.org/abs/2405.14831)">[9]</span></a></sup>
@@ -385,32 +387,41 @@ Agent可以通过调用搜索引擎来获取最新的信息和数据。这种能
 Agent在多个可用工具中选择最适合当前任务的工具。这个过程通常涉及以下几个步骤：</p>
 <p><strong>MetaTool基准</strong><sup id="fnref:10" class="footnote-ref"><a href="#fn:10" rel="footnote"><span
 class="hint--top hint--rounded"
-aria-label="[[2310.03128] MetaTool Benchmark for Large Language Models: Deciding Whether to Use Tools and Which to Use](https://arxiv.org/abs/2310.03128)">[10]</span></a></sup>
-- <strong>核心构成</strong>：MetaTool包含一个名为 <code>ToolE</code>
-的数据集，里面有各种各样能够触发LLM使用工具的用户查询（Prompt），覆盖了单工具和多工具使用的场景。
-- <strong>评测任务</strong>：它专门评估LLM的两种核心能力： -
-<strong>工具使用意识</strong>：判断当前问题是否真的需要使用工具。 -
-<strong>工具选择</strong>：从众多工具中选出最合适的一个或多个。这个任务还被细分为四个更具挑战性的子任务，例如：从功能相似的工具中做选择、在特定场景下做选择、考虑工具的可靠性问题，以及选择多个工具进行组合。</p>
+aria-label="[[2310.03128] MetaTool Benchmark for Large Language Models: Deciding Whether to Use Tools and Which to Use](https://arxiv.org/abs/2310.03128)">[10]</span></a></sup></p>
+<ul>
+<li><p><strong>核心构成</strong>：MetaTool包含一个名为
+<code>ToolE</code>
+的数据集，里面有各种各样能够触发LLM使用工具的用户查询（Prompt），覆盖了单工具和多工具使用的场景。</p></li>
+<li><p><strong>评测任务</strong>：它专门评估LLM的两种核心能力：</p>
+<ul>
+<li><p><strong>工具使用意识</strong>：判断当前问题是否真的需要使用工具。</p></li>
+<li><p><strong>工具选择</strong>：从众多工具中选出最合适的一个或多个。这个任务还被细分为四个更具挑战性的子任务，例如：从功能相似的工具中做选择、在特定场景下做选择、考虑工具的可靠性问题，以及选择多个工具进行组合。</p></li>
+</ul></li>
+</ul>
 <p><strong>OctoTools</strong>引入了三个关键组件来协同工作：<sup id="fnref:11" class="footnote-ref"><a href="#fn:11" rel="footnote"><span
 class="hint--top hint--rounded"
 aria-label="[[2502.11271] OctoTools: An Agentic Framework with Extensible Tools for Complex Reasoning](https://arxiv.org/abs/2502.11271)">[11]</span></a></sup>
 1. <strong>标准化工具卡片 (<em>Standardized Tool
-Cards</em>)</strong>：这是一个核心创新。它用一种标准化的格式来封装和描述任何工具的功能，使得添加新工具就像插拔模块一样简单。
-2. <strong>规划器
-(<em>Planner</em>)</strong>：负责进行任务规划。它既能做宏观的“高层规划”（将复杂任务拆解成小步骤），也能做微观的“低层规划”（为每个小步骤决定具体使用哪个工具）。
-3. <strong>执行器
-<em>(Executor</em>)</strong>：负责实际执行由“规划器”定下的工具调用指令。</p>
+Cards</em>)</strong>：这是一个核心创新。它用一种标准化的格式来封装和描述任何工具的功能，使得添加新工具就像插拔模块一样简单。</p>
+<ol start="2" type="1">
+<li><p><strong>规划器
+(<em>Planner</em>)</strong>：负责进行任务规划。它既能做宏观的“高层规划”（将复杂任务拆解成小步骤），也能做微观的“低层规划”（为每个小步骤决定具体使用哪个工具）。</p></li>
+<li><p><strong>执行器
+<em>(Executor</em>)</strong>：负责实际执行由“规划器”定下的工具调用指令。</p></li>
+</ol>
 <p>更进一步的，AI还可以自己打造工具</p>
 <p>TROVE的核心思想是让一个擅长编程的语言模型（Code
 LM）来扮演“工具开发者”的角色。它采用一个动态的、自我完善的流程来构建工具箱：<sup id="fnref:12" class="footnote-ref"><a href="#fn:12" rel="footnote"><span
 class="hint--top hint--rounded"
 aria-label="[[2401.12869] TroVE: Inducing Verifiable and Efficient Toolboxes for Solving Programmatic Tasks](https://arxiv.org/abs/2401.12869)">[12]</span></a></sup>
 1. <strong>在使用中生成 (Generate via
-Using)</strong>：在解决实际问题的过程中，AI会识别出那些频繁被组合使用的基础操作，并尝试将它们打包成一个更高级、可复用的新函数。
-2. <strong>成长
-(Grow)</strong>：将新创建的、被证明有用的高级函数加入到“工具箱”中，供后续解决其他问题时直接调用。
-3. <strong>定期修剪
-(Trim)</strong>：为了防止工具箱变得臃肿，系统会定期清理，移除那些不常用、冗余或效果不佳的函数，始终保持工具箱小而精悍。</p>
+Using)</strong>：在解决实际问题的过程中，AI会识别出那些频繁被组合使用的基础操作，并尝试将它们打包成一个更高级、可复用的新函数。</p>
+<ol start="2" type="1">
+<li><p><strong>成长
+(Grow)</strong>：将新创建的、被证明有用的高级函数加入到“工具箱”中，供后续解决其他问题时直接调用。</p></li>
+<li><p><strong>定期修剪
+(Trim)</strong>：为了防止工具箱变得臃肿，系统会定期清理，移除那些不常用、冗余或效果不佳的函数，始终保持工具箱小而精悍。</p></li>
+</ol>
 <p>但是使用工具带来的问题是：Agent可能会因为<strong>过度相信工具而犯错</strong>。尤其是当外部知识用冲突，或者与LLM训练时获得的知识冲突时，Agent可能会错误地依赖工具的输出，而不是自己的判断。即使所有找到的资料都是正确的，不代表AI就不会犯错。</p>
 <p><img src="{BBAE77B9-5B82-4103-88B0-BEB5D20B0FA6}.png" srcset="/img/loading.gif" lazyload alt="" width="450">
 <em>研究什么样的外部知识比较容易说服AI</em></p>

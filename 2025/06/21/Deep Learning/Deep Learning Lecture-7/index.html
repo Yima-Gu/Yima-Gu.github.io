@@ -19,12 +19,12 @@
   <meta name="author" content="Yima Gu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 202503300944">
+    <meta name="description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 2025033009440">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep Learning Lecture-7">
 <meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 202503300944">
+<meta property="og:description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 2025033009440">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330094251.png">
 <meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330094404.png">
@@ -50,7 +50,7 @@
 <meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163941.png">
 <meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405164110.png">
 <meta property="article:published_time" content="2025-06-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-07-21T08:03:32.155Z">
+<meta property="article:modified_time" content="2025-07-22T07:08:57.103Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta name="twitter:card" content="summary_large_image">
@@ -306,12 +306,11 @@
 <span
 class="math display"><em>θ</em><sup>*</sup> = arg max<sub><em>θ</em></sub>𝔼<sub><em>x</em> ∼ <em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub></sub>log <em>p</em><sub><em>m</em><em>o</em><em>d</em><em>e</em><em>l</em></sub>(<em>x</em>|<em>θ</em>)</span>
 <img src="Pasted%20image%2020250330094251.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330094251.png" /></p>
+alt="Pasted image 20250330094251" /></p>
 <figure>
 <img src="Pasted%20image%2020250330094404.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330094404.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330094404.png</figcaption>
+alt="Pasted image 20250330094404" />
+<figcaption aria-hidden="true">Pasted image 20250330094404</figcaption>
 </figure>
 <h3 id="gan-generative-adversarial-network">GAN: Generative Adversarial
 Network</h3>
@@ -349,13 +348,12 @@ class="math inline"><em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub
 <p>但是GAN的<strong>训练过程是非常困难</strong>的，梯度性质是不好的，因为在比较好的样本中，由于梯度性质的问题会进行较大的更新。</p>
 <figure>
 <img src="Pasted%20image%2020250330100434.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330100434.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330100434.png</figcaption>
+alt="Pasted image 20250330100434" />
+<figcaption aria-hidden="true">Pasted image 20250330100434</figcaption>
 </figure>
 <p><strong>训练GAN的技巧</strong> <img
 src="Pasted%20image%2020250330100506.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330100506.png" /></p>
+alt="Pasted image 20250330100506" /></p>
 <h4 id="dcgan-deep-convolutional-generative-adversarial-networks">DCGAN:
 Deep Convolutional Generative Adversarial Networks</h4>
 <p>对于生成器和判别器，使用卷积神经网络来进行训练。对于判别器，使用的是较为标准的CNN网络，对于生成器，使用的是转置卷积，先将特征图进行padding，然后进行卷积操作，这样可以获得一个较大的特征图。</p>
@@ -366,9 +364,8 @@ Deep Convolutional Generative Adversarial Networks</h4>
 </ul>
 <figure>
 <img src="Pasted%20image%2020250330102359.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330102359.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330102359.png</figcaption>
+alt="Pasted image 20250330102359" />
+<figcaption aria-hidden="true">Pasted image 20250330102359</figcaption>
 </figure>
 <p>证明了泛化定理：在有限的训练样本之下，可以通过训练得到一个泛化的模型。</p>
 <h4 id="inception-score">Inception Score</h4>
@@ -463,29 +460,25 @@ class="math display"><em>C</em> = inf<sub><em>γ</em> ∈ <em>Γ</em>(<e
 ##### Wasserstein GAN</p>
 <figure>
 <img src="Pasted%20image%2020250330141642.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330141642.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330141642.png</figcaption>
+alt="Pasted image 20250330141642" />
+<figcaption aria-hidden="true">Pasted image 20250330141642</figcaption>
 </figure>
 <figure>
 <img src="Pasted%20image%2020250330142308.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330142308.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330142308.png</figcaption>
+alt="Pasted image 20250330142308" />
+<figcaption aria-hidden="true">Pasted image 20250330142308</figcaption>
 </figure>
 <p>对于模式坍塌进一步的理解，如果空间上有一个较大的利普希茨系数，那么说明发生了模式坍塌。</p>
 <figure>
 <img src="Pasted%20image%2020250330144259.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330144259.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330144259.png</figcaption>
+alt="Pasted image 20250330144259" />
+<figcaption aria-hidden="true">Pasted image 20250330144259</figcaption>
 </figure>
 <h5 id="spectral-normalization">Spectral Normalization</h5>
 <figure>
 <img src="Pasted%20image%2020250330144556.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330144556.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330144556.png</figcaption>
+alt="Pasted image 20250330144556" />
+<figcaption aria-hidden="true">Pasted image 20250330144556</figcaption>
 </figure>
 <table>
 <thead>
@@ -522,9 +515,8 @@ GAN</h4>
 <h4 id="cycle-gan">Cycle GAN</h4>
 <figure>
 <img src="Pasted%20image%2020250330153629.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330153629.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330153629.png</figcaption>
+alt="Pasted image 20250330153629" />
+<figcaption aria-hidden="true">Pasted image 20250330153629</figcaption>
 </figure>
 <p>无配对数据下的图像转换（如马→斑马），通过循环一致性损失<span
 class="math inline"><em>C</em><em>y</em><em>c</em></span>保证生成的图像在两个方向上的转换是一致的。
@@ -598,9 +590,8 @@ class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</spa
 Network</em>。</p>
 <figure>
 <img src="Pasted%20image%2020250330161028.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330161028.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330161028.png</figcaption>
+alt="Pasted image 20250330161028" />
+<figcaption aria-hidden="true">Pasted image 20250330161028</figcaption>
 </figure>
 <p>但是VAE是<em>Intractable</em>的，这个问题是NP-hard的。对于上面的条件概率，是比较困难的。所以采用一个近似的方法来进行求解。比如假设服从一个高斯分布，之后计算这个分布的均值和协方差矩阵。</p>
 <h4 id="elbo-evidence-lower-bound">ELBO: Evidence Lower Bound</h4>
@@ -609,18 +600,16 @@ class="math inline">log <em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i<
 class="math inline"><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)</span>。</p>
 <figure>
 <img src="Pasted%20image%2020250330164549.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250330164549.png" />
-<figcaption aria-hidden="true">Pasted image
-20250330164549.png</figcaption>
+alt="Pasted image 20250330164549" />
+<figcaption aria-hidden="true">Pasted image 20250330164549</figcaption>
 </figure>
 <p>这里是将最大化似然的过程简化为最大化ELBO的过程。 <span
 class="math display">log <em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i</em></sub>) = 𝔼<sub><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)</sub>[log <em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i</em></sub>|<em>z</em>)] − <em>K</em><em>L</em>(<em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)||<em>p</em><sub><em>θ</em></sub>(<em>z</em>))</span></p>
 <h4 id="reparameterization-trick">Reparameterization Trick</h4>
 <figure>
 <img src="Pasted%20image%2020250403144444.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250403144444.png" />
-<figcaption aria-hidden="true">Pasted image
-20250403144444.png</figcaption>
+alt="Pasted image 20250403144444" />
+<figcaption aria-hidden="true">Pasted image 20250403144444</figcaption>
 </figure>
 <p>在VAE的训练过程中，通常需要从潜在变量的分布中采样。直接从分布中采样可能导致梯度无法传播到编码器网络，因此引入了重参数化技巧。
 这是的采样变量是<span
@@ -635,9 +624,8 @@ class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</spa
 class="math inline"><em>K</em><em>L</em>(<em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)||<em>p</em><sub><em>θ</em></sub>(<em>z</em>))</span>在训练中被最小化了。</p>
 <figure>
 <img src="Pasted%20image%2020250403152841.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250403152841.png" />
-<figcaption aria-hidden="true">Pasted image
-20250403152841.png</figcaption>
+alt="Pasted image 20250403152841" />
+<figcaption aria-hidden="true">Pasted image 20250403152841</figcaption>
 </figure>
 <h4 id="vq-vae">VQ-VAE</h4>
 <p>VQ-VAE是对VAE的一个改进，使用了向量量化的方法来进行训练。通过对潜在变量进行离散化来进行训练，这样可以避免模式坍塌的问题。</p>
@@ -689,31 +677,27 @@ $$</span></p>
 <p>上述过程可以使用一个网络来实现对于均值和方差的输出。</p>
 <figure>
 <img src="Pasted%20image%2020250403164408.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250403164408.png" />
-<figcaption aria-hidden="true">Pasted image
-20250403164408.png</figcaption>
+alt="Pasted image 20250403164408" />
+<figcaption aria-hidden="true">Pasted image 20250403164408</figcaption>
 </figure>
 <figure>
 <img src="Pasted%20image%2020250403165731.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250403165731.png" />
-<figcaption aria-hidden="true">Pasted image
-20250403165731.png</figcaption>
+alt="Pasted image 20250403165731" />
+<figcaption aria-hidden="true">Pasted image 20250403165731</figcaption>
 </figure>
 <p><a
 target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">What
 are Diffusion Models? | Lil’Log</a></p>
 <figure>
 <img src="Pasted%20image%2020250405094553.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405094553.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405094553.png</figcaption>
+alt="Pasted image 20250405094553" />
+<figcaption aria-hidden="true">Pasted image 20250405094553</figcaption>
 </figure>
 <h5 id="diffusion-parameters">Diffusion Parameters</h5>
 <figure>
 <img src="Pasted%20image%2020250405161801.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405161801.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405161801.png</figcaption>
+alt="Pasted image 20250405161801" />
+<figcaption aria-hidden="true">Pasted image 20250405161801</figcaption>
 </figure>
 <h5 id="acceleration-strategies">Acceleration Strategies</h5>
 <h5 id="re-design-forward-sampling">Re-design forward Sampling</h5>
@@ -732,48 +716,42 @@ class="math inline"><em>α</em><sub><em>t</em></sub></span>来控制前向采样
 <li>通过设计一个新的损失函数来进行训练。</li>
 <li><figure>
 <img src="Pasted%20image%2020250405163042.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405163042.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405163042.png</figcaption>
+alt="Pasted image 20250405163042" />
+<figcaption aria-hidden="true">Pasted image 20250405163042</figcaption>
 </figure></li>
 </ul></li>
 <li>Denosing Diffusion Models
 <ul>
 <li><figure>
 <img src="Pasted%20image%2020250405163350.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405163350.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405163350.png</figcaption>
+alt="Pasted image 20250405163350" />
+<figcaption aria-hidden="true">Pasted image 20250405163350</figcaption>
 </figure></li>
 </ul></li>
 <li>Latent Diffusion Models
 <ul>
 <li><figure>
 <img src="Pasted%20image%2020250405163425.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405163425.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405163425.png</figcaption>
+alt="Pasted image 20250405163425" />
+<figcaption aria-hidden="true">Pasted image 20250405163425</figcaption>
 </figure></li>
 </ul></li>
 </ul>
 <h5 id="conditonal-diffusion-models">Conditonal Diffusion Models</h5>
 <figure>
 <img src="Pasted%20image%2020250405163914.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405163914.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405163914.png</figcaption>
+alt="Pasted image 20250405163914" />
+<figcaption aria-hidden="true">Pasted image 20250405163914</figcaption>
 </figure>
 <figure>
 <img src="Pasted%20image%2020250405163941.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405163941.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405163941.png</figcaption>
+alt="Pasted image 20250405163941" />
+<figcaption aria-hidden="true">Pasted image 20250405163941</figcaption>
 </figure>
 <figure>
 <img src="Pasted%20image%2020250405164110.png" srcset="/img/loading.gif" lazyload
-alt="Pasted image 20250405164110.png" />
-<figcaption aria-hidden="true">Pasted image
-20250405164110.png</figcaption>
+alt="Pasted image 20250405164110" />
+<figcaption aria-hidden="true">Pasted image 20250405164110</figcaption>
 </figure>
 
                 
@@ -854,8 +832,8 @@ alt="Pasted image 20250405164110.png" />
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/" title="Deep Learning Lecture-8">
-                        <span class="hidden-mobile">Deep Learning Lecture-8</span>
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" title="Deep Learning Lecture-5">
+                        <span class="hidden-mobile">Deep Learning Lecture-5</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

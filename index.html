@@ -227,13 +227,13 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/07/20/ML_Lee/agent/" target="_self">
+        <a href="/2025/07/20/ML_Lee/AI%20Agent/" target="_self">
           AI Agent Notes
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/ML_Lee/agent/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/20/ML_Lee/AI%20Agent/" target="_self">
         <div>
           AI Agent：人类只给AI目标，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的行动（下
         </div>
@@ -323,7 +323,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-1/" target="_self">
         <div>
-          人工智能：模拟人类的智能 机器学习：不显式编程来实现 深度学习：使用神经网络 对于深度学习总是能找到一些amazing的例子，同时也有一些失败的例子。 深度学习是在数据中获取高度抽象的特征，主要使用神经网络。在深度学习中实现的功能类似于坐标系变换。对于同一个问题进行变换可以进行不同的处理。在机器学习过程中的规则系统仍然是很重要的。 深度学习的表示为计算图 Framework 在学习算
+          What can AI do? 人工智能：模拟人类的智能 机器学习：不显式编程来实现 深度学习：使用神经网络 Framework 在学习算法中一定要指定函数族，然后使用数据来拟合函数族。要找出最优的函数族。不同的机器学习模型的区别主要在于假设空间（候选函数族）的不同。 过拟和在指定函数族时已经确定。 泛化误差公式： $$ \varepsilon_{test} \leq \hat{\
         </div>
       </a>
 
@@ -404,46 +404,6 @@
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
         <div>
           Optimization Objective Function $$ \arg \min \mathcal{O(D,\theta)}=  \sum_{i=1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) $$ 上述目标可以可视化为以θ为横坐标、𝒪为纵坐标的函数图像，我们的目标是找到函数图像的最低点。这是一个非凸优化问题，是初值敏感的。“地形图”是
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
-              2025-06-21
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/DeepLearning/">#DeepLearning</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
-          Deep Learning Lecture-5
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
-        <div>
-          Recurrent Network Sequence Model 序列建模任务是指对一个序列的输入进行建模，比如文本、音频、视频等。序列模型的输入和输出都是序列，比如机器翻译、语音识别、视频分类等任务。重要的是捕捉序列中的上下文。 Basic Principle Local Dependency Local Dependency：对于一个序列中的每一个元素，它的预测是依赖于它的前面的元
         </div>
       </a>
 
@@ -563,7 +523,47 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/" target="_self">
         <div>
-          Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* = arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 202503300944
+          Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* = arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 2025033009440
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-06-21 00:00" pubdate>
+              2025-06-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DeepLearning/">#DeepLearning</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
+          Deep Learning Lecture-5
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
+        <div>
+          Recurrent Network Sequence Model 序列建模任务是指对一个序列的输入进行建模，比如文本、音频、视频等。序列模型的输入和输出都是序列，比如机器翻译、语音识别、视频分类等任务。重要的是捕捉序列中的上下文。 Basic Principle Local Dependency Local Dependency：对于一个序列中的每一个元素，它的预测是依赖于它的前面的元
         </div>
       </a>
 

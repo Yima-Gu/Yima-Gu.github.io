@@ -1,0 +1,67 @@
+# Fluid Theme Configuration
+# 主题配置文档: https://hexo.fluid-dev.com/docs/
+
+# 导航栏
+navbar:
+  blog_title: "Yima Gu's Blog"
+  
+# 首页配置
+index:
+  banner_img: /img/bg/home.jpg
+  banner_img_height: 100
+  banner_mask_alpha: 0.3
+  slogan:
+    enable: true
+    text: "欢迎来到我的个人博客"
+    api:
+      enable: false
+
+# 文章页配置  
+post:
+  banner_img: /img/bg/post.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.3
+  
+  # 数学公式支持
+  math:
+    enable: true
+    specific: tru
+    engine: 'mathjax'
+    
+  # 代码高亮
+  highlight:
+    enable: true
+    theme: 'github'
+    
+  # 图片懒加载
+  lazyload:
+    enable: true
+# 关于页面
+about:
+  banner_img: /img/bg/about.jpg
+  banner_img_height: 70
+  banner_mask_alpha: 0.3
+  avatar: /img/avatar.png
+  name: "Yima Gu"
+  intro: "欢迎来到我的个人博客"
+  
+# 页脚
+footer:
+  content: '
+    <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+    <i class="iconfont icon-love"></i>
+    <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+  '
+
+# 自定义样式和脚本
+custom_js:
+custom_css:
+
+# 网站统计
+web_analytics:
+  enable: false
+
+# 评论系统
+comments:
+  enable: false
+  branch: main

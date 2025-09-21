@@ -1,0 +1,168 @@
+---
+title: AI Agent Notes
+date: 2025-07-20
+tags:
+  - DeepLearning
+  - AI
+  - 李宏毅机器学习
+math: true
+syntax_converted: true
+
+---
+
+**AI Agent**：人类<mark>只给AI目标</mark>，AI自己想办法完成某个研究问题。
+
+<img src="{281D8726-4976-4970-BCA0-4A9C9D175927}.png" alt="" width="450">
+
+整个图示清晰地展现了强化学习的核心循环：智能体观察环境的**状态** (棋盘布局)，基于其策略和**目标** (赢棋) 来选择一个**行动** (下一步棋)，该行动改变了环境的**状态**，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。
+通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：**如何选择一系列的行动（下棋），来最大化未来能获得的累积奖励（最终得到那个+1）**。
+
+强化学习 (*RL*) 就是一个让智能体 (*Agent*) 在与环境 (*Environment*) 的互动中，通过“试错” (*Trial-and-Error*) 的方式来自主学习的过程。它的学习目标是找到一个最优策略 (*Policy*)，也就是一套决策方法，使得它从长远来看能够获得的累积奖励 (*Cumulative Reward*) 最多。
+
+>但是上面的问题在于**需要为每一个任务训练特定的模型**，而且需要大量的计算资源。<mark>能不能使用一个模型来完成所有的任务？</mark>
+
+<img src="{FC397F83-D2DE-4C4E-9F05-5329C2558432}.png" alt="" width="450">
+
+上面的过程就是LLM擅长的文字接龙功能。
+
+### AI Agent& LLM
+
+**优势**：能够理解和利用“丰富的、人类可读的”反馈信息，而不仅仅是“稀疏的、数字化的”奖励信号，从而极大地提升了学习和纠错的效率。<mark>在下面过程中都不涉及AI的训练过程</mark>。
+
+#### Computer Use Operator
+
+**Mind2Web**是一个从超过100个真实网站上收集的大规模、多样化的**数据集**。它的核心贡献是提供了高质量的训练材料，用于教导一个通用的AI智能体如何遵循指令，在任何网站上执行任务，而不仅仅是在简化的或模拟的网站上。[^1]
+
+**WebArena**是一个充满挑战的**基准测试（Benchmark）**，其包含功能齐全的网站和复杂的任务，旨在公平地评估和比较不同的智能体。[^2]
+
+WebArena主要测试基于文本的能力。**VisualWebArena**是一个专门测试智能体**多模态能力**的高级基准测试。这个环境中的任务要求智能体不仅要阅读文本，还要**理解视觉信息**（如图片、图标和布局）才能成功。[^3]
+
+#### AI Agent for Model Training & Scientific Research
+
+**AIDE**，是一个**单一、自主的AI智能体**，它的目标是接管人类工程师繁琐、耗时的“试错”工作。将整个机器学习开发过程视为一个**代码优化问题**，并运用**树状搜索*Tree Search***等策略，独立地在众多可能性中寻找最佳解决方案。[^4]
+
+**AutoKaggle**：将复杂的任务分解，由一个**多智能体系统*Multi-Agent System***协作完成，团队里可能有负责数据清洗、特征工程、模型训练等不同角色的“专家”。最关键的是，它强调与**人类用户的协作**，允许人类在各个环节介入和指导。[^5]
+
+**Google Coscientist**：是一个**多智能体系统*Multi-agent system***，不同的“AI智能体”扮演不同角色（比如有的负责生成假设，有的负责验证，有的负责寻找证据），它们协同工作。能主动使用外部工具，例如调用**谷歌搜索**来查阅最新的网络信息。[^6]
+
+### AI Agent如何根据经验调整行为
+
+<img src="{22EECDE5-9FA4-41A9-A3AA-02B15F268B9A}.png" alt="" width="450">
+
+当AI行动时，现实世界会发生变化（上图中的*obs*），在AI下一次行动时会根据以前的经验来作出更好的决策。
+
+#### RAG
+
+**RAG**（*Retrieval-Augmented Generation*）通过检索相关信息来增强生成模型的能力，使得生成的内容更加准确和有针对性。
+
+- **检索 (*Retrieval*)**: 当收到用户提问时，系统不会直接让大模型回答。而是先用提问的关键词，去一个外部的知识库（比如公司的内部文档、最新的网络新闻、或者像这张幻灯片里的“智能体记忆库”）中，搜索最相关的信息片段。
+- **增强 (*Augmented*)**: 将上一步检索到的相关信息，连同用户原始的提问，一起“打包”成一个新的、内容更丰富的提示（Prompt）。
+- **生成 (*Generation*)**: 将这个被增强后的提示（Prompt）发送给大模型，让它基于这些新鲜、准确的参考资料来生成最终的回答。[^7]
+
+#### Streambench
+
+**StreamBench**是**第一个专门为评估LLM智能体持续改进能力而设计的基准测试**。它模拟了一个在线学习环境，让智能体不断接收新的任务和反馈流，从而可以衡量其性能是否能随着时间的推移而不断增强。
+
+#### Write & Reflection & Read
+
+<img src="{D54BA4B1-ACDF-404C-968F-018E57CD0D26}.png" alt="" width="450">
+
+- **Write**: 主要是**数据存储**，基本不用Prompt。但在**执行`Write`操作之前**，可以增加一个“**重要性评估**”的环节。这个环节的核心就是一个精心设计的Prompt。
+- **Reflection**: 核心是**Prompt工程**，通过Prompt引导LLM从原始数据中提炼智慧。
+- **Read**: 核心是**RAG**，通过“检索算法 + Prompt工程”的组合，利用历史智慧指导当前决策
+
+**GraphRAG**：标准的**RAG (检索增强生成)** 方法擅长回答“具体问题”，因为它可以直接从知识库中检索到包含答案的一小部分文档。但是，当面对需要理解和总结**整个文档集合**的“全局性问题”时，标准RAG会失效，因为它不知道该检索哪一小块信息来回答这种开放式的问题。[^8]
+
+- **构建实体知识图谱**: 首先，用一个大型语言模型（LLM）通读所有源文档，提取出关键的实体（如人物、地点、概念），并建立它们之间的关系，形成一个网络状的知识图谱。
+- **预生成社群摘要**: 接着，在图谱中自动识别出那些关联非常紧密的“实体社群”（可以理解为主题簇），然后再次使用LLM为**每一个社群**都预先生成一份高质量的摘要
+
+**HippoRAG**：传统RAG回答复杂问题时，往往需要反复提问、多次检索（这被称为迭代式检索），就像一个新手管理员跑好几趟书架。而HippoRAG凭借其图算法，**一次检索**就能理清复杂的关系链，性能因此**提升高达20%**。[^9]
+将RAG的“检索”从一个简单的“文本相似度匹配”任务，升级为了一个更深刻的“知识关系图遍历”任务，通过模仿人脑高效的索引机制。
+
+### AI如何使用工具
+
+**Tool Use**：AI Agent使用工具的能力是其核心特征之一。通过调用外部工具，AI可以扩展其能力，完成更复杂的任务。
+
+<img src="Pasted%20image%2020250720102659.png" alt="" width="450">
+
+**语言模型本身并不“执行”工具，而是“生成”一段代表工具调用的文本**。
+
+它生成的这串`<tool>...</tool>`文本，只是一个结构化的“意图表达”。需要一个**外部的控制程序*Orchestrator***来解析这个文本，并实际执行相应的工具调用。**控制程序**再去**真正地调用**一个天气API，并将参数传递过去。
+天气API返回结果后，控制程序再将结果封装成`<output>...</output>`格式，发回给语言模型，让它以自然语言的形式呈现给用户。
+
+**Search Engine**：AI Agent可以通过调用搜索引擎来获取最新的信息和数据。这种能力使得AI能够在动态变化的环境中保持更新。可以使用搜索到的内容运行RAG后输出。
+
+除了上述使用的搜索引擎、API等工具使用方法外，AI也可以使用更大或者有专门功能的模型（math、code）来实现更复杂的任务。
+
+#### Tool Selection
+
+**Tool Selection**是指AI Agent在多个可用工具中选择最适合当前任务的工具。这个过程通常涉及以下几个步骤：
+
+**MetaTool基准**[^10]
+
+- **核心构成**：MetaTool包含一个名为 `ToolE` 的数据集，里面有各种各样能够触发LLM使用工具的用户查询（Prompt），覆盖了单工具和多工具使用的场景。
+- **评测任务**：它专门评估LLM的两种核心能力：
+	- **工具使用意识**：判断当前问题是否真的需要使用工具。
+	- **工具选择**：从众多工具中选出最合适的一个或多个。这个任务还被细分为四个更具挑战性的子任务，例如：从功能相似的工具中做选择、在特定场景下做选择、考虑工具的可靠性问题，以及选择多个工具进行组合。
+
+**OctoTools**引入了三个关键组件来协同工作：[^11]
+
+1. **标准化工具卡片 (*Standardized Tool Cards*)**：这是一个核心创新。它用一种标准化的格式来封装和描述任何工具的功能，使得添加新工具就像插拔模块一样简单。
+2. **规划器 (*Planner*)**：负责进行任务规划。它既能做宏观的“高层规划”（将复杂任务拆解成小步骤），也能做微观的“低层规划”（为每个小步骤决定具体使用哪个工具）。
+3. **执行器 *(Executor*)**：负责实际执行由“规划器”定下的工具调用指令。
+
+更进一步的，AI还可以自己打造工具
+
+TROVE的核心思想是让一个擅长编程的语言模型（Code LM）来扮演“工具开发者”的角色。它采用一个动态的、自我完善的流程来构建工具箱：[^12]
+
+1. **在使用中生成 (Generate via Using)**：在解决实际问题的过程中，AI会识别出那些频繁被组合使用的基础操作，并尝试将它们打包成一个更高级、可复用的新函数。
+2. **成长 (Grow)**：将新创建的、被证明有用的高级函数加入到“工具箱”中，供后续解决其他问题时直接调用。
+3. **定期修剪 (Trim)**：为了防止工具箱变得臃肿，系统会定期清理，移除那些不常用、冗余或效果不佳的函数，始终保持工具箱小而精悍。
+
+但是使用工具带来的问题是：Agent可能会因为**过度相信工具而犯错**。尤其是当外部知识用冲突，或者与LLM训练时获得的知识冲突时，Agent可能会错误地依赖工具的输出，而不是自己的判断。即使所有找到的资料都是正确的，不代表AI就不会犯错。
+
+<img src="{BBAE77B9-5B82-4103-88B0-BEB5D20B0FA6}.png" alt="" width="450">
+*研究什么样的外部知识比较容易说服AI*
+
+### AI能不能做计划
+
+AI Agent的计划能力是其智能化的重要体现。通过制定计划，AI可以更有效地组织和执行任务。但是现实世界是一直**变化的**，AI是否有能力根据环境的变化来调整自己的计划呢？
+
+在开发Benchmark时，有可能一些较为常见的计划任务已经被用于训练，导致模型的泛化能力不足。新的Benchmark会构建一个新的情境用于测试AI的计划能力。[^13]
+
+对于优化Agent的计划能力，自然的想法是利用试探回溯的搜索方法实现：当智能体需要做决策时，它不再是只选择一个“最好”的下一步行动。相反，它会在真实的环境中**探索多个不同的行动分支**，构建一个“决策树”。它会评估这些不同路径的潜在价值，然后优先沿着最有希望成功的路径继续深入探索，从而实现多步规划。[^14]
+
+但是显示世界中很多操作是**无法回溯**的，一种想法是构建**世界模型**来模拟现实世界的变化。通过这种方式，AI Agent可以在虚拟环境中进行试验和调整，然后再将这些经验应用到现实世界中。[^15]
+
+
+[^1]: [[2306.06070] Mind2Web: Towards a Generalist Agent for the Web](https://arxiv.org/abs/2306.06070)
+
+[^2]: [[2307.13854] WebArena: A Realistic Web Environment for Building Autonomous Agents](https://arxiv.org/abs/2307.13854)
+
+[^3]: [[2401.13649] VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks](https://arxiv.org/abs/2401.13649)
+[^4]: [[2502.13138] AIDE: AI-Driven Exploration in the Space of Code](https://arxiv.org/abs/2502.13138)
+
+[^5]: [[[2410.20424] AutoKaggle: A Multi-Agent Framework for Autonomous Data Science Competitions](https://arxiv.org/abs/2410.20424)
+
+[^6]: [Accelerating scientific breakthroughs with an AI co-scientist](https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/)
+
+
+[^7]: [[2312.10997] Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997)
+
+[^8]: [[2404.16130] From Local to Global: A Graph RAG Approach to Query-Focused Summarization](https://arxiv.org/abs/2404.16130)
+
+[^9]: [[2405.14831] HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models](https://arxiv.org/abs/2405.14831)
+
+[^10]: [[2310.03128] MetaTool Benchmark for Large Language Models: Deciding Whether to Use Tools and Which to Use](https://arxiv.org/abs/2310.03128)
+
+[^11]: [[2502.11271] OctoTools: An Agentic Framework with Extensible Tools for Complex Reasoning](https://arxiv.org/abs/2502.11271)
+
+[^12]: [[2401.12869] TroVE: Inducing Verifiable and Efficient Toolboxes for Solving Programmatic Tasks](https://arxiv.org/abs/2401.12869)
+
+
+[^13]: [[2305.15771] On the Planning Abilities of Large Language Models : A Critical Investigation](https://arxiv.org/abs/2305.15771)
+
+[^14]: [[2407.01476] Tree Search for Language Model Agents](https://arxiv.org/abs/2407.01476)
+
+[^15]: [[2411.06559] Is Your LLM Secretly a World Model of the Internet? Model-Based Planning for Web Agents](https://arxiv.org/abs/2411.06559)
+

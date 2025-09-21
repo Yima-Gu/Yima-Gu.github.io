@@ -1,0 +1,58 @@
+# 工作流程的名称
+name: Deploy Hexo Blog
+
+# 触发工作流程的事件
+on:
+  push:
+    branches:
+      # 仅在 main 分支被推送时触发
+      - main
+
+# 工作流程包含的任务
+jobs:
+  build-and-deploy:
+    # 任务名称
+    name: Build and Deploy
+    # 运行任务的虚拟机环境
+    runs-on: ubuntu-latest
+
+    # 为此任务授予的权限
+    permissions:
+      contents: write # 允许 actions 向你的仓库写入内容 (推送 gh-pages 分支)
+
+    # 任务的执行步骤
+    steps:
+      # 步骤 1: 检出你的源代码
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+
+      # 步骤 2: 设置 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # 指定 Node.js 版本
+          cache: 'npm' # 缓存 npm 依赖，加快后续构建速度
+
+      # 步骤 3: 安装项目依赖
+      - name: Install dependencies
+        run: npm install
+
+      # 步骤 4: 生成静态网站文件
+      - name: Generate static files
+        run: hexo generate
+
+      # 步骤 5: 部署到 gh-pages 分支
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          # 使用 GITHUB_TOKEN 进行认证，这是 GitHub Actions 自动提供的
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Hexo 生成的静态文件默认存放在 public 目录
+          publish_dir: ./public
+          # 部署的目标分支
+          publish_branch: gh-pages
+          # 提交的作者信息
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          # 提交信息
+          commit_message: "CI: Deploy Hexo blog from GitHub Actions"

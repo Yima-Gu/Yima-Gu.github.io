@@ -1,0 +1,958 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="AI Agent：人类只给AI目标，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的行动（下棋），来最大化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Agent Notes">
+<meta property="og:url" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="AI Agent：人类只给AI目标，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的行动（下棋），来最大化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/Pasted%20image%2020250720102659.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
+<meta property="article:published_time" content="2025-07-20T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-21T10:42:10.589Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="DeepLearning">
+<meta property="article:tag" content="AI">
+<meta property="article:tag" content="李宏毅机器学习">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+  
+  
+  
+  <title>AI Agent Notes - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AI Agent Notes"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-20 00:00" pubdate>
+          2025年7月20日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          26 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AI Agent Notes</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>AI
+Agent</strong>：人类<mark>只给AI目标</mark>，AI自己想办法完成某个研究问题。</p>
+<p><img src="{281D8726-4976-4970-BCA0-4A9C9D175927}.png" srcset="/img/loading.gif" lazyload alt="" width="450"></p>
+<p>整个图示清晰地展现了强化学习的核心循环：智能体观察环境的<strong>状态</strong>
+(棋盘布局)，基于其策略和<strong>目标</strong> (赢棋)
+来选择一个<strong>行动</strong>
+(下一步棋)，该行动改变了环境的<strong>状态</strong>，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。
+通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：<strong>如何选择一系列的行动（下棋），来最大化未来能获得的累积奖励（最终得到那个+1）</strong>。</p>
+<p>强化学习 (<em>RL</em>) 就是一个让智能体 (<em>Agent</em>) 在与环境
+(<em>Environment</em>) 的互动中，通过“试错” (<em>Trial-and-Error</em>)
+的方式来自主学习的过程。它的学习目标是找到一个最优策略
+(<em>Policy</em>)，也就是一套决策方法，使得它从长远来看能够获得的累积奖励
+(<em>Cumulative Reward</em>) 最多。</p>
+<blockquote>
+<p>但是上面的问题在于<strong>需要为每一个任务训练特定的模型</strong>，而且需要大量的计算资源。<mark>能不能使用一个模型来完成所有的任务？</mark></p>
+</blockquote>
+<p><img src="{FC397F83-D2DE-4C4E-9F05-5329C2558432}.png" srcset="/img/loading.gif" lazyload alt="" width="450"></p>
+<p>上面的过程就是LLM擅长的文字接龙功能。</p>
+<h3 id="ai-agent-llm">AI Agent&amp; LLM</h3>
+<p><strong>优势</strong>：能够理解和利用“丰富的、人类可读的”反馈信息，而不仅仅是“稀疏的、数字化的”奖励信号，从而极大地提升了学习和纠错的效率。<mark>在下面过程中都不涉及AI的训练过程</mark>。</p>
+<h4 id="computer-use-operator">Computer Use Operator</h4>
+<p><strong>Mind2Web</strong>是一个从超过100个真实网站上收集的大规模、多样化的<strong>数据集</strong>。它的核心贡献是提供了高质量的训练材料，用于教导一个通用的AI智能体如何遵循指令，在任何网站上执行任务，而不仅仅是在简化的或模拟的网站上。<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2306.06070] Mind2Web: Towards a Generalist Agent for the Web](https://arxiv.org/abs/2306.06070)">[1]</span></a></sup></p>
+<p><strong>WebArena</strong>是一个充满挑战的<strong>基准测试（Benchmark）</strong>，其包含功能齐全的网站和复杂的任务，旨在公平地评估和比较不同的智能体。<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2307.13854] WebArena: A Realistic Web Environment for Building Autonomous Agents](https://arxiv.org/abs/2307.13854)">[2]</span></a></sup></p>
+<p>WebArena主要测试基于文本的能力。<strong>VisualWebArena</strong>是一个专门测试智能体<strong>多模态能力</strong>的高级基准测试。这个环境中的任务要求智能体不仅要阅读文本，还要<strong>理解视觉信息</strong>（如图片、图标和布局）才能成功。<sup id="fnref:3" class="footnote-ref"><a href="#fn:3" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2401.13649] VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web Tasks](https://arxiv.org/abs/2401.13649)">[3]</span></a></sup></p>
+<h4 id="ai-agent-for-model-training-scientific-research">AI Agent for
+Model Training &amp; Scientific Research</h4>
+<p><strong>AIDE</strong>，是一个<strong>单一、自主的AI智能体</strong>，它的目标是接管人类工程师繁琐、耗时的“试错”工作。将整个机器学习开发过程视为一个<strong>代码优化问题</strong>，并运用<strong>树状搜索<em>Tree
+Search</em></strong>等策略，独立地在众多可能性中寻找最佳解决方案。<sup id="fnref:4" class="footnote-ref"><a href="#fn:4" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2502.13138] AIDE: AI-Driven Exploration in the Space of Code](https://arxiv.org/abs/2502.13138)">[4]</span></a></sup></p>
+<p><strong>AutoKaggle</strong>：将复杂的任务分解，由一个<strong>多智能体系统<em>Multi-Agent
+System</em></strong>协作完成，团队里可能有负责数据清洗、特征工程、模型训练等不同角色的“专家”。最关键的是，它强调与<strong>人类用户的协作</strong>，允许人类在各个环节介入和指导。<sup id="fnref:5" class="footnote-ref"><a href="#fn:5" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[[2410.20424] AutoKaggle: A Multi-Agent Framework for Autonomous Data Science Competitions](https://arxiv.org/abs/2410.20424)">[5]</span></a></sup></p>
+<p><strong>Google
+Coscientist</strong>：是一个<strong>多智能体系统<em>Multi-agent
+system</em></strong>，不同的“AI智能体”扮演不同角色（比如有的负责生成假设，有的负责验证，有的负责寻找证据），它们协同工作。能主动使用外部工具，例如调用<strong>谷歌搜索</strong>来查阅最新的网络信息。<sup id="fnref:6" class="footnote-ref"><a href="#fn:6" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[Accelerating scientific breakthroughs with an AI co-scientist](https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/)">[6]</span></a></sup></p>
+<h3 id="ai-agent如何根据经验调整行为">AI Agent如何根据经验调整行为</h3>
+<p><img src="{22EECDE5-9FA4-41A9-A3AA-02B15F268B9A}.png" srcset="/img/loading.gif" lazyload alt="" width="450"></p>
+<p>当AI行动时，现实世界会发生变化（上图中的<em>obs</em>），在AI下一次行动时会根据以前的经验来作出更好的决策。</p>
+<h4 id="rag">RAG</h4>
+<p><strong>RAG</strong>（<em>Retrieval-Augmented
+Generation</em>）通过检索相关信息来增强生成模型的能力，使得生成的内容更加准确和有针对性。</p>
+<ul>
+<li><strong>检索 (<em>Retrieval</em>)</strong>:
+当收到用户提问时，系统不会直接让大模型回答。而是先用提问的关键词，去一个外部的知识库（比如公司的内部文档、最新的网络新闻、或者像这张幻灯片里的“智能体记忆库”）中，搜索最相关的信息片段。</li>
+<li><strong>增强 (<em>Augmented</em>)</strong>:
+将上一步检索到的相关信息，连同用户原始的提问，一起“打包”成一个新的、内容更丰富的提示（Prompt）。</li>
+<li><strong>生成 (<em>Generation</em>)</strong>:
+将这个被增强后的提示（Prompt）发送给大模型，让它基于这些新鲜、准确的参考资料来生成最终的回答。<sup id="fnref:7" class="footnote-ref"><a href="#fn:7" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2312.10997] Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997)">[7]</span></a></sup></li>
+</ul>
+<h4 id="streambench">Streambench</h4>
+<p><strong>StreamBench</strong>是<strong>第一个专门为评估LLM智能体持续改进能力而设计的基准测试</strong>。它模拟了一个在线学习环境，让智能体不断接收新的任务和反馈流，从而可以衡量其性能是否能随着时间的推移而不断增强。</p>
+<h4 id="write-reflection-read">Write &amp; Reflection &amp; Read</h4>
+<p><img src="{D54BA4B1-ACDF-404C-968F-018E57CD0D26}.png" srcset="/img/loading.gif" lazyload alt="" width="450"></p>
+<ul>
+<li><strong>Write</strong>:
+主要是<strong>数据存储</strong>，基本不用Prompt。但在<strong>执行<code>Write</code>操作之前</strong>，可以增加一个“<strong>重要性评估</strong>”的环节。这个环节的核心就是一个精心设计的Prompt。</li>
+<li><strong>Reflection</strong>:
+核心是<strong>Prompt工程</strong>，通过Prompt引导LLM从原始数据中提炼智慧。</li>
+<li><strong>Read</strong>: 核心是<strong>RAG</strong>，通过“检索算法 +
+Prompt工程”的组合，利用历史智慧指导当前决策</li>
+</ul>
+<p><strong>GraphRAG</strong>：标准的<strong>RAG (检索增强生成)</strong>
+方法擅长回答“具体问题”，因为它可以直接从知识库中检索到包含答案的一小部分文档。但是，当面对需要理解和总结<strong>整个文档集合</strong>的“全局性问题”时，标准RAG会失效，因为它不知道该检索哪一小块信息来回答这种开放式的问题。<sup id="fnref:8" class="footnote-ref"><a href="#fn:8" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2404.16130] From Local to Global: A Graph RAG Approach to Query-Focused Summarization](https://arxiv.org/abs/2404.16130)">[8]</span></a></sup></p>
+<ul>
+<li><strong>构建实体知识图谱</strong>:
+首先，用一个大型语言模型（LLM）通读所有源文档，提取出关键的实体（如人物、地点、概念），并建立它们之间的关系，形成一个网络状的知识图谱。</li>
+<li><strong>预生成社群摘要</strong>:
+接着，在图谱中自动识别出那些关联非常紧密的“实体社群”（可以理解为主题簇），然后再次使用LLM为<strong>每一个社群</strong>都预先生成一份高质量的摘要</li>
+</ul>
+<p><strong>HippoRAG</strong>：传统RAG回答复杂问题时，往往需要反复提问、多次检索（这被称为迭代式检索），就像一个新手管理员跑好几趟书架。而HippoRAG凭借其图算法，<strong>一次检索</strong>就能理清复杂的关系链，性能因此<strong>提升高达20%</strong>。<sup id="fnref:9" class="footnote-ref"><a href="#fn:9" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2405.14831] HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models](https://arxiv.org/abs/2405.14831)">[9]</span></a></sup>
+将RAG的“检索”从一个简单的“文本相似度匹配”任务，升级为了一个更深刻的“知识关系图遍历”任务，通过模仿人脑高效的索引机制。</p>
+<h3 id="ai如何使用工具">AI如何使用工具</h3>
+<p><strong>Tool Use</strong>：AI
+Agent使用工具的能力是其核心特征之一。通过调用外部工具，AI可以扩展其能力，完成更复杂的任务。</p>
+<p><img src="Pasted%20image%2020250720102659.png" srcset="/img/loading.gif" lazyload alt="" width="450"></p>
+<p><strong>语言模型本身并不“执行”工具，而是“生成”一段代表工具调用的文本</strong>。</p>
+<p>它生成的这串<code>&lt;tool&gt;...&lt;/tool&gt;</code>文本，只是一个结构化的“意图表达”。需要一个<strong>外部的控制程序<em>Orchestrator</em></strong>来解析这个文本，并实际执行相应的工具调用。<strong>控制程序</strong>再去<strong>真正地调用</strong>一个天气API，并将参数传递过去。
+天气API返回结果后，控制程序再将结果封装成<code>&lt;output&gt;...&lt;/output&gt;</code>格式，发回给语言模型，让它以自然语言的形式呈现给用户。</p>
+<p><strong>Search Engine</strong>：AI
+Agent可以通过调用搜索引擎来获取最新的信息和数据。这种能力使得AI能够在动态变化的环境中保持更新。可以使用搜索到的内容运行RAG后输出。</p>
+<p>除了上述使用的搜索引擎、API等工具使用方法外，AI也可以使用更大或者有专门功能的模型（math、code）来实现更复杂的任务。</p>
+<h4 id="tool-selection">Tool Selection</h4>
+<p><strong>Tool Selection</strong>是指AI
+Agent在多个可用工具中选择最适合当前任务的工具。这个过程通常涉及以下几个步骤：</p>
+<p><strong>MetaTool基准</strong><sup id="fnref:10" class="footnote-ref"><a href="#fn:10" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2310.03128] MetaTool Benchmark for Large Language Models: Deciding Whether to Use Tools and Which to Use](https://arxiv.org/abs/2310.03128)">[10]</span></a></sup></p>
+<ul>
+<li><strong>核心构成</strong>：MetaTool包含一个名为 <code>ToolE</code>
+的数据集，里面有各种各样能够触发LLM使用工具的用户查询（Prompt），覆盖了单工具和多工具使用的场景。</li>
+<li><strong>评测任务</strong>：它专门评估LLM的两种核心能力：
+<ul>
+<li><strong>工具使用意识</strong>：判断当前问题是否真的需要使用工具。</li>
+<li><strong>工具选择</strong>：从众多工具中选出最合适的一个或多个。这个任务还被细分为四个更具挑战性的子任务，例如：从功能相似的工具中做选择、在特定场景下做选择、考虑工具的可靠性问题，以及选择多个工具进行组合。</li>
+</ul></li>
+</ul>
+<p><strong>OctoTools</strong>引入了三个关键组件来协同工作：<sup id="fnref:11" class="footnote-ref"><a href="#fn:11" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2502.11271] OctoTools: An Agentic Framework with Extensible Tools for Complex Reasoning](https://arxiv.org/abs/2502.11271)">[11]</span></a></sup></p>
+<ol type="1">
+<li><strong>标准化工具卡片 (<em>Standardized Tool
+Cards</em>)</strong>：这是一个核心创新。它用一种标准化的格式来封装和描述任何工具的功能，使得添加新工具就像插拔模块一样简单。</li>
+<li><strong>规划器
+(<em>Planner</em>)</strong>：负责进行任务规划。它既能做宏观的“高层规划”（将复杂任务拆解成小步骤），也能做微观的“低层规划”（为每个小步骤决定具体使用哪个工具）。</li>
+<li><strong>执行器
+<em>(Executor</em>)</strong>：负责实际执行由“规划器”定下的工具调用指令。</li>
+</ol>
+<p>更进一步的，AI还可以自己打造工具</p>
+<p>TROVE的核心思想是让一个擅长编程的语言模型（Code
+LM）来扮演“工具开发者”的角色。它采用一个动态的、自我完善的流程来构建工具箱：<sup id="fnref:12" class="footnote-ref"><a href="#fn:12" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2401.12869] TroVE: Inducing Verifiable and Efficient Toolboxes for Solving Programmatic Tasks](https://arxiv.org/abs/2401.12869)">[12]</span></a></sup></p>
+<ol type="1">
+<li><strong>在使用中生成 (Generate via
+Using)</strong>：在解决实际问题的过程中，AI会识别出那些频繁被组合使用的基础操作，并尝试将它们打包成一个更高级、可复用的新函数。</li>
+<li><strong>成长
+(Grow)</strong>：将新创建的、被证明有用的高级函数加入到“工具箱”中，供后续解决其他问题时直接调用。</li>
+<li><strong>定期修剪
+(Trim)</strong>：为了防止工具箱变得臃肿，系统会定期清理，移除那些不常用、冗余或效果不佳的函数，始终保持工具箱小而精悍。</li>
+</ol>
+<p>但是使用工具带来的问题是：Agent可能会因为<strong>过度相信工具而犯错</strong>。尤其是当外部知识用冲突，或者与LLM训练时获得的知识冲突时，Agent可能会错误地依赖工具的输出，而不是自己的判断。即使所有找到的资料都是正确的，不代表AI就不会犯错。</p>
+<p><img src="{BBAE77B9-5B82-4103-88B0-BEB5D20B0FA6}.png" srcset="/img/loading.gif" lazyload alt="" width="450">
+<em>研究什么样的外部知识比较容易说服AI</em></p>
+<h3 id="ai能不能做计划">AI能不能做计划</h3>
+<p>AI
+Agent的计划能力是其智能化的重要体现。通过制定计划，AI可以更有效地组织和执行任务。但是现实世界是一直<strong>变化的</strong>，AI是否有能力根据环境的变化来调整自己的计划呢？</p>
+<p>在开发Benchmark时，有可能一些较为常见的计划任务已经被用于训练，导致模型的泛化能力不足。新的Benchmark会构建一个新的情境用于测试AI的计划能力。<sup id="fnref:13" class="footnote-ref"><a href="#fn:13" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2305.15771] On the Planning Abilities of Large Language Models : A Critical Investigation](https://arxiv.org/abs/2305.15771)">[13]</span></a></sup></p>
+<p>对于优化Agent的计划能力，自然的想法是利用试探回溯的搜索方法实现：当智能体需要做决策时，它不再是只选择一个“最好”的下一步行动。相反，它会在真实的环境中<strong>探索多个不同的行动分支</strong>，构建一个“决策树”。它会评估这些不同路径的潜在价值，然后优先沿着最有希望成功的路径继续深入探索，从而实现多步规划。<sup id="fnref:14" class="footnote-ref"><a href="#fn:14" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2407.01476] Tree Search for Language Model Agents](https://arxiv.org/abs/2407.01476)">[14]</span></a></sup></p>
+<p>但是显示世界中很多操作是<strong>无法回溯</strong>的，一种想法是构建<strong>世界模型</strong>来模拟现实世界的变化。通过这种方式，AI
+Agent可以在虚拟环境中进行试验和调整，然后再将这些经验应用到现实世界中。<sup id="fnref:15" class="footnote-ref"><a href="#fn:15" rel="footnote"><span
+class="hint--top hint--rounded"
+aria-label="[[2411.06559] Is Your LLM Secretly a World Model of the Internet? Model-Based Planning for Web Agents](https://arxiv.org/abs/2411.06559)">[15]</span></a></sup></p>
+<section class="footnotes">
+<div class="footnote-list">
+<ol>
+<li>
+<span id="fn:1"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2306.06070">[2306.06070]
+Mind2Web: Towards a Generalist Agent for the Web</a>
+<a href="#fnref:1" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:2"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.13854">[2307.13854]
+WebArena: A Realistic Web Environment for Building Autonomous Agents</a>
+<a href="#fnref:2" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:3"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.13649">[2401.13649]
+VisualWebArena: Evaluating Multimodal Agents on Realistic Visual Web
+Tasks</a> <a href="#fnref:3" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:4"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.13138">[2502.13138]
+AIDE: AI-Driven Exploration in the Space of Code</a>
+<a href="#fnref:4" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:5"
+class="footnote-text"><span>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2410.20424">[2410.20424]
+AutoKaggle: A Multi-Agent Framework for Autonomous Data Science
+Competitions</a>
+<a href="#fnref:5" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:6" class="footnote-text"><span><a
+target="_blank" rel="noopener" href="https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/">Accelerating
+scientific breakthroughs with an AI co-scientist</a>
+<a href="#fnref:6" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:7"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2312.10997">[2312.10997]
+Retrieval-Augmented Generation for Large Language Models: A Survey</a>
+<a href="#fnref:7" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:8"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2404.16130">[2404.16130]
+From Local to Global: A Graph RAG Approach to Query-Focused
+Summarization</a>
+<a href="#fnref:8" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:9"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2405.14831">[2405.14831]
+HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language
+Models</a> <a href="#fnref:9" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:10"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.03128">[2310.03128]
+MetaTool Benchmark for Large Language Models: Deciding Whether to Use
+Tools and Which to Use</a>
+<a href="#fnref:10" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:11"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2502.11271">[2502.11271]
+OctoTools: An Agentic Framework with Extensible Tools for Complex
+Reasoning</a>
+<a href="#fnref:11" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:12"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.12869">[2401.12869]
+TroVE: Inducing Verifiable and Efficient Toolboxes for Solving
+Programmatic Tasks</a>
+<a href="#fnref:12" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:13"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.15771">[2305.15771]
+On the Planning Abilities of Large Language Models : A Critical
+Investigation</a>
+<a href="#fnref:13" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:14"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2407.01476">[2407.01476]
+Tree Search for Language Model Agents</a>
+<a href="#fnref:14" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+<li>
+<span id="fn:15"
+class="footnote-text"><span><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2411.06559">[2411.06559]
+Is Your LLM Secretly a World Model of the Internet? Model-Based Planning
+for Web Agents</a>
+<a href="#fnref:15" rev="footnote" class="footnote-backref">
+↩︎</a></span></span>
+</li>
+</ol>
+</div>
+</section>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+        <a href="/tags/AI/" class="print-no-link">#AI</a>
+      
+        <a href="/tags/%E6%9D%8E%E5%AE%8F%E6%AF%85%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="print-no-link">#李宏毅机器学习</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AI Agent Notes</div>
+      <div>https://yima-gu.github.io/2025/07/20/ML_Lee/AI Agent/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/" title="DL Note-2 MLP">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DL Note-2 MLP</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/24/blog/%E4%B8%AA%E4%BA%BA%E7%BD%91%E7%AB%99%E6%90%AD%E5%BB%BA/" title="从 Obsidian 到 Hexo：打造完美的数学公式与图片发布流">
+                        <span class="hidden-mobile">从 Obsidian 到 Hexo：打造完美的数学公式与图片发布流</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

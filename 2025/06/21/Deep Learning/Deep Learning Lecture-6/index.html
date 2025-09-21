@@ -1,0 +1,1096 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query q, Key k和Value v，计算相关性，也就是重要性，对于输出序列中的第i个输出有价值的信息： wij &#x3D; a(qi,kj) 其中a是一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning Lecture-6">
+<meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query q, Key k和Value v，计算相关性，也就是重要性，对于输出序列中的第i个输出有价值的信息： wij &#x3D; a(qi,kj) 其中a是一个">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323133751.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323141917.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323145847.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323151056.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323161530.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323163151.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323185530.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323185720.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323190623.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323190856.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323191632.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323191637.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324190821.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324193704.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324203227.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324203639.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324205845.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250324205921.png">
+<meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-21T10:42:10.550Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/Pasted%20image%2020250323133751.png">
+  
+  
+  
+  <title>Deep Learning Lecture-6 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Deep Learning Lecture-6"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-21 00:00" pubdate>
+          2025年6月21日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Deep Learning Lecture-6</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="transformers">Transformers</h2>
+<h3 id="transformers-attention-is-all-you-need">Transformers: Attention
+is All You Need</h3>
+<p>[[Deep Learning Lecture-5#Attention]]</p>
+<p>再次理解Attention的概念：类似于”查字典“的操作，对于Query <span
+class="math inline"><em>q</em></span>, Key <span
+class="math inline"><em>k</em></span>和Value <span
+class="math inline"><em>v</em></span>，计算相关性，也就是重要性，对于输出序列中的第<span
+class="math inline"><em>i</em></span>个输出有价值的信息： <span
+class="math display"><em>w</em><sub><em>i</em><em>j</em></sub> = <em>a</em>(<em>q</em><sub><em>i</em></sub>,<em>k</em><sub><em>j</em></sub>)</span>
+其中<span
+class="math inline"><em>a</em></span>是一个函数，可以是内积、<em>Additive
+Attention</em>等。对于输出序列中的第<span
+class="math inline"><em>i</em></span>个输出，计算当前的输出的<span
+class="math inline"><em>q</em><sub><em>i</em></sub></span>，计算与输入序列中的<span
+class="math inline"><em>k</em><sub><em>j</em></sub></span>的相关性，然后对于<span
+class="math inline"><em>v</em><sub><em>j</em></sub></span>进行加权求和（这是一种寻址操作），得到的<span
+class="math inline"><em>c</em><sub><em>i</em></sub></span>是查字典所得到的信息：
+<span class="math display">$$
+c_i = \sum_{j=1}^T w_{ij}v_j
+$$</span> <strong>希望找到一种更好的计算方法</strong>。</p>
+<p>在[[Deep Learning Lecture-5#RNN with Attention]]中问题在于： -
+太复杂的模型 - 某种意义上使用的Attention已经足够使用，不再需要循环网络 -
+循环网络的计算是串行的，不能有效加速 #### Self-Attention</p>
+<p>计算的是同一条序列中的不同位置之间的相关性，也就是自注意力。对于输入序列中的第<span
+class="math inline"><em>i</em></span>个位置，计算与其他位置的相关性，然后对于所有的位置进行加权求和：
+规定Query <span
+class="math inline"><em>Q</em> = [<em>q</em><sub>1</sub>…<em>q</em><sub><em>n</em></sub>]</span>，Key
+<span
+class="math inline"><em>K</em> = [<em>k</em><sub>1</sub>…<em>k</em><sub><em>n</em></sub>]</span>，Value
+<span
+class="math inline"><em>V</em> = [<em>v</em><sub>1</sub>…<em>v</em><sub><em>k</em></sub>]</span>，则：</p>
+<figure>
+<img src="Pasted%20image%2020250323133751.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323133751" />
+<figcaption aria-hidden="true">Pasted image 20250323133751</figcaption>
+</figure>
+<h4 id="scaled-dot-product-attention">Scaled Dot-Product Attention</h4>
+<p>我们认为使用一个网络来计算相关性太复杂了，当两个向量是相同维度的时候可以直接计算内积。在这里，在计算先引入参数，使得其维度是一样的，从而可以计算内积：</p>
+<p><em>Scaled Dot-Product</em> : <span class="math display">$$
+a(q,k) = \frac{q^T k}{\sqrt{d_k}}
+$$</span>
+使得变换前后的方差是一样的，这样可以使得梯度更加稳定，否则可能进入激活函数的饱和区。
+<span class="math display">$$
+Attention(Q,K,V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$</span> 上面的式子将得到的<span
+class="math inline"><em>n</em> × <em>n</em></span>的矩阵进行softmax操作，在归一化的过程中，<strong>是某一个query在所有的key上的注意力分配一定是<span
+class="math inline"><strong>1</strong></span></strong>。后面是对于Value的加权求和。<strong>在上面的公式中，<span
+class="math inline"><em>Q</em></span>、<span
+class="math inline"><em>K</em></span>和<span
+class="math inline"><em>V</em></span>中的向量都是行向量，进行softmax操作时也是在同一行上操作</strong>。</p>
+<figure>
+<img src="Pasted%20image%2020250323141917.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323141917" />
+<figcaption aria-hidden="true">Pasted image 20250323141917</figcaption>
+</figure>
+<p>对于同一组输入，经过不同的线性变换得到的不同的Query、Key和Value，在样本数量为<span
+class="math inline"><em>m</em></span>的情况下，可以进行计算：</p>
+$$
+<p>$$</p>
+<p><strong>维度总结表</strong></p>
+<table>
+
+<thead>
+<tr class="header">
+<th>矩阵/操作</th>
+<th>维度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>输入矩阵 <span class="math inline"><em>X</em></span></td>
+<td><span
+class="math inline"><em>m</em> × <em>d</em><sub>input</sub></span></td>
+<td>包含 <span class="math inline"><em>m</em></span>
+个样本，每个样本维度为 <span
+class="math inline"><em>d</em><sub>input</sub></span></td>
+</tr>
+<tr class="even">
+<td>查询矩阵 <span class="math inline"><em>Q</em></span></td>
+<td><span
+class="math inline"><em>m</em> × <em>d</em><sub><em>k</em></sub></span></td>
+<td>每个样本的查询向量维度为 <span
+class="math inline"><em>d</em><sub><em>k</em></sub></span></td>
+</tr>
+<tr class="odd">
+<td>键矩阵 <span class="math inline"><em>K</em></span></td>
+<td><span
+class="math inline"><em>m</em> × <em>d</em><sub><em>k</em></sub></span></td>
+<td>每个样本的键向量维度为 <span
+class="math inline"><em>d</em><sub><em>k</em></sub></span></td>
+</tr>
+<tr class="even">
+<td>值矩阵 <span class="math inline"><em>V</em></span></td>
+<td><span
+class="math inline"><em>m</em> × <em>d</em><sub><em>v</em></sub></span></td>
+<td>每个样本的值向量维度为 <span
+class="math inline"><em>d</em><sub><em>v</em></sub></span></td>
+</tr>
+<tr class="odd">
+<td>注意力得分矩阵 <span
+class="math inline"><em>Q</em><em>K</em><sup><em>T</em></sup></span></td>
+<td><span class="math inline"><em>m</em> × <em>m</em></span></td>
+<td>样本间的注意力强度矩阵</td>
+</tr>
+<tr class="even">
+<td>最终输出 <span
+class="math inline">Attention(<em>Q</em>,<em>K</em>,<em>V</em>)</span></td>
+<td><span
+class="math inline"><em>m</em> × <em>d</em><sub><em>v</em></sub></span></td>
+<td>聚合所有样本的加权值信息，输出维度为 <span
+class="math inline"><em>d</em><sub><em>v</em></sub></span></td>
+</tr>
+</tbody>
+</table>
+<h4 id="multi-head-attention">Multi-Head Attention</h4>
+<p>注意到上面的注意力的表达能力是相当有限的，在language
+model同一个词和其他不同的词之间可能有很多种不同的关系，仅仅用一种简单的关系来表示是不够的。所以我们引入多头注意力，希望能在不同的侧面上进行表达。
+<span
+class="math display">MultiHead(<em>Q</em>,<em>K</em>,<em>V</em>) = Concat(head<sub>1</sub>,…,head<sub><em>h</em></sub>)<em>W</em><sup><em>O</em></sup></span>
+其中： <span
+class="math display">head<sub><em>i</em></sub> = Attention(<em>Q</em><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup>,<em>K</em><em>W</em><sub><em>i</em></sub><sup><em>K</em></sup>,<em>V</em><em>W</em><sub><em>i</em></sub><sup><em>V</em></sup>)</span>
+其中<span
+class="math inline"><em>W</em><sub><em>i</em></sub><sup><em>Q</em></sup>, <em>W</em><sub><em>i</em></sub><sup><em>K</em></sup>, <em>W</em><sub><em>i</em></sub><sup><em>V</em></sup></span>是不同的线性变换，<span
+class="math inline"><em>W</em><sup><em>O</em></sup></span>是最后的线性变换，最后进行的维度的规约操作。
+与CNN相比，CNN的不同的通道之间与上一层的每一个通道之间都是有连接的；但是在这里，不同的头之间是没有连接的，这样可以使得不同的头可以关注不同的信息。</p>
+<p>不同的头之间是可以并行计算的，这样可以加速计算；但是缺点是内存占用会很大。</p>
+<h4 id="position-wise-feed-forward-networks">Position-wise Feed-Forward
+Networks</h4>
+<p><img src="Pasted%20image%2020250323145847.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323145847" /> 在标准 Transformer Block
+中，注意力层之后会接一个前馈神经网络（FFN），其结构如下：</p>
+<ol type="1">
+<li><p>输入张量形状：<br />
+<span
+class="math display"><em>X</em> ∈ ℝ<sup><em>B</em> × <em>L</em> × <em>H</em> × <em>D</em></sup></span></p>
+<ul>
+<li><span class="math inline"><em>B</em></span>：Batch size<br />
+</li>
+<li><span class="math inline"><em>L</em></span>：序列长度<br />
+</li>
+<li><span class="math inline"><em>H</em></span>：Attention 头数<br />
+</li>
+<li><span class="math inline"><em>D</em></span>：每个头的维度</li>
+</ul></li>
+<li><p>将多头输出合并：<br />
+<span
+class="math display"><em>X</em>′ = reshape(<em>X</em>, (<em>B</em>, <em>L</em>, <em>H</em>⋅<em>D</em>)) ∈ ℝ<sup><em>B</em> × <em>L</em> × (<em>H</em> <em>D</em>)</sup></span></p></li>
+<li><p>两层“卷积”全连接结构<br />
+这里所谓“卷积”，实际上等价于在最后一维上对每个位置独立地做 1×1 卷积（与
+RNN 中在不同时间步共享参数的思想一致），并在卷积核后加入非线性
+ReLU。<br />
+<span class="math display">$$
+\begin{aligned}
+Z_1 &amp;= \mathrm{ReLU}\bigl(X' W_1 + b_1\bigr),\quad
+W_1\in\mathbb{R}^{(H\!D)\times d_{ff}},\; b_1\in\mathbb{R}^{d_{ff}}\\
+Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\;
+b_2\in\mathbb{R}^{(H\!D)}
+\end{aligned}
+$$</span></p>
+<ul>
+<li>第一层升维到中间维度 <span
+class="math inline"><em>d</em><sub><em>f</em><em>f</em></sub></span>（例如
+<span class="math inline">2048</span>）<br />
+</li>
+<li>第二层降维回原始维度 <span
+class="math inline"><em>H</em> <em>D</em></span>（例如 <span
+class="math inline">512</span>）</li>
+</ul></li>
+<li><p>加残差 &amp; LayerNorm<br />
+<span
+class="math display"><em>Y</em> = LayerNorm(<em>X</em>′ + <em>Z</em><sub>2</sub>) ∈ ℝ<sup><em>B</em> × <em>L</em> × (<em>H</em> <em>D</em>)</sup></span></p></li>
+<li><p>（可选）reshape 回多头排列：<br />
+<span
+class="math display"><em>Y</em>′ = reshape(<em>Y</em>, (<em>B</em>, <em>L</em>, <em>H</em>, <em>D</em>))</span></p></li>
+</ol>
+<ul>
+<li><strong>线性限制</strong>：除去 Attention 中的
+SoftMax，若只堆线性层，模型表达能力较弱；引入 ReLU
+后能够拟合更复杂的非线性函数。<br />
+</li>
+<li><strong>稀疏权重</strong>：Attention 的 SoftMax
+本质上生成了一组“稀疏”权重，负责学习不同位置间的依赖；FFN
+则负责在每个位置上“干净”地抽取该词的内部特征，避免无谓的跨词干扰。<br />
+</li>
+<li><strong>卷积视角</strong>：将 FFN 看作<strong>对最后一维的 1×1
+卷积</strong>，等同于对每个位置独立但在所有位置共享参数，这与 RNN
+在时间步上共享权重的假设一致。<br />
+</li>
+<li><strong>增强表达</strong>：Attention 解决了上下文依赖，FFN
+则补强了单位置特征提取，两者协同提升了 Transformer 的整体表达能力。</li>
+</ul>
+<hr />
+<blockquote>
+<p><strong>注意</strong>：以上操作对每个批次（<span
+class="math inline"><em>B</em></span>）中每个序列位置（<span
+class="math inline"><em>L</em></span>）都独立执行，参数在所有位置间共享。</p>
+</blockquote>
+<h4 id="residual-connection">Residual Connection</h4>
+<p>在上面的操作中，这些操作都是有排列不变性。
+残差是一个标准的操作，这样可以让网络更好地记录位置编码。</p>
+<h4 id="layer-normalization">Layer Normalization</h4>
+<p>目的是使得每一层经过Attention和Feed-Forward之后的输出的分布是一样的，这样可以使得梯度更加稳定。
+[[Deep Learning Lecture-5#Layer Normalization]]</p>
+<figure>
+<img src="Pasted%20image%2020250323151056.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323151056" />
+<figcaption aria-hidden="true">Pasted image 20250323151056</figcaption>
+</figure>
+<h4 id="value-embedding">Value Embedding</h4>
+<ul>
+<li><p><strong>目的</strong>：将原始输入特征（如温度、流量、股价等数值）从低维（通常是
+1
+或几个通道）映射到高维向量空间，使模型能在更大维度下学习更丰富的特征表示。</p></li>
+<li><p><strong>做法</strong>：通过一个线性层或 1×1
+卷积（<code>TokenEmbedding</code>）把每个时间步的原始向量映成长度为
+<code>d_model</code> 的向量。</p></li>
+<li><p><strong>实现方式</strong>：通过一个线性映射或 <span
+class="math inline">1 × 1</span> 卷积完，对于有<span
+class="math inline"><em>c</em><sub><em>i</em><em>n</em></sub></span>个特征维度的输入，使用卷积核的大小是<span
+class="math inline">[<em>d</em><sub><em>m</em><em>o</em><em>d</em><em>e</em><em>l</em></sub>,<em>c</em><sub><em>i</em><em>n</em></sub>,1]</span></p></li>
+<li><p><strong>输入维度</strong>：<span
+class="math inline">(batch_size,seq_len,<em>c</em><sub><em>i</em><em>n</em></sub>)</span></p></li>
+<li><p><strong>输出维度</strong>：<span
+class="math inline">(batch_size,seq_len,<em>d</em><sub><em>m</em><em>o</em><em>d</em><em>e</em><em>l</em></sub>)</span></p></li>
+</ul>
+<h4 id="positional-encoding-position-embedding">Positional Encoding
+/Position Embedding</h4>
+<p>位置信息是顺序信息的一种泛化的形式。如果采用独热编码，这是一种类别信息而不是一个顺序信息，不同的是不可以比的。所以引入<em>position
+embedding</em>，这是一个矩阵，效果类似于一个查找表。查找操作在这里就是一个矩阵乘上一个独热编码的操作，这是因为GPU在矩阵乘法操作上是非常高效的。
+但是独热编码会带来下面的问题 - <strong>高维稀疏性</strong>：
+独热编码的维度等于序列最大长度（如512），导致向量稀疏且计算效率低下（尤其对长序列）。
+- <strong>无法泛化到未见长度</strong>：
+若训练时序列最大长度为512，模型无法处理更长的序列</p>
+<p><strong>引入归纳偏好</strong>： -
+每个位置的编码应该是独一无二的且是确定的 -
+认为两个位置的距离应该是一致的 -
+应该生成一个有界的值，位置数随着序列长度的增加而增加</p>
+<p>Google的实现是使用的正弦和余弦函数的组合： <span
+class="math display">$$
+e_i(2j) = \sin\left(\frac{i}{10000^{2j/d_{\text{model}}}}\right)
+$$</span> <span class="math display">$$
+e_i(2j+1) = \cos\left(\frac{i}{10000^{2j/d_{\text{model}}}}\right)
+$$</span> 上述公式中的<span
+class="math inline"><em>i</em></span>指的句子中的第<span
+class="math inline"><em>i</em></span>个位置，<span
+class="math inline"><em>j</em></span>指的是位置编码的维度，<span
+class="math inline"><em>d</em><sub>model</sub></span>是位置编码的维度。这样的编码是满足上面的归纳偏好的。</p>
+<h4 id="temporal-embedding">Temporal Embedding</h4>
+<ul>
+<li><strong>目的</strong>：针对时间序列中特有的“时间属性”——小时、星期几、月份、季节等——进行编码，让模型学到周期性（如日周期、周周期、年周期）和节假日效应等信息。</li>
+<li><strong>做法</strong>：通常把每个时间属性（hour-of-day, day-of-week,
+month 等）也映射到 <code>d_model</code>
+维度，然后把这些属性向量加起来或拼接后再降维。<code>TemporalEmbedding</code>
+类会根据 <code>embed_type</code>（如 <code>'fixed'</code> 或
+<code>'learned'</code>）和 <code>freq</code>（如
+<code>'h'</code>、<code>'d'</code>）来决定具体细节。</li>
+</ul>
+<h4 id="encoder">Encoder</h4>
+<p>编码器中使用的是多头注意力、逐位置前馈网络和位置编码。在这个编码器中是一个直筒式的网络，好处是调参较为简单。</p>
+<p>缺点： - 二次复杂度 - 参数量过大 - 很多的头是冗余的</p>
+<p>训练阶段要使用多个头，发现有些头的权重较低，可以在推理阶段去掉这些头。</p>
+<h4 id="decoder">Decoder</h4>
+<h5 id="autoregressive">Autoregressive</h5>
+<figure>
+<img src="Pasted%20image%2020250323161530.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323161530" />
+<figcaption aria-hidden="true">Pasted image 20250323161530</figcaption>
+</figure>
+<p>预测阶段一定要使用滚动预测，这是一个自回归的状态，但是这是一个串行的操作，会比较慢。但是在训练阶段这样是不能接受的，我希望训练的不同阶段可以并行计算，但是这里要求在一开始输入所有的序列，所以这里需要<strong>遮挡</strong>。
+在算Attention的时候，对于当前的位置，只能看到之前的位置，不能看到之后的位置。</p>
+<figure>
+<img src="Pasted%20image%2020250323163151.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323163151" />
+<figcaption aria-hidden="true">Pasted image 20250323163151</figcaption>
+</figure>
+<p>在编码器上是不能用的，因为防止解码器在训练时利用未来的目标序列信息（即“作弊”），确保模型逐步生成的能力与推理阶段一致。训练过程中仍然需要真实标签作为目标输出，但掩码限制了模型在生成当前词时对未来的访问。</p>
+<h4 id="encoder-decoder-attention">Encoder-Decoder Attention</h4>
+<p>计算的是解码器的输出和编码器的输出之间的相关性，这里的Query是解码器的输出，Key和Value是编码器的输出。</p>
+<figure>
+<img src="Pasted%20image%2020250323185530.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323185530" />
+<figcaption aria-hidden="true">Pasted image 20250323185530</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250323185720.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323185720" />
+<figcaption aria-hidden="true">Pasted image 20250323185720</figcaption>
+</figure>
+<p>注意这里是将编码器的输出输入到解码器中的每一层的Encoder-Decoder
+Attention中。这里是神经网络中的<strong>特征重用</strong>思想，并且解码器中的网络是直筒式的，所以这些特征是可以重用的。</p>
+<h4 id="rnn-vs.-transformer">RNN vs. Transformer</h4>
+<ul>
+<li>RNN是串行的，Transformer是并行的</li>
+<li>对于有严格偏序关系的序列，RNN可能更适合</li>
+<li>对于长序列，Transformer更适合</li>
+<li>对于较小的数据量，Transformers参数量较大，表现可能不如RNN</li>
+</ul>
+<figure>
+<img src="Pasted%20image%2020250323190623.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323190623" />
+<figcaption aria-hidden="true">Pasted image 20250323190623</figcaption>
+</figure>
+<p><img src="Pasted%20image%2020250323190856.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323190856" /> ### X-formers Variance with
+Improvements</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2106.04554">[2106.04554] A Survey of
+Transformers</a></p>
+<figure>
+<img src="Pasted%20image%2020250323191632.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323191632" />
+<figcaption aria-hidden="true">Pasted image 20250323191632</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250323191637.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250323191637" />
+<figcaption aria-hidden="true">Pasted image 20250323191637</figcaption>
+</figure>
+<h4 id="lineariezd-attention">Lineariezd Attention</h4>
+<h4 id="flow-attention">Flow Attention</h4>
+<h3 id="gpt-generative-pre-trained-transformer">GPT: Generative
+Pre-trained Transformer</h3>
+<h4 id="transfer-learning">Transfer Learning</h4>
+<p>先将一个模型预训练好，然后在特定的任务上进行微调。一般而言，预训练的过程是无监督的，优点是可以使用大规模数据。</p>
+<h4 id="pre-training">Pre-Training</h4>
+<figure>
+<img src="Pasted%20image%2020250324190821.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324190821" />
+<figcaption aria-hidden="true">Pasted image 20250324190821</figcaption>
+</figure>
+<ul>
+<li>直接使用的是Transformers中的block，但是这里使用12层</li>
+<li>只使用decoder没有encoder，因为这不是一个机器翻译的任务</li>
+<li>在计算损失函数的过程中，使用的似然函数是最大似然估计，在实际中使用一个参数化的网络来近似需要的概率。</li>
+</ul>
+<h4 id="supervised-fine-tuning">Supervised Fine-Tuning</h4>
+<p>对于不同的任务，需要更换模型的输出头，并且还要使用新的损失函数。关注上下文建模。
+<img src="Pasted%20image%2020250324193704.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324193704" /></p>
+<p>最后是使用无监督训练的损失函数和有监督训练的损失函数的加权和，这是一个<strong>多任务学习</strong>。当微调的数据比较少的时候，可以使用无监督训练的损失函数的权重较大。</p>
+<p>对于不同的下游任务，要进行任务适配<em>Task Specific
+Adaptation</em>。对于不同的下游任务，可以使用不同的头。 <img
+src="Pasted%20image%2020250324194137.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324194137" /></p>
+<h4 id="gpt-2-gpt-3">GPT-2 &amp; GPT-3</h4>
+<p>Zero-shot
+learning：在没有看到训练数据的情况下，直接在测试集上进行预测。通过在预训练阶段使用大规模的数据，可以使得模型具有更好的泛化能力，这样可以提高在一些常见问题上的表现。</p>
+<h3
+id="bert-bidirectional-encoder-representations-from-transformers">BERT:
+Bidirectional Encoder Representations from Transformers</h3>
+<p>与GPT不同的是，BERT是双向的，可以看到上下文的信息。 <img
+src="Pasted%20image%2020250324195035.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324195035" /></p>
+<p>BERT在encoder阶段就使用了mask，这样可以使得模型在训练的时候不会看到未来的信息。在训练的过程中随机地mask掉一些词，然后预测这些词。如果遮挡的词太少，那么模型得到的训练不够，
+如果遮挡的词太多，那么得到的上下文就很少。
+在训练的过程中就使用了102种语言。
+特征工程：使用了更多的特征，引入了更多的embedding
+是多个任务的联合训练，这样可以使得模型更加通用。</p>
+<h4 id="roberta-a-robustly-optimized-bert-pretraining-approach">RoBERTa:
+A Robustly Optimized BERT Pretraining Approach</h4>
+<p>经过充分的调参和更长的训练时间，使得模型的表现更好。
+证明了BERT中的下句预测是没有用的，因为在RoBERTa中去掉了这个任务。
+mask的pattern可以动态调整</p>
+<h4
+id="albert-a-lite-bert-for-self-supervised-learning-of-language-representations">ALBERT:
+A Lite BERT for Self-supervised Learning of Language
+Representations</h4>
+<p>低秩分解，减少参数量 <img src="Pasted%20image%2020250324203227.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324203227" /></p>
+<p>跨层参数共享：可以让模型更加稳定</p>
+<h4 id="t5-text-to-text-transfer-transformer">T5: Text-to-Text Transfer
+Transformer</h4>
+<p>迁移是泛化的高级形式：可以将多种文本任务统一为文本到文本的形式，这样可以使得模型更加通用。</p>
+<p>架构层面的创新： <img src="Pasted%20image%2020250324203639.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324203639" /></p>
+<p>这里使用的是prefix-LM，这样可以使得模型更加通用。</p>
+<h3 id="vision-transformer">Vision Transformer</h3>
+<h4 id="vit">ViT</h4>
+<p>将一个图像变成一个patch 增加一个Position
+Embedding，于是得到各个patch的特征的加权平均。
+主要的贡献是将图像转换为序列，从而可以使用transformers来进行建模。在这个之前，普遍的观点是transformers只能用于文本数据，而CNN用于图像数据。</p>
+<h4 id="swim-transformer">Swim Transformer</h4>
+<p>将CNN中的一些归纳偏好引入，可以使用局部的注意力，但是在一定程度上能捕捉全局的信息，通过Shifted
+Window Mechanism来实现。 层次化特征： <img
+src="Pasted%20image%2020250324205304.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324205304" /></p>
+<p>密集预测任务对于层次化特征需求更高，于是这个模型的表现是更好地。</p>
+<h4 id="detr">DETR</h4>
+<figure>
+<img src="Pasted%20image%2020250324205845.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324205845" />
+<figcaption aria-hidden="true">Pasted image 20250324205845</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250324205921.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250324205921" />
+<figcaption aria-hidden="true">Pasted image 20250324205921</figcaption>
+</figure>
+<h3 id="fundation-models">Fundation Models</h3>
+<p><span
+class="math display"><em>e</em><sup><em>α</em> + <em>β</em><em>i</em></sup> = <em>e</em><sup><em>α</em></sup><em>e</em><sup><em>β</em><em>i</em></sup> = <em>e</em><sup><em>α</em></sup>(cos<em>β</em>+<em>i</em>sin<em>β</em>)</span></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Deep Learning Lecture-6</div>
+      <div>https://yima-gu.github.io/2025/06/21/Deep Learning/Deep Learning Lecture-6/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" title="Deep Learning Lecture-5">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Deep Learning Lecture-5</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/" title="Deep Learning Lecture-7">
+                        <span class="hidden-mobile">Deep Learning Lecture-7</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

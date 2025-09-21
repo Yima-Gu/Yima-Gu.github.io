@@ -1,0 +1,1152 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 20250330094404  GAN:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning Lecture-7">
+<meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* &#x3D; arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 20250330094404  GAN:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330094251.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330094404.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330100434.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330102359.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330141642.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330142308.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330144259.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330144556.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330153629.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330161028.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330164549.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250403144444.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250403152841.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250403164408.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250403165731.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405094553.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405161801.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163042.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163350.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163425.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163914.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405163941.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250405164110.png">
+<meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-21T10:42:10.565Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/Pasted%20image%2020250330094251.png">
+  
+  
+  
+  <title>Deep Learning Lecture-7 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Deep Learning Lecture-7"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-21 00:00" pubdate>
+          2025年6月21日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Deep Learning Lecture-7</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="generative-model">Generative Model</h2>
+<p>数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是<strong>学习数据的分布</strong>，然后生成新的数据。
+对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。
+<span
+class="math display"><em>θ</em><sup>*</sup> = arg max<sub><em>θ</em></sub>𝔼<sub><em>x</em> ∼ <em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub></sub>log <em>p</em><sub><em>m</em><em>o</em><em>d</em><em>e</em><em>l</em></sub>(<em>x</em>|<em>θ</em>)</span>
+<img src="Pasted%20image%2020250330094251.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330094251" /></p>
+<figure>
+<img src="Pasted%20image%2020250330094404.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330094404" />
+<figcaption aria-hidden="true">Pasted image 20250330094404</figcaption>
+</figure>
+<h3 id="gan-generative-adversarial-network">GAN: Generative Adversarial
+Network</h3>
+<p>对抗机器学习的思想是通过两个网络之间的对抗来学习。生成器和判别器之间的对抗是GAN的核心思想。
+使用的博弈问题的思想，使用的是最小化最大的思想。</p>
+<p>GAN的思想为：生成器和判别器之间的对抗，生成器生成数据，判别器判断数据的真实性。</p>
+<p>目标函数为： <span
+class="math display">min<sub><em>G</em></sub>max<sub><em>D</em></sub><em>V</em>(<em>D</em>,<em>G</em>) = 𝔼<sub><em>x</em> ∼ <em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub>(<em>x</em>)</sub>[log<em>D</em>(<em>x</em>)] + 𝔼<sub><em>z</em> ∼ <em>p</em><sub><em>z</em></sub>(<em>z</em>)</sub>[log(1−<em>D</em>(<em>G</em>(<em>z</em>)))]</span>
+- 当生成器固定时，判别器的目标是最大化判别器的准确率：<span
+class="math inline">max<sub><em>D</em></sub><em>V</em>(<em>D</em>,<em>G</em>)</span>
+- 当判别器固定时，生成器的目标是最小化判别器的准确率：<span
+class="math inline">min<sub><em>G</em></sub><em>V</em>(<em>D</em>,<em>G</em>)</span></p>
+<p>生成器 <span class="math inline"><em>G</em></span> 的实质是将噪声分布
+<span
+class="math inline"><em>p</em><sub><em>z</em></sub>(<em>z</em>)</span>（如高斯分布）映射到数据分布
+<span
+class="math inline"><em>p</em><sub><em>g</em></sub>(<em>x</em>)</span>。根据概率密度变换定理，若
+<span class="math inline"><em>G</em></span>
+是可逆且光滑的函数，则生成数据的分布为：</p>
+<p><span class="math display">$$
+p_g(x) = p_z(z) \cdot \left| \det \left( \frac{\partial
+G^{-1}(x)}{\partial x} \right) \right|
+$$</span></p>
+<p>尽管深度神经网络通常不可逆，但通过足够复杂的函数逼近（如多层非线性变换），生成器可以隐式地学习到从
+<span
+class="math inline"><em>p</em><sub><em>z</em></sub>(<em>z</em>)</span>
+到 <span
+class="math inline"><em>p</em><sub><em>g</em></sub>(<em>x</em>)</span>
+的映射，覆盖真实分布 <span
+class="math inline"><em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub>(<em>x</em>)</span>。</p>
+<p><strong>关键点</strong>：<br />
+- 噪声输入的随机性确保了生成数据分布的多样性。<br />
+-
+网络的非线性能力允许从简单分布（如高斯分布）逼近复杂分布（如图像像素分布）。</p>
+<p>但是GAN的<strong>训练过程是非常困难</strong>的，梯度性质是不好的，因为在比较好的样本中，由于梯度性质的问题会进行较大的更新。</p>
+<figure>
+<img src="Pasted%20image%2020250330100434.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330100434" />
+<figcaption aria-hidden="true">Pasted image 20250330100434</figcaption>
+</figure>
+<p><strong>训练GAN的技巧</strong> <img
+src="Pasted%20image%2020250330100506.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330100506" /></p>
+<h4 id="dcgan-deep-convolutional-generative-adversarial-networks">DCGAN:
+Deep Convolutional Generative Adversarial Networks</h4>
+<p>对于生成器和判别器，使用卷积神经网络来进行训练。对于判别器，使用的是较为标准的CNN网络，对于生成器，使用的是转置卷积，先将特征图进行padding，然后进行卷积操作，这样可以获得一个较大的特征图。</p>
+<ul>
+<li><strong>生成器</strong>：使用转置卷积（反卷积）逐步上采样，生成高分辨率图像。</li>
+<li><strong>判别器</strong>：使用标准CNN逐步下采样。</li>
+<li><strong>关键技巧</strong>：批量归一化、Leaky ReLU、全卷积结构。</li>
+</ul>
+<figure>
+<img src="Pasted%20image%2020250330102359.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330102359" />
+<figcaption aria-hidden="true">Pasted image 20250330102359</figcaption>
+</figure>
+<p>证明了泛化定理：在有限的训练样本之下，可以通过训练得到一个泛化的模型。</p>
+<h4 id="inception-score">Inception Score</h4>
+<p>IS 用于衡量生成模型的性能，重点关注两点：<br />
+-
+<strong>类别明确性</strong>：单个生成样本应明确属于某个类别（对应分类概率尖锐）。<br />
+- <strong>多样性</strong>：生成样本应覆盖多个类别（类别分布均匀）。</p>
+<p><span
+class="math display">IS = exp (𝔼<sub><em>x</em> ∼ <em>p</em><sub><em>g</em></sub></sub>[KL(<em>p</em>(<em>y</em>|<em>x</em>)∥<em>p</em>(<em>y</em>))])</span></p>
+<ul>
+<li>Class Probability Distribution: <span
+class="math inline"><em>p</em>(<em>y</em>|<em>x</em>)</span>，生成样本
+<span class="math inline"><em>x</em></span>
+属于各个类别的概率，度量的是生成的数据的类别分布和真实数据的类别分布的相似性。</li>
+<li>Marginal Distribution of Generated Data: <span
+class="math inline"><em>p</em>(<em>y</em>)</span>，度量的是生成的数据的类别分布的多样性，如果生成的数据是单一的称为模式坍塌。</li>
+</ul>
+<h5 id="kl-divergence">KL Divergence</h5>
+<p>使用KL散度来度量两个分布的相似性： <span class="math display">$$
+KL(p||q) =\mathbb{E}_X \left(  \log \frac{p(x)}{q(x)} \right)=\sum_{x
+\in \mathcal{X}} p(x) \log \frac{p(x)}{q(x)}
+$$</span> 需要上面的值尽可能偏大</p>
+<ul>
+<li><strong>KL散度的意义</strong>：
+<ul>
+<li><strong><span
+class="math inline"><em>p</em>(<em>y</em>|<em>x</em>)</span>
+尖锐</strong> → 分类概率集中（如某类概率接近 1），此时 <span
+class="math inline">KL(<em>p</em>(<em>y</em>|<em>x</em>)∥<em>p</em>(<em>y</em>))</span>
+值大。<br />
+</li>
+<li><strong><span class="math inline"><em>p</em>(<em>y</em>)</span>
+均匀</strong> → 生成样本覆盖所有类别，<span
+class="math inline">KL</span> 值的期望更大。<br />
+</li>
+</ul></li>
+<li><strong>取指数的作用</strong>：将对数空间的值转换为正数，放大差异便于比较。</li>
+</ul>
+<h4 id="fid-frechet-inception-distance">FID: Frechet Inception
+Distance</h4>
+<p>将生成的数据输入一个网络来提取特征，用得到的特征来拟和两个高斯分布，然后计算两个高斯分布的<em>Frechet
+Inception Distance</em>。这是有显式表达式的。</p>
+<p><span
+class="math display">FID = ∥<em>μ</em><sub><em>r</em></sub> − <em>μ</em><sub><em>g</em></sub>∥<sup>2</sup> + Tr(<em>Σ</em><sub><em>r</em></sub>+<em>Σ</em><sub><em>g</em></sub>−2(<em>Σ</em><sub><em>r</em></sub><em>Σ</em><sub><em>g</em></sub>)<sup>1/2</sup>)</span>
+- <strong><span
+class="math inline"><em>μ</em><sub><em>r</em></sub>, <em>μ</em><sub><em>g</em></sub></span></strong>：真实数据和生成数据特征的均值向量。<br />
+- <strong><span
+class="math inline"><em>Σ</em><sub><em>r</em></sub>, <em>Σ</em><sub><em>g</em></sub></span></strong>：真实数据和生成数据特征的协方差矩阵。<br />
+- <strong><span
+class="math inline">Tr(⋅)</span></strong>：矩阵的迹（对角线元素之和）。</p>
+<h4 id="mode-collapse">Mode Collapse</h4>
+<p>指生成的数据的多样性不够，类别分布是单一的，这是GAN的一个问题。</p>
+<p>原始GAN使用JS散度（<span
+class="math inline"><em>J</em><em>S</em><em>D</em>(<em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub>∥<em>p</em><sub><em>g</em></sub>)</span>）衡量分布距离，存在：
+- <strong>梯度消失</strong>：当 <span
+class="math inline"><em>p</em><sub><em>g</em></sub></span> 和 <span
+class="math inline"><em>p</em><sub><em>d</em><em>a</em><em>t</em><em>a</em></sub></span>
+无重叠时，<span
+class="math inline"><em>J</em><em>S</em><em>D</em> = log 2</span>，梯度为零。
+- <strong>模式坍塌</strong>：生成器倾向于生成少数样本。</p>
+<h5 id="wasserstein-distance">Wasserstein Distance</h5>
+<p><a
+target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%B2%83%E7%91%9F%E6%96%AF%E5%9D%A6%E5%BA%A6%E9%87%8F">沃瑟斯坦度量
+- 维基百科，自由的百科全书</a></p>
+<p>有可能统计距离是不是一个好的距离度量。Wasserstein距离是一个好的距离度量，用推土机距离来度量两个分布的距离。</p>
+<p><span
+class="math display"><em>c</em>(<em>x</em>,<em>y</em>) ↦ [0, ∞),</span>
+表示从点<span class="math inline"><em>x</em></span>运输质量到点<span
+class="math inline"><em>y</em></span>的代价。一个从<span
+class="math inline"><em>μ</em></span>到<span
+class="math inline"><em>ν</em></span>的运输方案可以用函数<span
+class="math inline"><em>γ</em>(<em>x</em>,<em>y</em>)</span>来描述，该函数表明从<span
+class="math inline"><em>x</em></span>移动到<span
+class="math inline"><em>y</em></span>的质量。一个运输方案<span
+class="math inline"><em>γ</em>(<em>x</em>,<em>y</em>)</span>必须满足以下性质：
+<span class="math display">$$
+\begin{aligned}
+\int \gamma(x,y) \, \mathrm{d}y = \mu(x), \\
+\int \gamma(x,y) \, \mathrm{d}x = \nu(y),
+\end{aligned}
+$$</span></p>
+<p>前者表示从某一点<span
+class="math inline"><em>x</em></span>移到其他所有点的土堆总质量必须等于最初该点<span
+class="math inline"><em>x</em></span>上的土堆质量，后者则表示从所有点移到某一点<span
+class="math inline"><em>y</em></span>的土堆总质量必须等于最终该点<span
+class="math inline"><em>y</em></span>上的土堆质量。 <span
+class="math display">∬<em>c</em>(<em>x</em>,<em>y</em>)<em>γ</em>(<em>x</em>,<em>y</em>) d<em>x</em> d<em>y</em> = ∫<em>c</em>(<em>x</em>,<em>y</em>) d<em>γ</em>(<em>x</em>,<em>y</em>).</span></p>
+<p>方案<span
+class="math inline"><em>γ</em></span>并不是唯一的，所有可能的运输方案中代价最低的方案即为最优运输方案。最优运输方案的代价为：</p>
+<p><span
+class="math display"><em>C</em> = inf<sub><em>γ</em> ∈ <em>Γ</em>(<em>μ</em>,<em>ν</em>)</sub>∫<em>c</em>(<em>x</em>,<em>y</em>) d<em>γ</em>(<em>x</em>,<em>y</em>).</span>
+##### Wasserstein GAN</p>
+<figure>
+<img src="Pasted%20image%2020250330141642.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330141642" />
+<figcaption aria-hidden="true">Pasted image 20250330141642</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250330142308.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330142308" />
+<figcaption aria-hidden="true">Pasted image 20250330142308</figcaption>
+</figure>
+<p>对于模式坍塌进一步的理解，如果空间上有一个较大的利普希茨系数，那么说明发生了模式坍塌。</p>
+<figure>
+<img src="Pasted%20image%2020250330144259.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330144259" />
+<figcaption aria-hidden="true">Pasted image 20250330144259</figcaption>
+</figure>
+<h5 id="spectral-normalization">Spectral Normalization</h5>
+<figure>
+<img src="Pasted%20image%2020250330144556.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330144556" />
+<figcaption aria-hidden="true">Pasted image 20250330144556</figcaption>
+</figure>
+<table>
+<thead>
+<tr class="header">
+<th>指标</th>
+<th>JS散度</th>
+<th>Wasserstein距离</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>连续性</strong></td>
+<td>不连续（梯度消失）</td>
+<td>连续</td>
+</tr>
+<tr class="even">
+<td><strong>对称性</strong></td>
+<td>对称</td>
+<td>对称</td>
+</tr>
+<tr class="odd">
+<td><strong>计算复杂度</strong></td>
+<td>低</td>
+<td>高（需约束判别器）</td>
+</tr>
+</tbody>
+</table>
+<h4 id="conditional-gan">Conditional GAN</h4>
+<p>给定一个类来进行生成数据，这样可以生成不同类别的数据，这样可以生成更加多样的数据。并且可以在一定程度上避免模式坍塌。
+除了接受高斯噪声还接受一个标签/图像等等作为输入。</p>
+<h4 id="acgan-auxiliary-classifier-gan">ACGAN: Auxiliary Classifier
+GAN</h4>
+<p>是多任务学习的一种方法，除了生成数据，还可以进行分类。在生成数据的过程中还生成标签，所以可以一定程度上避免模式坍塌。</p>
+<h4 id="cycle-gan">Cycle GAN</h4>
+<figure>
+<img src="Pasted%20image%2020250330153629.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330153629" />
+<figcaption aria-hidden="true">Pasted image 20250330153629</figcaption>
+</figure>
+<p>无配对数据下的图像转换（如马→斑马），通过循环一致性损失<span
+class="math inline"><em>C</em><em>y</em><em>c</em></span>保证生成的图像在两个方向上的转换是一致的。
+### Self-Attention GAN</p>
+<p>将<em>Self-Attention</em>机制应用到GAN中，这样可以使得生成的数据更加真实。</p>
+<h4 id="adaptive-instance-normalization">Adaptive Instance
+Normalization</h4>
+<p><span class="math display">$$
+AdaIN(u ,v) = \sigma(v) \left(\frac{u - \mu(u)}{\sigma(u)}\right) +
+\mu(v)
+$$</span>
+本质上为重新着色的操作，将一个图像的风格转移到另一个图像上。</p>
+<h4 id="stylegan">StyleGAN</h4>
+<p>通过控制风格来生成数据，这样可以生成更加多样的数据。</p>
+<h3 id="vae">VAE</h3>
+<h4 id="encoder">Encoder</h4>
+<ol type="1">
+<li><strong>推断潜在变量分布</strong><br />
+编码器将输入数据（如图像、文本）映射到潜在空间<em>latent
+space</em>，输出潜在变量<span
+class="math inline"><em>z</em></span>的概率分布参数（通常是高斯分布的均值和方差）。这一步称为<strong>变分推断</strong>，目的是找到输入数据在低维潜在空间中的概率表示。</li>
+<li><strong>数据压缩与特征提取</strong><br />
+编码器将高维输入数据压缩到低维潜在变量<span
+class="math inline"><em>z</em></span>，提取数据的关键特征（如形状、颜色等抽象属性），同时去除冗余信息。</li>
+<li><strong>引入不确定性</strong><br />
+不同于传统自编码器的确定性编码，VAE的编码器输出的是分布的参数，通过随机采样生成 zz，使得潜在空间具有连续性，便于生成新样本。</li>
+</ol>
+<h4 id="decoder">Decoder</h4>
+<ol type="1">
+<li><strong>数据生成</strong><br />
+解码器从潜在变量<span
+class="math inline"><em>z</em></span>出发，重构输入数据<span
+class="math inline"><em>x</em></span>的分布（如像素值的伯努利分布或高斯分布），生成与原始数据相似的新样本。</li>
+<li><strong>潜在空间映射到数据空间</strong><br />
+解码器学习如何将低维潜在变量<span
+class="math inline"><em>z</em></span>解码为高维数据空间中的样本，捕捉数据生成过程的规律（如像素间的依赖关系）。</li>
+<li><strong>生成多样性</strong><br />
+由于潜在变量<span
+class="math inline"><em>z</em></span>是连续且概率化的，解码器可以在潜在空间中插值或随机采样，生成多样化且合理的新数据。</li>
+</ol>
+<h4 id="why-variational">Why Variational</h4>
+<p>其核心目标是通过学习数据分布<span
+class="math inline"><em>p</em>(<em>x</em>)</span>，生成与训练数据类似的新样本。具体来说，VAE旨在解决以下问题：
+- <strong>生成新数据</strong>：例如生成图像、文本或音频。 -
+<strong>学习潜在表示</strong>：将高维数据映射到低维潜在空间，同时保持数据的语义特征。
+- <strong>概率建模</strong>：显式定义数据的生成过程<span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</span>，并引入潜在变量<span
+class="math inline"><em>z</em></span>表示数据的隐含因素</p>
+<p>在VAE中，我们引入一个潜在变量 <span
+class="math inline"><em>z</em></span>，假设数据 <span
+class="math inline"><em>x</em></span> 是由某个先验分布 <span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>z</em>)</span>
+生成，然后通过条件分布 <span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</span>
+生成可观测数据 <span class="math inline"><em>x</em></span>。 <span
+class="math display"><em>p</em><sub><em>θ</em></sub>(<em>x</em>) = ∫<em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)<em>p</em><sub><em>θ</em></sub>(<em>z</em>) d<em>z</em></span>
+<span
+class="math inline"><em>z</em></span>的分布是一个高斯分布，对于<span
+class="math inline"><em>z</em></span>采样得到的实例，通过一个网络生成<span
+class="math inline"><em>x</em></span>。困难在于上面的反常积分，这是一个高维积分，不可行。可以使用<em>蒙特卡洛</em>。</p>
+<p>对于后验分布： <span class="math display">$$
+p_\theta(z|x) = \frac{p_\theta(x|z) p_\theta(z)}{p_\theta(x)}
+$$</span>
+在积分中是经常使用的，但是计算是NP-hard的，因此引入<strong>变分推断</strong>，通过优化下界（ELBO）间接逼近。直接求后验往往是不可行的。因此，我们用<strong>变分推断</strong>的方式，去学习一个近似后验分布<span
+class="math inline"><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>∣<em>x</em>)</span>，并用它来逼近真正的后验分布<span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>z</em>∣<em>x</em>)</span>，从而得到一个变分下界。</p>
+<p>变分的意思为变量的替换，在概率中为分布率的替换。
+对于这个问题，可以使用一个神经网络来实现，对于这种显式的分布，需要假设分布率，可以指定为高斯分布，用网络来学习均值和协方差，作为<em>Encoder
+Network</em>。 对于条件分布<span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</span>，也可以假定为高斯分布，这样可以计算均值和协方差，作为<em>Decoder
+Network</em>。</p>
+<figure>
+<img src="Pasted%20image%2020250330161028.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330161028" />
+<figcaption aria-hidden="true">Pasted image 20250330161028</figcaption>
+</figure>
+<p>但是VAE是<em>Intractable</em>的，这个问题是NP-hard的。对于上面的条件概率，是比较困难的。所以采用一个近似的方法来进行求解。比如假设服从一个高斯分布，之后计算这个分布的均值和协方差矩阵。</p>
+<h4 id="elbo-evidence-lower-bound">ELBO: Evidence Lower Bound</h4>
+<p>训练的目的是使得<span
+class="math inline">log <em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i</em></sub>)</span>尽可能大，但是很难计算，这里引入“参考系”，也就是引入一个近似的分布<span
+class="math inline"><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)</span>。</p>
+<figure>
+<img src="Pasted%20image%2020250330164549.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250330164549" />
+<figcaption aria-hidden="true">Pasted image 20250330164549</figcaption>
+</figure>
+<p>这里是将最大化似然的过程简化为最大化ELBO的过程。 <span
+class="math display">log <em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i</em></sub>) = 𝔼<sub><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)</sub>[log<em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>i</em></sub>|<em>z</em>)] − <em>K</em><em>L</em>(<em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)||<em>p</em><sub><em>θ</em></sub>(<em>z</em>))</span></p>
+<h4 id="reparameterization-trick">Reparameterization Trick</h4>
+<figure>
+<img src="Pasted%20image%2020250403144444.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250403144444" />
+<figcaption aria-hidden="true">Pasted image 20250403144444</figcaption>
+</figure>
+<p>在VAE的训练过程中，通常需要从潜在变量的分布中采样。直接从分布中采样可能导致梯度无法传播到编码器网络，因此引入了重参数化技巧。
+这是的采样变量是<span
+class="math inline"><em>ϵ</em></span>，这样的话采样的过程就在计算图的旁路上，这样就可以进行梯度的传播。
+#### VAE Inference</p>
+<p>在训练的时候是从<span
+class="math inline"><em>x</em></span>中采样得到的，然后由后验分布<span
+class="math inline"><em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em>)</span>来进行采样。而在推理过程中，是从潜在变量<span
+class="math inline"><em>z</em></span>中采样得到的，然后由条件分布<span
+class="math inline"><em>p</em><sub><em>θ</em></sub>(<em>x</em>|<em>z</em>)</span>来进行进行推理。
+上述过程的合理性在于目标函数ELBO中的第二项：<span
+class="math inline"><em>K</em><em>L</em>(<em>q</em><sub><em>ϕ</em></sub>(<em>z</em>|<em>x</em><sub><em>i</em></sub>)||<em>p</em><sub><em>θ</em></sub>(<em>z</em>))</span>在训练中被最小化了。</p>
+<figure>
+<img src="Pasted%20image%2020250403152841.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250403152841" />
+<figcaption aria-hidden="true">Pasted image 20250403152841</figcaption>
+</figure>
+<h4 id="vq-vae">VQ-VAE</h4>
+<p>VQ-VAE是对VAE的一个改进，使用了向量量化的方法来进行训练。通过对潜在变量进行离散化来进行训练，这样可以避免模式坍塌的问题。</p>
+<h3 id="diffusion-probabilistic-models">Diffusion Probabilistic
+Models</h3>
+<h4 id="denoising-diffusion-probabilistic-models">Denoising Diffusion
+Probabilistic Models</h4>
+<p>Diffusion模型是通过对数据进行逐步添加噪声来训练模型的。通过对数据进行逐步添加噪声，然后再通过一个网络来进行去噪声的操作。这样可以生成新的数据。</p>
+<p>Markovian Process: 逐步添加噪声的过程，通常是一个高斯分布的过程。
+<span class="math display">$$
+q(x_t | x_{t-1}) = \mathcal{N}(x_t; \sqrt{1-\beta_t}  x_{t-1}, \beta_t
+I)
+$$</span> 联合分布： <span class="math display">$$
+q(x_{1:T} | x_0) = \prod_{t=1}^{T} q(x_t | x_{t-1})
+$$</span></p>
+<p>重参数化表达： <span class="math display">$$
+x_t = \sqrt{1-\beta_t} x_{t-1} + \sqrt{\beta_t} \epsilon \quad \epsilon
+\sim \mathcal{N}(0, I)
+$$</span></p>
+<h5 id="diffusion-kernel">Diffusion Kernel</h5>
+<p><span class="math display">$$
+\begin{aligned}
+x_t &amp; = \sqrt{1-\beta_t} x_{t-1} + \sqrt{\beta_t} \epsilon \\
+&amp;= \sqrt{\alpha_t} x_{t-1} + \sqrt{1-\alpha_t} \epsilon \\
+&amp;= \sqrt{\alpha_t \alpha_{t-1}} x_{t-2} + \sqrt{1-\alpha_t} \epsilon
++ \sqrt{\alpha_t} \sqrt{1-\alpha_{t-1}} \epsilon' \\
+&amp; = \sqrt{\alpha_t \alpha_{t-1}} x_{t-2} + \sqrt{1 -  \alpha_t
+\alpha_{t-1}} \epsilon \\
+&amp; \dots \\
+&amp; = \sqrt{\overline{\alpha_t}} x_0 + \sqrt{1 - \overline{\alpha_t}}
+\epsilon
+\end{aligned}
+$$</span> - 其中 <span class="math inline">$\overline{\alpha_t} =
+\prod_{s=1}^{t} \alpha_s$</span></p>
+<h5 id="generation-by-denoising">Generation by Denoising</h5>
+<ul>
+<li>首先对于<span
+class="math inline"><em>x</em><sub><em>T</em></sub></span>进行采样，得到一个高斯分布的样本。</li>
+<li>然后利用后验分布得到<span
+class="math inline"><em>x</em><sub><em>t</em> − 1</sub></span>，使用Bayes公式：
+<span
+class="math inline"><em>x</em><sub><em>t</em> − 1</sub> ∼ <em>q</em>(<em>x</em><sub><em>t</em> − 1</sub>|<em>x</em><sub><em>t</em></sub>) ∝ <em>q</em>(<em>x</em><sub><em>t</em> − 1</sub>)<em>q</em>(<em>x</em><sub><em>t</em></sub>|<em>x</em><sub><em>t</em> − 1</sub>)</span></li>
+</ul>
+<p>采用一个变分方法来实现： <span
+class="math display"><em>p</em><sub><em>θ</em></sub>(<em>x</em><sub><em>t</em> − 1</sub>|<em>x</em><sub><em>t</em></sub>) = 𝒩(<em>x</em><sub><em>t</em> − 1</sub>;<em>μ</em><sub><em>θ</em></sub>(<em>x</em><sub><em>t</em></sub>,<em>t</em>),<em>σ</em><sub><em>t</em></sub><sup>2</sup><strong>I</strong>)</span>
+<span class="math display">$$
+p_\theta(x_{0:T}) = p_\theta (x_T)\prod_{t=1}^{T} p_\theta(x_{t-1}|x_t)
+$$</span></p>
+<p>上述过程可以使用一个网络来实现对于均值和方差的输出。</p>
+<figure>
+<img src="Pasted%20image%2020250403164408.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250403164408" />
+<figcaption aria-hidden="true">Pasted image 20250403164408</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250403165731.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250403165731" />
+<figcaption aria-hidden="true">Pasted image 20250403165731</figcaption>
+</figure>
+<p><a
+target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">What
+are Diffusion Models? | Lil’Log</a></p>
+<figure>
+<img src="Pasted%20image%2020250405094553.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405094553" />
+<figcaption aria-hidden="true">Pasted image 20250405094553</figcaption>
+</figure>
+<h5 id="diffusion-parameters">Diffusion Parameters</h5>
+<figure>
+<img src="Pasted%20image%2020250405161801.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405161801" />
+<figcaption aria-hidden="true">Pasted image 20250405161801</figcaption>
+</figure>
+<h5 id="acceleration-strategies">Acceleration Strategies</h5>
+<h5 id="re-design-forward-sampling">Re-design forward Sampling</h5>
+<ul>
+<li>Striding Sampling
+<ul>
+<li>在每个时间步长中跳过多个时间步进行采样，从而减少采样次数。</li>
+<li>问题在于在相邻的时间戳中反向传播的后验分布可以近似为高斯分布，但是在较大的步长下不一定是这样的。</li>
+</ul></li>
+<li>DDIM: Denoising Diffusion Implicit Models
+<ul>
+<li>通过设计一个新的前向采样过程来加速采样。</li>
+<li>通过引入一个新的参数<span
+class="math inline"><em>α</em><sub><em>t</em></sub></span>来控制前向采样的过程。</li>
+<li>通过设计一个新的后验分布来进行采样。</li>
+<li>通过设计一个新的损失函数来进行训练。</li>
+<li><figure>
+<img src="Pasted%20image%2020250405163042.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405163042" />
+<figcaption aria-hidden="true">Pasted image 20250405163042</figcaption>
+</figure></li>
+</ul></li>
+<li>Denosing Diffusion Models
+<ul>
+<li><figure>
+<img src="Pasted%20image%2020250405163350.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405163350" />
+<figcaption aria-hidden="true">Pasted image 20250405163350</figcaption>
+</figure></li>
+</ul></li>
+<li>Latent Diffusion Models
+<ul>
+<li><figure>
+<img src="Pasted%20image%2020250405163425.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405163425" />
+<figcaption aria-hidden="true">Pasted image 20250405163425</figcaption>
+</figure></li>
+</ul></li>
+</ul>
+<h5 id="conditonal-diffusion-models">Conditonal Diffusion Models</h5>
+<figure>
+<img src="Pasted%20image%2020250405163914.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405163914" />
+<figcaption aria-hidden="true">Pasted image 20250405163914</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250405163941.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405163941" />
+<figcaption aria-hidden="true">Pasted image 20250405163941</figcaption>
+</figure>
+<figure>
+<img src="Pasted%20image%2020250405164110.png" srcset="/img/loading.gif" lazyload
+alt="Pasted image 20250405164110" />
+<figcaption aria-hidden="true">Pasted image 20250405164110</figcaption>
+</figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Deep Learning Lecture-7</div>
+      <div>https://yima-gu.github.io/2025/06/21/Deep Learning/Deep Learning Lecture-7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/" title="Deep Learning Lecture-6">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Deep Learning Lecture-6</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/" title="Deep Learning Lecture-8">
+                        <span class="hidden-mobile">Deep Learning Lecture-8</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,876 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="人工智能 (Artificial Intelligence)：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。 机器学习 (Machine Learning)：实现人工智能的一种核心方法。它的特点是不通过显式编程来解决问题，而是让算法从数据中自动学习规律。 深度学习(Deep Learning)：它主要使用一种叫做“神经网络”的复杂结构，从海量数据中获取高度抽象的特征。 深度学习的魅力在于">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DL Note-1 Intro">
+<meta property="og:url" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-1%20Intro/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="人工智能 (Artificial Intelligence)：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。 机器学习 (Machine Learning)：实现人工智能的一种核心方法。它的特点是不通过显式编程来解决问题，而是让算法从数据中自动学习规律。 深度学习(Deep Learning)：它主要使用一种叫做“神经网络”的复杂结构，从海量数据中获取高度抽象的特征。 深度学习的魅力在于">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-21T12:30:00.000Z">
+<meta property="article:modified_time" content="2025-09-21T10:42:10.513Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>DL Note-1 Intro - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="DL Note-1 Intro"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-09-21 12:30" pubdate>
+          2025年9月21日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          27 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">DL Note-1 Intro</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>人工智能 (<em>Artificial
+Intelligence</em>)</strong>：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。</p>
+<p><strong>机器学习 (<em>Machine
+Learning</em>)</strong>：实现人工智能的一种核心方法。它的特点是<strong>不通过显式编程来解决问题，而是让算法从数据中自动学习规律</strong>。</p>
+<p><strong>深度学习(<em>Deep
+Learning</em>)</strong>：它主要<strong>使用一种叫做“神经网络”的复杂结构</strong>，从海量数据中<strong>获取高度抽象的特征</strong>。</p>
+<p>深度学习的魅力在于，它能从海量数据中<strong>自动提取高度抽象的特征</strong>，这主要通过深度神经网络来实现。我们可以将这个过程类比为<strong>对数据进行坐标系变换</strong>，通过不同的变换方式，我们能用新的视角来处理同一个问题。尽管深度学习取得了巨大成功，但传统的规则系统在许多机器学习任务中依然扮演着不可或缺的角色。</p>
+<div class="note note-info">
+            <ol type="1"><li><strong>想象一个问题</strong>：假设你有一张纸，上面混杂地撒着红色和蓝色的豆子，它们混在一起，你无法用一把直尺就将它们完美分开。</li><li><strong>一次“变换”</strong>：现在，你抓住这张纸（坐标系），将它进行拉伸、弯曲、折叠。经过这次操作，神奇的事情发生了：所有的红豆子都跑到了纸的左边，蓝豆子都跑到了右边。现在，你只需要用一把直尺就能轻松地将它们分开了。</li><li><strong>深度学习在做什么</strong>：深度学习中的每一个“层”（layer）都在做一次类似上面那样的“坐标系变换”。它将原始的、线性不可分的数据，通过一系列复杂的空间变换，转换到一个新的、高维的空间中，在这个新空间里，数据变得更容易被分类。</li></ol><p>所以，深度学习的“深度”就体现在它执行了一连串（成百上千次）这样的变换，从而能够解开那些缠绕得极其复杂的数据模式。</p>
+          </div>
+<div class="note note-info">
+            <p>在机器学习出现之前，我们实现AI的方式主要是“规则系统”。想象一下编写一个识别猫的程序，你可能需要写下成千上万条规则：</p><ul><li><code>如果</code> 有毛茸茸的耳朵 <code>并且</code> 有胡须<code>并且</code> 会“喵”叫，<code>那么</code> 它可能是一只猫。</li></ul><p>这种方式非常脆弱且复杂。而机器学习则完全不同，你不需要告诉计算机“猫有什么特征”，你只需要给它看成千上万张猫的图片，它会<strong>自己总结</strong>出什么是猫。这就是“不显式编程”的含义。</p>
+          </div>
+<h3 id="framework">Framework</h3>
+<p>在学习算法中，我们首先要指定一个<strong>函数族 (family of
+functions)</strong>，然后用数据来从这个族中找到最匹配的那个函数。这个过程的目标就是找出<strong>最优的函数</strong>。</p>
+<div class="note note-info">
+            <ul><li><strong>假设空间 (HypothesisSpace)</strong>：也叫“函数族”，你可以把它想象成一个“工具箱”。</li><li>一个只包含直尺的工具箱，它能画出所有的直线。这就是“线性模型”的假设空间。</li><li>一个包含各种曲线尺的工具箱，它能画出各种平滑的曲线。这就是“多项式模型”的假设空间。</li><li>一个拥有橡皮泥的工具箱，理论上可以捏出任何形状。这就是“神经网络”的假设空间，它非常强大。</li><li><strong>最优函数族</strong>：指为你的特定问题<strong>选择最合适的那个“工具箱”</strong>。如果你的数据点本身就大致在一条直线上，那么“直尺工具箱”（线性模型）就是最优的，用“橡皮泥”反而可能因为过于灵活而把问题搞砸（这叫<strong>过拟合</strong>）。</li></ul>
+          </div>
+<p>过拟合在你选择函数族（工具箱）的时候，其风险就已经被决定了。</p>
+<p><mark>泛化误差公式(<em>Generalization Error</em>)</mark>：</p>
+<p><span class="math display">$$
+\varepsilon_{test} \leq \hat{\varepsilon}_{train} +
+\sqrt{\frac{\text{complexity}}{n}}
+$$</span></p>
+<p>这个公式是机器学习的基石，它告诉我们如何让模型在“真实世界”中表现良好。</p>
+<ul>
+<li><span
+class="math inline"><em>ε</em><sub><em>t</em><em>e</em><em>s</em><em>t</em></sub></span>
+(<strong>泛化误差</strong>)：模型的“期末考试”成绩。它衡量模型在从未见过的新数据上的表现，这是我们最关心的指标。</li>
+<li><span
+class="math inline"><em>ε</em><sub><em>t</em><em>r</em><em>a</em><em>i</em><em>n</em></sub></span>​
+(<strong>训练误差</strong>)：模型的“平时作业”成绩。它衡量模型在训练数据上的表现。</li>
+<li><span
+class="math inline">$\sqrt{\frac{\text{complexity}}{n}}$</span>(<strong>过拟合惩罚项</strong>)：可以理解为“作业”和“考试”成绩之间的差距。
+<ul>
+<li><span
+class="math inline"><em>c</em><em>o</em><em>m</em><em>p</em><em>l</em><em>e</em><em>x</em><em>i</em><em>t</em><em>y</em></span>
+(<strong>模型复杂度</strong>)：模型的“难度系数”。复杂度越高，模型越容易过拟合训练数据，但在新数据上表现可能会很差。</li>
+<li><span
+class="math inline"><em>n</em></span>(数据量)：你做的“练习题”数量。练习题越多，你越能总结出通用规律，而不是记住个别题的答案。</li>
+</ul></li>
+</ul>
+<p><strong>核心思想</strong>：要想在期末考试中取得好成绩，你需要：</p>
+<ol type="1">
+<li><strong>平时作业分高</strong> (训练误差小)</li>
+<li><strong>不依赖死记硬背</strong>
+(模型复杂度不能太高，或者数据量<code>n</code>要足够大来约束它)</li>
+</ol>
+<p>这也引出了一个重要原则：<strong>当且仅当需要的时候，才增加模型的复杂度。</strong></p>
+<h3 id="model">Model</h3>
+<p><span class="math display">$$
+\arg \min O(D;\theta) = \sum_{i=1}^{N} L(y_i, f(x_i);\theta) +
+\Omega(\theta)
+$$</span></p>
+<p>这是机器学习的“指导思想”，它告诉模型如何学习。</p>
+<ul>
+<li><span
+class="math inline">arg min<sub><em>θ</em></sub></span>：意思是“找到一组参数
+，使得后面的表达式结果最小”。
+<ul>
+<li>参数 就是模型需要学习的东西（比如一条直线的斜率和截距）。</li>
+<li><span
+class="math inline"><em>O</em>(<em>D</em>;<em>θ</em>)</span>：总目标，我们希望它越小越好。</li>
+</ul></li>
+<li><span
+class="math inline">∑<em>L</em>(<em>y</em><sub><em>i</em></sub>,<em>f</em>(<em>x</em><sub><em>i</em></sub>);<em>θ</em>)</span>：<strong>损失项
+(Loss Term)</strong>。
+<ul>
+<li>这部分计算的是模型预测值 <span
+class="math inline"><em>f</em>(<em>x</em><sub><em>i</em></sub>)</span>
+与真实值 <span
+class="math inline"><em>y</em><sub><em>i</em></sub></span>
+之间的“差距”或“错误”。它的目标是：<strong>让模型在训练数据上尽可能地预测准确</strong>。对于分类问题而言，经常使用的是交叉熵损失函数（logistic）和hinge损失函数。</li>
+</ul></li>
+<li><strong>正则化项 (Regularization Term)</strong>，也叫<strong>惩罚项
+(Penalty Term)</strong>。
+<ul>
+<li>这部分是用来限制模型复杂度的。它会惩罚那些过于复杂的模型（即参数
+<span class="math inline"><em>θ</em></span> 的值过大）。</li>
+<li>它的目标是：<strong>在拟合数据的同时，让模型本身尽可能地简单</strong>。</li>
+</ul></li>
+<li><strong>总结</strong>：整个公式描述了一个<strong>权衡
+(Trade-off)</strong>。机器学习的目标是找到一组完美的参数 <span
+class="math inline"><em>θ</em></span>，这组参数既能让模型很好地拟合训练数据（损失项小），又能保证模型自身不至于过分复杂（惩罚项小），从而在未来的新数据上也能表现良好。</li>
+</ul>
+<p><strong>Linear Regression</strong></p>
+<p><span class="math display">$$
+O(D;\theta) = \sum_{i=1}^{N} (y_i - \theta^T x_i)^2 + \lambda \theta^T
+\theta = (Y - X\theta)^T (Y - X\theta) + \lambda \theta^T \theta
+$$</span></p>
+<p>上述公式是关于<span
+class="math inline"><em>θ</em></span>的二次函数，可以通过求导得到最优解。</p>
+<p><span class="math display">$$
+\frac{\partial O(D;\theta)}{\partial \theta} = -2 X^T (Y - X\theta) + 2
+\lambda \theta = 0
+$$</span></p>
+<p><span
+class="math display"><em>θ̂</em> = (<em>X</em><sup><em>T</em></sup><em>X</em>+<em>λ</em><em>I</em>)<sup>−1</sup><em>X</em><sup><em>T</em></sup><em>Y</em></span></p>
+<p>但是上述算法的复杂性为<span
+class="math inline"><em>O</em>(<em>n</em><sup>3</sup>)</span>，不适用于大数据集。在软件工程中，通常使用梯度下降法。</p>
+<p><strong>Logistic Regression</strong></p>
+<p><span class="math display">$$
+O(D;\theta) = \sum_{i=1}^{n} \log(1 + \exp(-y_i \theta^T x_i)) + \lambda
+||\theta||_{1} = F(D;\theta) + \lambda ||\theta||_{1}
+$$</span></p>
+<p>这里使用的是近端梯度下降法 <em>proximal gradient
+descent</em>。其中的1-范数是各个分量的绝对值之和。<a
+target="_blank" rel="noopener" href="https://www.zhihu.com/tardis/zm/art/82622940?source_id=1005">机器学习
+| 近端梯度下降法 (proximal gradient descent)</a>
+在一些不可导的情况下如hinge损失函数，可以使用次梯度。</p>
+<p><strong>Softmax Regression</strong></p>
+<p>实现多分类问题，计算每个类别的概率即可，对于某个样本进行多次打分，取最高分对应的类别。</p>
+<p>Softmax Function:</p>
+<p><span class="math display">$$
+P(y|x,\theta) = \frac{\exp(\theta_y^T x)}{\sum_{r=1}^{C}
+\exp(\theta_{r}^T x)}
+$$</span></p>
+<p>线性模型，用超平面对样本进行打分，然后使用softmax函数进行归一化。</p>
+<p><span class="math display">$$
+O(D;\theta) = -\sum_{i=1}^{n} \log P(y_i|x_i;\theta) + \lambda
+||\theta||_{1}
+$$</span></p>
+<p>上述式子其实是对数似然函数，最大化对数似然函数等价于最小化交叉熵损失函数。</p>
+<h4 id="aproximation-and-estimation">Aproximation and Estimation</h4>
+<p>假设空间只能表现一个有限的函数集合，有时候真值函数不一定在假设空间中。这时候假设空间中最好的函数与真值函数之间的差距称为<strong>近似误差</strong><em>Approximation
+Error</em>。学习得到的函数与空间中最好的函数的误差为<strong>估计误差</strong>
+<em>Estimation Error</em>。</p>
+<div class="note note-warning">
+            <p>让我们继续用“雕刻”来打比方。你的目标是完美复刻一座罗丹的《思想者》雕像，这就是“真理”（真值函数）。</p><ol type="1"><li><strong>你的工具箱 = 假设空间 (Hypothesis Space)</strong>。</li><li><strong>工具不行，神仙难救 = 近似误差 (ApproximationError)</strong></li></ol><ul><li>这个误差衡量的是你<strong>“工具箱”本身的局限性</strong>。假设你选择的工具箱里只有一把直尺和几块乐高积木。无论你多么努力，用这些工具也永远无法完美复刻出《思想者》流畅的人体曲线。</li><li>你用乐高能拼出的、最接近《思想者》的那个方块人，和真正的《思想者》雕像之间的巨大差距，就是<strong>近似误差</strong>。这个错误在你选择工具箱的那一刻就注定了，是<strong>设计上</strong>的误差。</li></ul><ol start="3" type="1"><li><strong>工具有了，手艺差点 = 估计误差 (EstimationError)</strong></li></ol><ul><li>现在，假设你得到了一个顶级的雕刻工具箱，里面有凿子、刻刀，还有一大块完美的“橡皮泥”（神经网络）。这个工具箱足够强大，理论上完全可以复刻出《思想者》。</li><li>但因为你是初学者，你的<strong>雕刻技术（训练过程）还不够娴熟</strong>，或者你只有很少的时间（数据量不足）去雕刻。最终，你做出的雕像虽然有了人形，但细节粗糙，比例也有些失调。</li><li>你最终做出的这个“走样”的雕像，和一位大师用同样的工具能做出的完美雕像之间的差距，就是<strong>估计误差</strong>。这不是工具的错，而是你<strong>使用过程中</strong>的误差。</li></ul>
+          </div>
+<h3 id="model-selection">Model Selection</h3>
+<div class="note note-info">
+            <p><em>All models are wrong but some are useful.</em></p>
+          </div>
+<p>CASH (Combined Algorithm Selection and Hyperparameter optimization)
+所解决的是应用机器学习中的一个核心且复杂的挑战：<strong>如何在一个包含多种算法及其各自超参数配置的巨大搜索空间中，自动地、系统性地找到最优的模型配置。</strong></p>
+<p><span
+class="math display"><em>A</em><sub><em>λ</em><sup>*</sup></sub><sup>*</sup> = arg min<sub><em>A</em> ∈ 𝒜</sub>min<sub><em>λ</em> ∈ <em>Λ</em><sup>(<em>i</em>)</sup></sub>ℒ(<em>A</em><sub><em>λ</em></sub><sup>(<em>i</em>)</sup>,<em>D</em><sub><em>t</em><em>r</em><em>a</em><em>i</em><em>n</em></sub>,<em>D</em><sub><em>v</em><em>a</em><em>l</em><em>i</em><em>d</em></sub>)</span></p>
+<p>下面，我们对该公式的各个组成部分进行严谨的拆解：</p>
+<ol type="1">
+<li><strong>目标 (<span
+class="math inline"><em>A</em><sub><em>λ</em><sup>*</sup></sub><sup>*</sup></span>)</strong>
+<ul>
+<li>这代表了我们寻求的最优解。它不是一个单一的模型，而是一个<strong>配置（Configuration）</strong>，由两部分组成：
+<ul>
+<li><span
+class="math inline"><em>A</em><sup>*</sup></span>：从候选算法集合中选出的<strong>最优算法</strong>。</li>
+<li><span class="math inline"><em>λ</em><sup>*</sup></span>：与最优算法
+<span class="math inline"><em>A</em><sup>*</sup></span>
+相对应的<strong>最优超参数组合</strong>。</li>
+</ul></li>
+</ul></li>
+<li><strong>搜索空间 (Search Space)</strong>
+<ul>
+<li>这是一个分层的、结构化的空间，由两部分构成：
+<ul>
+<li><strong>算法空间 (<span
+class="math inline">𝒜</span>)</strong>：一个离散的、预定义的机器学习算法集合。例如：<span
+class="math inline">𝒜 = {支持向量机, 随机森林, 多层感知机}</span>。</li>
+<li><strong>超参数空间 (<span
+class="math inline"><em>Λ</em><sub><em>A</em></sub></span>)</strong>：对于算法空间
+<span class="math inline">𝒜</span> 中的每一个算法 <span
+class="math inline"><em>A</em></span>，都存在一个与之关联的超参数空间
+<span
+class="math inline"><em>Λ</em><sub><em>A</em></sub></span>。这个空间定义了该算法所有可调超参数的类型和取值范围。例如，对于支持向量机，<span
+class="math inline"><em>Λ</em><sub><em>S</em><em>V</em><em>M</em></sub></span>
+可能包含核函数类型 (<code>kernel</code>)、惩罚系数 <code>C</code> 的范围
+<code>[0.1, 100]</code>
+等。这个空间可以是多维的，并且包含连续、离散和条件参数，结构非常复杂。</li>
+</ul></li>
+</ul></li>
+<li><strong>优化过程 (<span
+class="math inline">arg min<sub><em>A</em> ∈ 𝒜</sub>min<sub><em>λ</em> ∈ <em>Λ</em><sub><em>A</em></sub></sub></span>)</strong>
+<ul>
+<li>这描述了一个嵌套的最小化过程。外层循环遍历算法空间 <span
+class="math inline">𝒜</span>
+中的每一个算法，内层循环则在该算法的超参数空间 <span
+class="math inline"><em>Λ</em><sub><em>A</em></sub></span>
+中进行搜索。其目标是找到能使目标函数 <span class="math inline">ℒ</span>
+最小化的那一对 <span class="math inline">(<em>A</em>,<em>λ</em>)</span>
+组合。</li>
+</ul></li>
+<li><strong>评估协议 (<span
+class="math inline">ℒ(<em>A</em><sub><em>λ</em></sub>,<em>D</em><sub>train</sub>,<em>D</em><sub>valid</sub>)</span>)</strong>
+<ul>
+<li>这是整个优化过程的核心，定义了如何评估任意一个给定配置的好坏。它包含以下标准流程：
+<ul>
+<li><strong>实例化 (Instantiation)</strong>：从算法库中选择一个算法
+<span class="math inline"><em>A</em></span>，并使用一组具体的超参数
+<span class="math inline"><em>λ</em></span> 来实例化一个待训练的模型
+<span class="math inline"><em>A</em><sub><em>λ</em></sub></span>。</li>
+<li><strong>训练 (Training)</strong>：使用训练数据集 <span
+class="math inline"><em>D</em><sub>train</sub></span> 对实例化的模型
+<span class="math inline"><em>A</em><sub><em>λ</em></sub></span>
+进行训练。在这个过程中，模型学习其内部参数（例如，神经网络的权重）。</li>
+<li><strong>验证 (Validation)</strong>：训练完成后，在独立的验证数据集
+<span class="math inline"><em>D</em><sub>valid</sub></span>
+上评估模型的性能。<span
+class="math inline"><em>D</em><sub>valid</sub></span>
+中的数据是模型在训练过程中从未见过的，因此可以提供对模型<strong>泛化能力
+(Generalization Performance)</strong> 的无偏估计。</li>
+<li><strong>损失函数 (<span
+class="math inline">ℒ</span>)</strong>：这是一个量化指标，用于计算模型在验证集上的性能。例如，对于分类问题，它可以是交叉熵损失或错误率；对于回归问题，可以是均方误差（MSE）。</li>
+</ul></li>
+</ul></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>DL Note-1 Intro</div>
+      <div>https://yima-gu.github.io/2025/09/21/Deep Learning/DL Note-1 Intro/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年9月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/" title="DL Note-2 MLP">
+                        <span class="hidden-mobile">DL Note-2 MLP</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

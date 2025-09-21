@@ -1,0 +1,883 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Optimization Objective Function $$ \arg \min \mathcal{O(D,\theta)}&#x3D;  \sum_{i&#x3D;1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) $$ 上述目标可以可视化为以θ为横坐标、𝒪为纵坐标的函数图像，我们的目标是找到函数图像的最低点。这是一个非凸优化问题，是初值敏感的。“地形图”是否简单是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning Lecture-4">
+<meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Optimization Objective Function $$ \arg \min \mathcal{O(D,\theta)}&#x3D;  \sum_{i&#x3D;1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) $$ 上述目标可以可视化为以θ为横坐标、𝒪为纵坐标的函数图像，我们的目标是找到函数图像的最低点。这是一个非凸优化问题，是初值敏感的。“地形图”是否简单是">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-21T10:42:10.538Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="DeepLearning">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Deep Learning Lecture-4 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Deep Learning Lecture-4"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-21 00:00" pubdate>
+          2025年6月21日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Deep Learning Lecture-4</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="optimization">Optimization</h2>
+<p><strong>Objective Function</strong> <span class="math display">$$
+\arg \min \mathcal{O(D,\theta)}=  \sum_{i=1}^{N} L(y_i, f(x_i,\theta)) +
+\Omega(\theta)
+$$</span> 上述目标可以可视化为以<span
+class="math inline"><em>θ</em></span>为横坐标、<span
+class="math inline">𝒪</span>为纵坐标的函数图像，我们的目标是找到函数图像的最低点。这是一个<strong>非凸优化</strong>问题，是初值敏感的。“地形图”是否简单是网络训练是否容易的关键。</p>
+<h3 id="first-order-optimization">First-Order Optimization</h3>
+<p>可以将<span
+class="math inline"><em>J</em>(<em>θ</em>)</span>展开为泰勒级数： <span
+class="math display">$$
+J(\theta) = J(\theta_0) + \nabla J(\theta_0)^T(\theta - \theta_0) +
+\frac{1}{2}(\theta - \theta_0)^T H(\theta - \theta_0)
+$$</span> 沿着梯度的方向进行更新： <span
+class="math display"><em>J</em>(<em>θ</em>−<em>η</em><em>g</em>) = <em>J</em>(<em>θ</em>) − <em>η</em><em>g</em><sup><em>T</em></sup><em>g</em> ≤ <em>J</em>(<em>θ</em>)</span></p>
+<p><strong>梯度下降算法的问题在于</strong>： - 容易在鞍点处停滞 -
+对于较为简单的凸优化问题，学习率的选择不好都会有发散的问题，训练对于学习率是很敏感的</p>
+<p>对于学习率下降的算法，主流使用的是<em>Step
+Strategy</em>，即损失函数不下降了就减少学习率。</p>
+<h4 id="warm-restarts">Warm Restarts</h4>
+<p>使用的策略为：<em>Cosine Annealing</em>: <span
+class="math display">$$
+\eta_t = \eta_{min}^i + \frac{1}{2}(\eta_{max}^i - \eta_{min}^i)(1 +
+\cos(\frac{T_{cur}}{T_{i}}\pi))
+$$</span></p>
+<p>其中<span
+class="math inline"><em>T</em><sub><em>c</em><em>u</em><em>r</em></sub></span>为当前的迭代次数，<span
+class="math inline"><em>T</em><sub><em>i</em></sub></span>为当前的周期数，<span
+class="math inline"><em>η</em><sub><em>m</em><em>i</em><em>n</em></sub><sup><em>i</em></sup></span>和<span
+class="math inline"><em>η</em><sub><em>m</em><em>a</em><em>x</em></sub><sup><em>i</em></sup></span>分别为第<span
+class="math inline"><em>i</em></span>个周期的最小和最大学习率。
+学习率的衰减不能是线性的，是先快后慢的。</p>
+<h4 id="convergence-rate">Convergence Rate</h4>
+<ul>
+<li>We assume that <span
+class="math inline"><em>J</em>(<em>θ</em>)</span> is convex,
+differentiable and Lipchitz by constant <span
+class="math inline"><em>L</em></span>. And domain of <span
+class="math inline"><em>θ</em></span> is bounded by radius <span
+class="math inline"><em>R</em></span>. With gradient descent update:
+<span
+class="math display"><em>θ</em><sup><em>t</em> + 1</sup> = <em>θ</em><sup><em>t</em></sup> − <em>η</em>∇<em>J</em>(<em>θ</em><sup><em>t</em></sup>)</span></li>
+</ul>
+$$
+<p>$$</p>
+<ul>
+<li>From previous computation, we get the following inequality for every
+step <span class="math inline"><em>t</em></span> :</li>
+</ul>
+<p><span class="math display">$$
+J\left(\theta^t\right)-J\left(\theta^*\right) \leq \frac{1}{2
+\eta}\left(\left\|\theta^t-\theta^*\right\|^2-\left\|\theta^{t+1}-\theta^*\right\|^2\right)+\frac{\eta}{2}
+L^2
+$$</span></p>
+<ul>
+<li>Recall <span
+class="math inline">max<sub><em>θ</em>, <em>θ</em><sup>′</sup></sub>(∥<em>θ</em>−<em>θ</em><sup>′</sup>∥) ≤ <em>R</em></span>.
+Assume we update parameters for <span
+class="math inline"><em>T</em></span> steps. We add all equations for
+all <span
+class="math inline"><em>t</em> ∈ {0, 1, …, <em>T</em> − 1}</span> :</li>
+</ul>
+<p><span class="math display">$$
+\begin{aligned}
+&amp; \sum_t\left(J\left(\theta^t\right)-J\left(\theta^*\right)\right)
+\leq \frac{1}{2
+\eta}\left(\left\|\theta^0-\theta_*^*\right\|^2-\left\|\theta^T-\theta^*\right\|^2\right)+\frac{\eta
+L^2 T}{2} \\
+&amp; \frac{1}{T} \sum_t J\left(\theta^t\right)-J\left(\theta^*\right)
+\leq \frac{1}{2 \eta T}\left(R^2+0\right)+\frac{\eta L^2}{2} \\
+&amp; \frac{1}{T} \sum_t J\left(\theta^t\right)-J\left(\theta^*\right)
+\leq \frac{R^2}{2 \eta T}+\frac{\eta L^2}{2}
+\end{aligned}
+$$</span></p>
+<ul>
+<li>let <span class="math inline">$\eta = \frac{R}{L\sqrt{T}}$</span>:
+<span class="math display">$$
+\frac{1}{T} \sum_t J\left(\theta^t\right)-J\left(\theta^*\right) \leq
+\frac{L}{R} \sqrt{T}
+$$</span></li>
+</ul>
+<h3 id="second-order-optimization">Second-Order Optimization</h3>
+<p>不仅要关注一次的梯度信息，还要关注二次的信息。二阶优化算法的核心是Hessian矩阵，可以分辨是不是鞍点。
+函数的展开为： <span class="math display">$$
+J(\theta) = J(\theta_0) + \nabla J(\theta_0)^T(\theta - \theta_0) +
+\frac{1}{2}(\theta - \theta_0)^T H(\theta - \theta_0)
+$$</span> 能感知到“地形图”中的曲率。 对于海森矩阵可以进行特征值分解：
+<span
+class="math display"><em>H</em> = <em>Q</em><em>Λ</em><em>Q</em><sup><em>T</em></sup>  and  <em>H</em><sup>−1</sup> = <em>Q</em><em>Λ</em><sup>−1</sup><em>Q</em><sup><em>T</em></sup></span>
+特征值中较大和较小的特征值如果相差较大，称为病态矩阵；如果从最大到最小的变化较为平缓，则较为光滑。
+如果特征值全为正值，那么就是凸函数；如果有正有负，那么就是鞍点。
+事实上，使用的梯度方法为局部的方法，下降是相对较慢的。 #### Newton’s
+Method 牛顿法的计算方法为： <span class="math display">$$
+\hat{J}(\theta) = J(\theta_0) + \nabla J(\theta_0)^T(\theta - \theta_0)
++ \frac{1}{2}(\theta - \theta_0)^T H(\theta - \theta_0)
+$$</span> 求导得到： <span
+class="math display">∇<sub><em>θ</em></sub><em>Ĵ</em>(<em>θ</em>) = ∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em><sub>0</sub>) + <em>H</em>(<em>θ</em>−<em>θ</em><sub>0</sub>) = 0</span>
+求解得到： <span
+class="math display"><em>θ</em><sup><em>t</em> + 1</sup> = <em>θ</em><sup><em>t</em></sup> − <em>H</em><sup>−1</sup>∇<sub><em>t</em><em>h</em><em>e</em><em>t</em><em>a</em></sub><em>J</em>(<em>θ</em><sup><em>t</em></sup>)</span>
+牛顿法的优点在于收敛速度快，但是缺点在于计算复杂度高，需要计算海森矩阵的逆矩阵。计算复杂度为<span
+class="math inline"><em>O</em>(<em>d</em><sup>3</sup>)</span>，其中<span
+class="math inline"><em>d</em></span>为参数的个数。<strong>在深度学习时代基本上不再使用</strong>。</p>
+<h4 id="quasi-newton-method">Quasi-Newton Method</h4>
+<p>对于海森矩阵的逆矩阵，我们可以使用拟牛顿法进行近似： <span
+class="math display">$$
+H_{t+1}^{-1} = H_t^{-1} + \frac{y_t y_t^T}{y_t^T s_t} -
+\frac{H_t^{-1}s_t s_t^T H_t^{-1}}{s_t^T H_t^{-1}s_t}
+$$</span> 其中<span
+class="math inline"><em>y</em><sub><em>t</em></sub> = ∇<em>J</em>(<em>θ</em><sub><em>t</em> + 1</sub>) − ∇<em>J</em>(<em>θ</em><sub><em>t</em></sub>)</span>，<span
+class="math inline"><em>s</em><sub><em>t</em></sub> = <em>θ</em><sub><em>t</em> + 1</sub> − <em>θ</em><sub><em>t</em></sub></span>。
+<strong>在矩阵计算的时候要将较小的矩阵先乘，这样可以计算复杂度</strong></p>
+<h2 id="optimization-in-deep-learning">Optimization in Deep
+Learning</h2>
+<p>[[Deep Learning Lecture-2#Optimization in Practice]]</p>
+<p>是非凸优化问题，优化的目的在于找到一个较好的局部极值。比较好的局部极值是比较低的、比较平缓的局部极值，对于比较陡峭的局部极值泛化能力比较差（对测试数据的微小变化敏感）。</p>
+<p>好的局部极值有一些特性： - 值比较低 -
+是”盆地“，这样有利于模型的泛化</p>
+<h3 id="mini-batch">mini-batch</h3>
+<p><strong>mini-batch
+SGD</strong>：在每一轮遍历<em>epoch</em>后，对数据进行随机的打乱<em>Shuffle</em>，然后分成若干个batch，对每一个batch进行参数的更新。这样可以减少计算的时间，同时可以减少过拟合的问题。</p>
+<ul>
+<li>mini-batch的大小对于训练的影响，一般而言较大的mini-batch会有更好的收敛性，但是计算复杂度更高。</li>
+<li>由于不一样的小样本选择会引入一定的随机性，这样是有利于跳出局部极值的。</li>
+<li>由于mini-batch的选择是有随机性的，不同的batch的难度不一样，所以这时候出现Loss的规律性的震荡是很正常的。</li>
+<li>矩阵最大奇异值与最小奇异值的比值称为矩阵的条件数，条件数越大，矩阵越病态。对于病态矩阵，SGD的收敛速度会变慢。</li>
+</ul>
+<h3 id="learning-rate-decay">Learning Rate Decay</h3>
+<p>初始学习率较大，随着迭代次数的增加，学习率逐渐减小。有相对应的衰减策略。
+<em>Exponential decay</em>: <span
+class="math display"><em>η</em><sub><em>t</em></sub> = <em>η</em><sub>0</sub> ⋅ <em>e</em><sup>−<em>α</em><em>t</em></sup></span>
+<em>Inverse decay</em>: <span class="math display">$$
+\eta_t = \frac{\eta_0}{1+\alpha t}
+$$</span> ### SGD Stochastic Gradient Descent #### SGD with Momentum</p>
+<p><strong>SGD with Momentum</strong>:</p>
+<p>对于下面的更新公式：</p>
+<p><span
+class="math display"><em>θ</em><sub><em>i</em><em>j</em></sub> = <em>θ</em><sub><em>i</em><em>j</em></sub> − <em>η</em><em>Δ</em></span>
+在高维中，地形是相对而言较为崎岖的，这里的学习率一般是比较小的，否则容易发散。在接近于局部极值的时候。较大的学习率学习的是较为粗糙的特征，较小的学习率学习的是较为细致的特征。</p>
+<p><span class="math display">$$
+\Delta = \beta \Delta - \eta \frac{\partial J(\theta)}{\partial
+\theta_{ij}}
+$$</span> <span
+class="math inline"><em>β</em></span>是动量参数，可以理解为之前的梯度的累积。</p>
+<p><strong>Nesterov Momentum:</strong> <span class="math display">$$
+\begin{aligned}
+&amp;\tilde{\theta}^{t} = \theta^{t} - \beta \Delta^{t-1} \\
+&amp;\Delta^{t} = \beta \Delta^{t-1} + (1-\beta)\nabla J^t
+(\tilde{\theta}^t)\\
+&amp;\theta^{t+1} = \theta^t - \eta \Delta^t\\
+\end{aligned}
+$$</span>
+在深度学习的实现中使用的一般是这种。走动量的方向可以减少震荡，同时可以加速收敛。当到达了比较好的局部极值时候又会在这个值的附近抖动。
+超参数：<span class="math inline"><em>β</em></span>，一般而言<span
+class="math inline"><em>β</em></span>取0.9是比较好的，越大的值越容易进行震荡。
+学习率0.01、0.003、0.001一般按照指数变化。</p>
+<p>是在每次更新完<span
+class="math inline"><em>θ</em></span>之后（进行试探之后才进行计算）才进行梯度的计算，可以避免一些<em>overshoot</em>。核心的思想为多获取一些二次的信息。</p>
+<h3 id="weight-decay"><em>Weight Decay</em></h3>
+<p>加入正则项，对于参数的更新进行限制，控制假设空间的大小，可以防止过拟合。但是在深度学习中并不够。</p>
+<p><em>L1 regularization</em> <span class="math display">$$
+\Omega(\theta) = \lambda \sum_{l=1}^{L} \sum_{i=1}^{n_l}
+\sum_{j=1}^{n_{l+1}} |\theta_{ij}^{(l)}|
+$$</span> <em>L2 regularization</em> <span class="math display">$$
+\Omega(\theta) = \lambda \sum_{l=1}^{L} \sum_{i=1}^{n_l}
+\sum_{j=1}^{n_{l+1}} (\theta_{ij}^{(l)})^2
+$$</span></p>
+<h3 id="adaptive-learning-rate">Adaptive Learning Rate</h3>
+<p>直观理解为在不同的“地形”上需要使用的学习率（步长）是不一样的。对于不同的参数使用不同的学习率。<strong>Adagrad</strong>算法的核心思想为：
+<span class="math display">$$
+\begin{aligned}
+&amp;r^t = r^{t-1} + \nabla J^t(\theta^t) \odot \nabla J^t(\theta^t)\\
+&amp;h^t = \frac{1}{\sqrt{r^t} + \delta} \\
+&amp;\Delta^t = h^t \odot \nabla J^t(\theta^t)\\
+&amp;\theta^{t+1} = \theta^t - \eta \Delta^t
+\end{aligned}
+$$</span> <em>上述公式中的第二行为逐元素操作</em> 其中<span
+class="math inline">⊙</span>为对应元素相乘，<span
+class="math inline"><em>δ</em></span>为一个很小的数，防止分母为0。这样可以保证在不同的地形上使用不同的学习率。<strong>本质上为探索”地形图”</strong>。但是Adagrad的问题在于随着迭代次数的增加，分母会变得越来越大，导致学习率会变得越来越小，最终会导致学习率为0，这样就不再更新了。</p>
+<p><strong>RMSprop</strong>算法的核心思想为：对Adagrad的分母进行指数滑动平均：
+<span class="math display">$$
+\begin{aligned}
+&amp;r^t = \rho r^{t-1} + (1-\rho)\nabla J^t(\theta^t) \odot \nabla
+J^t(\theta^t)\\
+&amp;h^t = \frac{1}{\sqrt{r^t} + \delta} \\
+&amp;\Delta^t = h^t \odot \nabla J^t(\theta^t)\\
+&amp;\theta^{t+1} = \theta^t - \eta \Delta^t
+\end{aligned}
+$$</span></p>
+<p><strong>Adam</strong>算法的核心思想为：结合了SGD with
+Momentum和RMSprop： <span class="math display">$$
+\begin{aligned}
+&amp; r^t = \rho r^{t-1} + (1-\rho)\nabla J^t(\theta^t) \odot \nabla
+J^t(\theta^t)\\
+&amp; h^t = \frac{1}{\sqrt{r^t} + \delta} \\
+&amp; s^t = \varepsilon s^{t-1} + (1-\epsilon)\nabla J^t(\theta^t)\\
+&amp; \Delta^t = h^t \odot s^t \\
+&amp; \theta^{t+1} = \theta^t - \eta \Delta^t
+\end{aligned}
+$$</span> 实际使用的参数为<span
+class="math inline"><em>ρ</em> = 0.9</span>，<span
+class="math inline"><em>ε</em> = 0.9</span>，<span
+class="math inline"><em>ρ</em> = 0.999</span>
+对于学习率的下降，还是要使用对应的算法，对于实际使用的算法，还需要对<span
+class="math inline"><em>r</em></span>、<span
+class="math inline"><em>s</em></span>进行无偏修正。</p>
+<p>Nadam算法为Adam算法的变种，对于SGD with
+Momentum的更新进行了修正。</p>
+<p>调参一般而言是，对于一个模型找到对于其最好的优化器。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Deep Learning Lecture-4</div>
+      <div>https://yima-gu.github.io/2025/06/21/Deep Learning/Deep Learning Lecture-4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-3/" title="Deep Learning Lecture-3">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Deep Learning Lecture-3</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" title="Deep Learning Lecture-5">
+                        <span class="hidden-mobile">Deep Learning Lecture-5</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

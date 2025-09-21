@@ -33,11 +33,17 @@ jobs:
           node-version: '20' # 指定 Node.js 版本
           cache: 'npm' # 缓存 npm 依赖，加快后续构建速度
 
+      # 新增步骤: 安装 Pandoc
+      - name: Install Pandoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc
+
       # 步骤 3: 安装项目依赖
       - name: Install dependencies
         run: npm install
 
-      # 步骤 4: 生成静态网站文件 (已修正)
+      # 步骤 4: 生成静态网站文件
       - name: Generate static files
         run: npx hexo generate
 

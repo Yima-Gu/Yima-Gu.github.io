@@ -37,9 +37,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 步骤 4: 生成静态网站文件
+      # 步骤 4: 生成静态网站文件 (已修正)
       - name: Generate static files
-        run: hexo generate
+        run: npx hexo generate
 
       # 步骤 5: 部署到 gh-pages 分支
       - name: Deploy to gh-pages branch
@@ -56,3 +56,4 @@ jobs:
           user_email: 'github-actions[bot]@users.noreply.github.com'
           # 提交信息
           commit_message: "CI: Deploy Hexo blog from GitHub Actions"
+

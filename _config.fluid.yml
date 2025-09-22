@@ -4,15 +4,20 @@
 # 导航栏
 navbar:
   blog_title: "Yima Gu's Blog"
+
+font:  # 主题字体配置
+  font_size: 20px        # 全局字号
+  font_family:           # 全局字体族
+  code_font_size: 85%    # 代码的字号
   
 # 首页配置
 index:
-  banner_img: /img/bg/home.jpg
+  banner_img: /img/bg/default.png
   banner_img_height: 100
   banner_mask_alpha: 0.3
   slogan:
     enable: true
-    text: "欢迎来到我的个人博客"
+    text: "你好"
     api:
       enable: false
 
@@ -36,6 +41,24 @@ post:
   # 图片懒加载
   lazyload:
     enable: true
+  
+  comments:
+    enable: true
+    type: disqus
+    giscus:
+      repo: "Yima-Gu/Yima-Gu.github.io"  # 你的仓库
+      repo_id: "R_kgDOPz-yyQ"           # 你的仓库 ID
+      category: "General"                 # 你的分类名称
+      category_id: "DIC_kwDOPz-yyc4CvvD2" # 你的分类 ID
+      mapping: "pathname"                 # 映射关系
+      reactions_enabled: "1"              # 启用 Reactions
+      emit_metadata: "0"                  # 发射元数据
+      input_position: "bottom"            # 输入框位置
+      theme: "preferred_color_scheme"     # 主题，preferred_color_scheme 会跟随系统明暗模式
+      lang: "zh-CN"                       # 语言
+
+
+
 # 关于页面
 about:
   banner_img: /img/bg/about.jpg
@@ -43,7 +66,11 @@ about:
   banner_mask_alpha: 0.3
   avatar: /img/avatar.png
   name: "Yima Gu"
-  intro: "欢迎来到我的个人博客"
+  intro: "你好"
+  icons:
+    - { class: 'iconfont icon-github-fill', link: 'https://github.com/Yima-Gu', tip: 'GitHub' }
+    - { class: 'iconfont icon-zhihu-fill', link: 'https://www.zhihu.com/people/84-53-25-53', tip: 'zhihu' }
+    - { class: 'iconfont icon-mail', link: 'mailto:yima.gu.23@gmail.com', tip: 'mail' }
   
 # 页脚
 footer:
@@ -51,7 +78,7 @@ footer:
     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
     <i class="iconfont icon-love"></i>
     <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
-  '
+    '
 
 # 自定义样式和脚本
 custom_js:
@@ -59,9 +86,23 @@ custom_css:
 
 # 网站统计
 web_analytics:
-  enable: false
+  enable: true
 
 # 评论系统
 comments:
-  enable: false
+  enable: true
   branch: main
+  type: 'giscus'
+  
+giscus:
+  repo: "Yima-Gu/Yima-Gu.github.io"  # 你的仓库
+  repo_id: "R_kgDOPz-yyQ"           # 你的仓库 ID
+  category: "General"                 # 你的分类名称
+  category_id: "DIC_kwDOPz-yyc4CvvD2" # 你的分类 ID
+  mapping: "pathname"                 # 映射关系
+  reactions_enabled: "1"              # 启用 Reactions
+  emit_metadata: "0"                  # 发射元数据
+  input_position: "bottom"            # 输入框位置
+  theme: "preferred_color_scheme"     # 主题，preferred_color_scheme 会跟随系统明暗模式
+  lang: "zh-CN"                       # 语言
+

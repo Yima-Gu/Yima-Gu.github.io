@@ -124,7 +124,6 @@ $$
 $$
 J(\mathbf{W}) = \min_{w_1 \dots w_k}- \log \mathcal{L}(\mathbf{W};\mathcal{D}) = - \sum_{i=1}^{m} \sum_{j=1}^{k} \mathbf{1}\{y_i = j\} \log P(y_i = j\,| \mathbf{x_i} ; \mathbf{W} )
 $$
-z
 上述的式子就是交叉熵损失函数。上面的过程其实是在认为分类是$i.i.d.$的伯努利分布的极大似然估计。
 
 >从统计学角度看，**最小化交叉熵损失函数**等价于**最大化分类结果服从多项分布时的对数似然**。这为我们常用的损失函数提供了坚实的理论依据。
@@ -289,10 +288,15 @@ $$
 ## Theorem (Arbitrarily large neural networks can approximate any function)
 
 理论可以表述为：对于任意的连续函数，存在一个足够大的神经网络可以近似这个函数。
+
 <img src="{79D51D58-D7B7-485E-9A0F-5F615FE27545}.png" alt="" width="500">
+
+
 上面表示两层神经网络可以逼近任意的连续函数，要求这个函数$\sigma$不是多项式函数。
 
 <img src="{862689B6-2775-4822-8FAC-B0450B360BA0}.png" alt="" width="500">
+
+
 上面的定理表示神经网络的宽度也很重要，可以通过增加神经元的数量来逼近函数。
 
  在空间折叠的问题中，表明**深度比宽度更加重要**。

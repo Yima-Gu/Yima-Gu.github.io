@@ -41,21 +41,27 @@ post:
   # 图片懒加载
   lazyload:
     enable: true
-  
+
+  # 评论系统：这里只保留开关和类型；具体 giscus 参数需放在根级 giscus: 下
   comments:
     enable: true
-    type: disqus
-    giscus:
-      repo: "Yima-Gu/Yima-Gu.github.io"  # 你的仓库
-      repo_id: "R_kgDOPz-yyQ"           # 你的仓库 ID
-      category: "General"                 # 你的分类名称
-      category_id: "DIC_kwDOPz-yyc4CvvD2" # 你的分类 ID
-      mapping: "pathname"                 # 映射关系
-      reactions_enabled: "1"              # 启用 Reactions
-      emit_metadata: "0"                  # 发射元数据
-      input_position: "bottom"            # 输入框位置
-      theme: "preferred_color_scheme"     # 主题，preferred_color_scheme 会跟随系统明暗模式
-      lang: "zh-CN"                       # 语言
+    type: giscus
+
+# giscus 评论系统配置（需与 layout/_partials/comments/giscus.ejs 条件匹配）
+# 注意：键名使用官方要求的短横线形式，如 repo-id、category-id 等
+giscus:
+  repo: Yima-Gu/Yima-Gu.github.io            # 必填：GitHub 仓库 (owner/repo)
+  repo-id: R_kgDOPz-yyQ                     # 必填：对应仓库的 ID（在 giscus 配置页面可见）
+  category: General                         # 必填：讨论分类名称
+  category-id: DIC_kwDOPz-yyc4CvvD2         # 必填：讨论分类 ID
+  mapping: pathname                         # 文章与讨论映射方式
+  reactions-enabled: 1                      # 是否启用表情反应
+  emit-metadata: 0                          # 是否发送元数据事件
+  input-position: bottom                    # 输入框位置：top | bottom
+  lang: zh-CN                               # 语言
+  theme-light: preferred_color_scheme       # 亮色主题（可用 light / preferred_color_scheme 等）
+  theme-dark: preferred_color_scheme        # 暗色主题
+
 
 
 
@@ -64,7 +70,7 @@ about:
   banner_img: /img/bg/about.jpg
   banner_img_height: 70
   banner_mask_alpha: 0.3
-  avatar: /img/avatar.png
+  avatar: /img/my_avatar.png
   name: "Yima Gu"
   intro: "你好"
   icons:
@@ -87,22 +93,7 @@ custom_css:
 # 网站统计
 web_analytics:
   enable: true
+    
 
-# 评论系统
-comments:
-  enable: true
-  branch: main
-  type: 'giscus'
-  
-giscus:
-  repo: "Yima-Gu/Yima-Gu.github.io"  # 你的仓库
-  repo_id: "R_kgDOPz-yyQ"           # 你的仓库 ID
-  category: "General"                 # 你的分类名称
-  category_id: "DIC_kwDOPz-yyc4CvvD2" # 你的分类 ID
-  mapping: "pathname"                 # 映射关系
-  reactions_enabled: "1"              # 启用 Reactions
-  emit_metadata: "0"                  # 发射元数据
-  input_position: "bottom"            # 输入框位置
-  theme: "preferred_color_scheme"     # 主题，preferred_color_scheme 会跟随系统明暗模式
-  lang: "zh-CN"                       # 语言
+
 

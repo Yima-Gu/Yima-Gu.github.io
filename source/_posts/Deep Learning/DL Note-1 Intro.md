@@ -4,6 +4,7 @@ date: 2025-09-21 12:30
 tags:
   - DeepLearning
 math: true
+comments: true
 ---
 
 **人工智能 (*Artificial Intelligence*)**：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。

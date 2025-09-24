@@ -27,7 +27,7 @@
 <meta property="og:description" content="人工智能 (Artificial Intelligence)：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。 机器学习 (Machine Learning)：实现人工智能的一种核心方法。它的特点是不通过显式编程来解决问题，而是让算法从数据中自动学习规律。 深度学习(Deep Learning)：它主要使用一种叫做“神经网络”的复杂结构，从海量数据中获取高度抽象的特征。 深度学习的魅力在于">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-09-21T12:30:00.000Z">
-<meta property="article:modified_time" content="2025-09-24T14:53:50.831Z">
+<meta property="article:modified_time" content="2025-09-24T23:34:33.043Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta name="twitter:card" content="summary_large_image">
@@ -536,6 +536,41 @@ M1001 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
   
     <article id="comments" lazyload>
       
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
 
     </article>
   

@@ -286,7 +286,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/" target="_self">
         <div>
-          Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 $$ \hat{y} = g(\sum_{i=1}^{n}  x_i \theta_i +\theta_0) $$ 感知机在神经网络中也叫单元unit，是神经网络的基本组成单元。但是这样的单元会比人的神经元简单很多。 PLA 最
+          Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 y^=g(∑i=1nxiθi+θ0)\hat{y} = g(\sum_{i=1}^{n}  x_i \theta_i +\theta_0) y^​=g(i=1∑n​xi​θi​+θ0​) 感知机在神经网络中也叫单元unit，是神
         </div>
       </a>
 
@@ -448,6 +448,46 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
+          Deep Learning Lecture-4
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
+        <div>
+          Optimization Objective Function arg⁡min⁡O(D,θ)=∑i=1NL(yi,f(xi,θ))+Ω(θ)\arg \min \mathcal{O(D,\theta)}=  \sum_{i=1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) argminO(D,θ)=i=1∑N​L(yi​,f(xi​,θ))+Ω(θ) 上述
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-06-21 00:00" pubdate>
+              2025-06-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DeepLearning/">#DeepLearning</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
           Deep Learning Lecture-5
         </a>
@@ -488,46 +528,6 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
-          Deep Learning Lecture-4
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
-        <div>
-          Optimization Objective Function $$ \arg \min \mathcal{O(D,\theta)}=  \sum_{i=1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) $$ 上述目标可以可视化为以θ为横坐标、𝒪为纵坐标的函数图像，我们的目标是找到函数图像的最低点。这是一个非凸优化问题，是初值敏感的。“地形图”是否简单是
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
-              2025-06-21
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/DeepLearning/">#DeepLearning</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
         <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/" target="_self">
           Deep Learning Lecture-6
         </a>
@@ -536,7 +536,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/" target="_self">
         <div>
-          Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query q, Key k和Value v，计算相关性，也就是重要性，对于输出序列中的第i个输出有价值的信息： wij = a(qi,kj) 其中a是一个
+          Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query qqq, Key kkk和Value vvv，计算相关性，也就是重要性，对于输出序列中的第iii个输出有价值的信息： wij=a(qi,kj)w
         </div>
       </a>
 
@@ -576,7 +576,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/" target="_self">
         <div>
-          Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ* = arg maxθ𝔼x ∼ pdatalog pmodel(x|θ)    Pasted image 20250330094404  GAN:
+          Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ∗=arg⁡max⁡θEx∼pdatalog⁡pmodel(x∣θ)\theta^* = \arg\max_{\theta} \mathbb{E}_{
         </div>
       </a>
 
@@ -616,7 +616,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/" target="_self">
         <div>
-          Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training  BiT: Big
+          Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training   BiT: Big
         </div>
       </a>
 

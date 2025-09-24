@@ -19,15 +19,15 @@
   <meta name="author" content="Yima Gu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training  BiT: Big">
+    <meta name="description" content="Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training   BiT: Big">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep Learning Lecture-8">
 <meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training  BiT: Big">
+<meta property="og:description" content="Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training   BiT: Big">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-22T06:15:49.844Z">
+<meta property="article:modified_time" content="2025-09-24T14:53:50.904Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta name="twitter:card" content="summary_large_image">
@@ -45,6 +45,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -234,7 +236,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          386 字
+          397 字
         
       </span>
     
@@ -287,48 +289,68 @@
             
               <div class="markdown-body">
                 
-                <h2 id="transfer-learning">Transfer Learning</h2>
+                <h2 id="Transfer-Learning">Transfer Learning</h2>
 <p>模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。<strong>利用先验知识</strong>是实现强人工智能的一个前提条件。</p>
-<h2 id="pre-training">Pre-Training</h2>
+<h2 id="Pre-Training">Pre-Training</h2>
 <p>预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。</p>
-<h3 id="supervised-pre-training">Supervised Pre-Training</h3>
+<h3 id="Supervised-Pre-Training">Supervised Pre-Training</h3>
 <ul>
-<li>BiT: Big Transfer
+<li>
+<p>BiT: Big Transfer</p>
 <ul>
 <li>在大规模数据集上做预训练非常重要</li>
-</ul></li>
-<li>DAT: Domain Adaptative Transfer
+</ul>
+</li>
+<li>
+<p>DAT: Domain Adaptative Transfer</p>
 <ul>
 <li>在预训练的数据集上进行筛选对于模型的表现会更好</li>
-</ul></li>
-<li>迁移性受到数据间距离的影响</li>
-<li>在微调的过程中需要对很多层进行调整</li>
-<li>下游的任务和预训练的任务之间的距离越近，迁移的效果越好</li>
 </ul>
-<p>假设空间的解释： - 预训练的模型能在较小的较好的假设空间上寻找</p>
-<h4 id="multi-task-architecture">Multi-Task Architecture</h4>
+</li>
+<li>
+<p>迁移性受到数据间距离的影响</p>
+</li>
+<li>
+<p>在微调的过程中需要对很多层进行调整</p>
+</li>
+<li>
+<p>下游的任务和预训练的任务之间的距离越近，迁移的效果越好</p>
+</li>
+</ul>
+<p>假设空间的解释：</p>
+<ul>
+<li>预训练的模型能在较小的较好的假设空间上寻找</li>
+</ul>
+<h4 id="Multi-Task-Architecture">Multi-Task Architecture</h4>
 <ul>
 <li>Hard Parameter Sharing
 <ul>
 <li>直接共享参数</li>
 <li>共享的参数是所有任务都需要的</li>
-</ul></li>
+</ul>
+</li>
 <li>Soft Parameter Sharing
 <ul>
 <li>每个任务使用一个模型</li>
-</ul></li>
+</ul>
+</li>
 <li>TASKONOMY
 <ul>
 <li>首先进行训练，之后构建任务的关系图，在训练的过程中找一些更相近的任务进行共享</li>
-</ul></li>
 </ul>
-<p>多任务学习的损失函数： <span class="math display">$$
-\min_{\theta} \sum_{i=1}^{T} w_i \mathcal{L}_i(\theta)
-$$</span> 其中 <span
-class="math inline"><em>w</em><sub><em>i</em></sub></span>
-是每个任务的权重 - GradNorm：使得每个任务的梯度相同 - Task
-uncertainty：每个任务的损失函数的权重是不同的 - Pareto optimal
-solution： - Optimize for the worst task - Regularization：</p>
+</li>
+</ul>
+<p>多任务学习的损失函数：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><munder><mrow><mi>min</mi><mo>⁡</mo></mrow><mi>θ</mi></munder><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><msub><mi>w</mi><mi>i</mi></msub><msub><mi mathvariant="script">L</mi><mi>i</mi></msub><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\min_{\theta} \sum_{i=1}^{T} w_i \mathcal{L}_i(\theta)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:3.106em;vertical-align:-1.2777em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6679em;"><span style="top:-2.3479em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">min</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7521em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2777em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathcal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 是每个任务的权重</p>
+<ul>
+<li>GradNorm：使得每个任务的梯度相同</li>
+<li>Task uncertainty：每个任务的损失函数的权重是不同的</li>
+<li>Pareto optimal solution：</li>
+<li>Optimize for the worst task</li>
+<li>Regularization：</li>
+</ul>
 
                 
               </div>
@@ -473,7 +495,6 @@ solution： - Optimize for the worst task - Regularization：</p>
 
   
   
-
 
 
 
@@ -667,49 +688,6 @@ solution： - Optimize for the worst task - Regularization：</p>
 
 
   <script>Fluid.plugins.imageCaption();</script>
-
-  
-      <script>
-        if (!window.MathJax) {
-          window.MathJax = {
-            tex    : {
-              inlineMath: { '[+]': [['$', '$']] }
-            },
-            loader : {
-              load: ['ui/lazy']
-            },
-            options: {
-              renderActions: {
-                insertedScript: [200, () => {
-                  document.querySelectorAll('mjx-container').forEach(node => {
-                    let target = node.parentNode;
-                    if (target.nodeName.toLowerCase() === 'li') {
-                      target.parentNode.classList.add('has-jax');
-                    }
-                  });
-                }, '', false]
-              }
-            }
-          };
-        } else {
-          MathJax.startup.document.state(0);
-          MathJax.texReset();
-          MathJax.typeset();
-          MathJax.typesetPromise();
-        }
-
-        Fluid.events.registerRefreshCallback(function() {
-          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
-            MathJax.startup.document.state(0);
-            MathJax.texReset();
-            MathJax.typeset();
-            MathJax.typesetPromise();
-          }
-        });
-      </script>
-    
-
-  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 

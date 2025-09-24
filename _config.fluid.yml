@@ -30,8 +30,8 @@ post:
   # 数学公式支持
   math:
     enable: true
-    specific: tru
-    engine: 'mathjax'
+    specific: true
+    engine: 'katex'
     
   # 代码高亮
   highlight:
@@ -68,8 +68,8 @@ about:
   name: "Yima Gu"
   intro: "你好"
   icons:
-    - { class: 'iconfont icon-github-fill', link: 'https://github.com/Yima-Gu', tip: 'GitHub' }
     - { class: 'iconfont icon-zhihu-fill', link: 'https://www.zhihu.com/people/84-53-25-53', tip: 'zhihu' }
+    - { class: 'iconfont icon-github-fill', link: 'https://github.com/Yima-Gu', tip: 'GitHub' }
     - { class: 'iconfont icon-mail', link: 'mailto:yima.gu.23@gmail.com', tip: 'mail' }
   
 # 页脚

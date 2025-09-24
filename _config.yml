@@ -105,3 +105,10 @@ deploy:
   repository: git@github.com:Yima-Gu/Yima-Gu.github.io.git
   branch: gh-pages
 
+
+markdown:
+  render:
+    html: true
+  plugins:
+    # 启用 markdown-it-katex 插件
+    - '@traptitech/markdown-it-katex'

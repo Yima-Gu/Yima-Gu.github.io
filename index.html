@@ -238,15 +238,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/09/21/Deep%20Learning/DL%20Note-1%20Intro/" target="_self">
-          DL Note-1 Intro
+        <a href="/2025/07/28/Deep%20Learning/DL%20Note-5%20RNN/" target="_self">
+          DL Note-5 RNN
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/09/21/Deep%20Learning/DL%20Note-1%20Intro/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/28/Deep%20Learning/DL%20Note-5%20RNN/" target="_self">
         <div>
-          人工智能 (Artificial Intelligence)：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。 机器学习 (Machine Learning)：实现人工智能的一种核心方法。它的特点是不通过显式编程来解决问题，而是让算法从数据中自动学习规律。 深度学习(Deep Learning)：它主要使用一种叫做“神经网络”的复杂结构，从海量数据中获取高度抽象的特征。 深度学习的魅力在于
+          Recurrent Network Sequence Model 序列建模任务是指对一个序列的输入进行建模，比如文本、音频、视频等。序列模型的输入和输出都是序列，如机器翻译、语音识别、视频分类等任务。重要的是捕捉序列中的上下文。 Basic Principle Local Dependency Local Dependency：对于序列中的每一个元素，它的预测是依赖于它的前面的元素的。这种依赖关系
         </div>
       </a>
 
@@ -254,8 +254,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-09-21 12:30" pubdate>
-              2025-09-21
+            <time datetime="2025-07-28 12:30" pubdate>
+              2025-07-28
             </time>
           </div>
         
@@ -265,6 +265,8 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/DeepLearning/">#DeepLearning</a>
+            
+              <a href="/tags/RNN/">#RNN</a>
             
           </div>
         
@@ -278,15 +280,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/" target="_self">
-          DL Note-2 MLP
+        <a href="/2025/07/21/Deep%20Learning/DL%20Note-4%20Optimization/" target="_self">
+          DL Note-4 Optimization
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/21/Deep%20Learning/DL%20Note-4%20Optimization/" target="_self">
         <div>
-          Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 y^=g(∑i=1nxiθi+θ0)\hat{y} = g(\sum_{i=1}^{n}  x_i \theta_i +\theta_0) y^​=g(i=1∑n​xi​θi​+θ0​) 感知机在神经网络中也叫单元unit，是神
+          Optimization Objective Function 在深度学习中，训练模型本质上是一个优化过程。我们的核心目标是寻找一组模型参数θ\thetaθ，使得在给定数据集D\mathcal{D}D上的目标函数O(D,θ)\mathcal{O}(\mathcal{D}, \theta)O(D,θ)最小化。该目标函数通常由两部分构成： arg⁡min⁡O(D,θ)=∑i=1NL(yi,f(xi,θ
         </div>
       </a>
 
@@ -294,8 +296,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-09-21 12:30" pubdate>
-              2025-09-21
+            <time datetime="2025-07-21 14:30" pubdate>
+              2025-07-21
             </time>
           </div>
         
@@ -306,7 +308,7 @@
             
               <a href="/tags/DeepLearning/">#DeepLearning</a>
             
-              <a href="/tags/MLP/">#MLP</a>
+              <a href="/tags/Optimization/">#Optimization</a>
             
           </div>
         
@@ -364,15 +366,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
-          Deep Learning Lecture-4
+        <a href="/2025/07/10/Deep%20Learning/DL%20Note-3%20CNN/" target="_self">
+          DL Note-3 CNN
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-4/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/07/10/Deep%20Learning/DL%20Note-3%20CNN/" target="_self">
         <div>
-          Optimization Objective Function arg⁡min⁡O(D,θ)=∑i=1NL(yi,f(xi,θ))+Ω(θ)\arg \min \mathcal{O(D,\theta)}=  \sum_{i=1}^{N} L(y_i, f(x_i,\theta)) + \Omega(\theta) argminO(D,θ)=i=1∑N​L(yi​,f(xi​,θ))+Ω(θ) 上述
+          Convolutional Neural Networks 卷积神经网络（CNN） 的灵感源于生物视觉系统，其设计初衷就是为了高效处理图像数据。早期的成功应用主要集中在物体识别领域，而更深层次的物体关系推断，至今仍是计算机视觉的前沿挑战。 在生物的研究中，存在感受野receptive field的概念，这是指神经元对于输入的局部区域的敏感程度。在卷积网络中，我们也引入了这个概念。相邻的神经元处理的
         </div>
       </a>
 
@@ -380,8 +382,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
-              2025-06-21
+            <time datetime="2025-07-10 12:30" pubdate>
+              2025-07-10
             </time>
           </div>
         
@@ -391,6 +393,8 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/DeepLearning/">#DeepLearning</a>
+            
+              <a href="/tags/CNN/">#CNN</a>
             
           </div>
         
@@ -404,15 +408,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-3/" target="_self">
-          Deep Learning Lecture-3
+        <a href="/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/" target="_self">
+          DL Note-2 MLP
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-3/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/" target="_self">
         <div>
-          Convolutional Neural Networks 卷积网络最早是用来处理图像的问题。目前较为成功的研究是物体识别问题，对于物体之间的关系推断依然是计算机视觉的前沿领域。 在生物的研究中，存在感受野receptive field的概念，这是指神经元对于输入的局部区域的敏感程度。在卷积网络中，我们也引入了这个概念。相邻的神经元处理的是相邻的图像区域，这样的设计使得网络能够捕捉到图像的空间结构
+          Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 y^=g(∑i=1nxiθi+θ0)\hat{y} = g(\sum_{i=1}^{n}  x_i \theta_i +\theta_0) y^​=g(i=1∑n​xi​θi​+θ0​) 感知机在神经网络中也叫单元unit，是神
         </div>
       </a>
 
@@ -420,8 +424,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
-              2025-06-21
+            <time datetime="2025-06-28 12:30" pubdate>
+              2025-06-28
             </time>
           </div>
         
@@ -431,6 +435,8 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/DeepLearning/">#DeepLearning</a>
+            
+              <a href="/tags/MLP/">#MLP</a>
             
           </div>
         
@@ -444,15 +450,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
-          Deep Learning Lecture-5
+        <a href="/2025/06/21/Deep%20Learning/DL%20Note-1%20Intro/" target="_self">
+          DL Note-1 Intro
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-5/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/DL%20Note-1%20Intro/" target="_self">
         <div>
-          Recurrent Network Sequence Model 序列建模任务是指对一个序列的输入进行建模，比如文本、音频、视频等。序列模型的输入和输出都是序列，比如机器翻译、语音识别、视频分类等任务。重要的是捕捉序列中的上下文。 Basic Principle Local Dependency Local Dependency：对于一个序列中的每一个元素，它的预测是依赖于它的前面的元素的。这种依
+          人工智能 (Artificial Intelligence)：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。 机器学习 (Machine Learning)：实现人工智能的一种核心方法。它的特点是不通过显式编程来解决问题，而是让算法从数据中自动学习规律。 深度学习(Deep Learning)：它主要使用一种叫做“神经网络”的复杂结构，从海量数据中获取高度抽象的特征。 深度学习的魅力在于
         </div>
       </a>
 
@@ -460,7 +466,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
+            <time datetime="2025-06-21 12:30" pubdate>
               2025-06-21
             </time>
           </div>
@@ -533,46 +539,6 @@
       <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/" target="_self">
         <div>
           Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ∗=arg⁡max⁡θEx∼pdatalog⁡pmodel(x∣θ)\theta^* = \arg\max_{\theta} \mathbb{E}_{
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-21 00:00" pubdate>
-              2025-06-21
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/DeepLearning/">#DeepLearning</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/" target="_self">
-          Deep Learning Lecture-8
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-8/" target="_self">
-        <div>
-          Transfer Learning 模型在较大规模中的数据集中得到成功，在较小的数据集中进进行学习。利用先验知识是实现强人工智能的一个前提条件。 Pre-Training 预训练的结果是一个模型，然后在小数据集上进行微调。预训练提供的是一个先验知识，然后再进行微调。这已经是深度学习中的共识，在小数据集中做微调是一个非常好的方法。 Supervised Pre-Training   BiT: Big
         </div>
       </a>
 

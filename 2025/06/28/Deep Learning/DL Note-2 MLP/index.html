@@ -22,23 +22,23 @@
     <meta name="description" content="Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 y^&#x3D;g(∑i&#x3D;1nxiθi+θ0)\hat{y} &#x3D; g(\sum_{i&#x3D;1}^{n}  x_i \theta_i +\theta_0) y^​&#x3D;g(i&#x3D;1∑n​xi​θi​+θ0​) 感知机在神经网络中也叫单元unit，是神">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DL Note-2 MLP">
-<meta property="og:url" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/index.html">
+<meta property="og:url" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
 <meta property="og:description" content="Brain and Neuron 感知机Perceptron是神经元的一个相当简单的数学模型，包括：输入、权重、激活函数、输出。其实是在空间超平面上嵌入了一个非线性函数。 y^&#x3D;g(∑i&#x3D;1nxiθi+θ0)\hat{y} &#x3D; g(\sum_{i&#x3D;1}^{n}  x_i \theta_i +\theta_0) y^​&#x3D;g(i&#x3D;1∑n​xi​θi​+θ0​) 感知机在神经网络中也叫单元unit，是神">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B5ABA24F6-F5A5-48C8-AE9F-1E8524E35979%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B9A215F21-185B-4C55-B872-413D388E5321%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7BE178BAD1-DE9C-44E5-A665-D550AE3A9558%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B139D48AB-F664-4CE8-AC05-97B772908A85%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B79D51D58-D7B7-485E-9A0F-5F615FE27545%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B862689B6-2775-4822-8FAC-B0450B360BA0%7D.png">
-<meta property="article:published_time" content="2025-09-21T12:30:00.000Z">
-<meta property="article:modified_time" content="2025-09-24T23:34:33.044Z">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B5ABA24F6-F5A5-48C8-AE9F-1E8524E35979%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B9A215F21-185B-4C55-B872-413D388E5321%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7BE178BAD1-DE9C-44E5-A665-D550AE3A9558%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B139D48AB-F664-4CE8-AC05-97B772908A85%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B79D51D58-D7B7-485E-9A0F-5F615FE27545%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B862689B6-2775-4822-8FAC-B0450B360BA0%7D.png">
+<meta property="article:published_time" content="2025-06-28T12:30:00.000Z">
+<meta property="article:modified_time" content="2025-10-07T08:24:07.270Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta property="article:tag" content="MLP">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://yima-gu.github.io/2025/09/21/Deep%20Learning/DL%20Note-2%20MLP/%7B5ABA24F6-F5A5-48C8-AE9F-1E8524E35979%7D.png">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/06/28/Deep%20Learning/DL%20Note-2%20MLP/%7B5ABA24F6-F5A5-48C8-AE9F-1E8524E35979%7D.png">
   
   
   
@@ -232,8 +232,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-09-21 12:30" pubdate>
-          2025年9月21日 下午
+        <time datetime="2025-06-28 12:30" pubdate>
+          2025年6月28日 下午
         </time>
       </span>
     
@@ -565,7 +565,7 @@ c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v600 v585 h43z"/></svg></span></span>
   <div class="license-box my-3">
     <div class="license-title">
       <div>DL Note-2 MLP</div>
-      <div>https://yima-gu.github.io/2025/09/21/Deep Learning/DL Note-2 MLP/</div>
+      <div>https://yima-gu.github.io/2025/06/28/Deep Learning/DL Note-2 MLP/</div>
     </div>
     <div class="license-meta">
       
@@ -577,7 +577,7 @@ c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v600 v585 h43z"/></svg></span></span>
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年9月21日</div>
+          <div>2025年6月28日</div>
         </div>
       
       
@@ -609,9 +609,9 @@ c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v600 v585 h43z"/></svg></span></span>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/09/21/Deep%20Learning/DL%20Note-1%20Intro/" title="DL Note-1 Intro">
+                      <a href="/2025/07/10/Deep%20Learning/DL%20Note-3%20CNN/" title="DL Note-3 CNN">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DL Note-1 Intro</span>
+                        <span class="hidden-mobile">DL Note-3 CNN</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -619,8 +619,8 @@ c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v600 v585 h43z"/></svg></span></span>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/20/ML_Lee/AI%20Agent/" title="AI Agent Notes">
-                        <span class="hidden-mobile">AI Agent Notes</span>
+                      <a href="/2025/06/21/Deep%20Learning/DL%20Note-1%20Intro/" title="DL Note-1 Intro">
+                        <span class="hidden-mobile">DL Note-1 Intro</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

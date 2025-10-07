@@ -1,6 +1,6 @@
 ---
 title: DL Note-2 MLP
-date: 2025-09-21 12:30
+date: 2025-06-28 12:30
 tags:
   - DeepLearning
   - MLP

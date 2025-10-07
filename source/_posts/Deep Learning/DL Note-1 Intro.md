@@ -1,6 +1,6 @@
 ---
 title: DL Note-1 Intro
-date: 2025-09-21 12:30
+date: 2025-06-21 12:30
 tags:
   - DeepLearning
 math: true

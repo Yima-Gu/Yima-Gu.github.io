@@ -1,0 +1,988 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、传输层概述 (Transport Layer Services) 1.1 学习目标 (Goals)  理解传输层服务背后的原理 (Principles)  多路复用 (Multiplexing) &#x2F; 多路分用 (Demultiplexing) 可靠数据传输 (Reliable Data Transfer) 流量控制 (Flow Control) 拥塞控制 (Congestion Control">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Transport-Layer-01">
+<meta property="og:url" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="一、传输层概述 (Transport Layer Services) 1.1 学习目标 (Goals)  理解传输层服务背后的原理 (Principles)  多路复用 (Multiplexing) &#x2F; 多路分用 (Demultiplexing) 可靠数据传输 (Reliable Data Transfer) 流量控制 (Flow Control) 拥塞控制 (Congestion Control">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=37&rect=12,47,699,512">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=41&rect=27,64,678,499">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=42&rect=5,39,711,507">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=45&rect=6,8,711,524">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=47&rect=20,53,681,510">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=60&rect=19,46,710,517&color=yellow">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=63&rect=37,42,696,510&color=yellow">
+<meta property="og:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=65&rect=19,37,709,498&color=yellow">
+<meta property="article:published_time" content="2025-10-30T20:49:00.000Z">
+<meta property="article:modified_time" content="2025-10-30T13:07:58.574Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="Network">
+<meta property="article:tag" content="Transport-Layer">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/Chapter3_part1.pdf#page=37&rect=12,47,699,512">
+  
+  
+  
+  <title>Transport-Layer-01 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Transport-Layer-01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-30 20:49" pubdate>
+          2025年10月30日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          25 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Transport-Layer-01</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、传输层概述-Transport-Layer-Services">一、传输层概述 (Transport Layer Services)</h2>
+<h3 id="1-1-学习目标-Goals">1.1 学习目标 (Goals)</h3>
+<ul>
+<li><strong>理解传输层服务背后的原理 (Principles)</strong>
+<ul>
+<li>多路复用 (Multiplexing) / 多路分用 (Demultiplexing)</li>
+<li>可靠数据传输 (Reliable Data Transfer)</li>
+<li>流量控制 (Flow Control)</li>
+<li>拥塞控制 (Congestion Control)</li>
+</ul>
+</li>
+<li><strong>学习互联网中的传输层协议 (Protocols)</strong>
+<ul>
+<li><strong>UDP</strong>: 无连接传输 (Connectionless Transport)</li>
+<li><strong>TCP</strong>: 面向连接的传输 (Connection-oriented Transport)</li>
+<li>TCP 拥塞控制 (TCP Congestion Control)</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-传输层的核心功能">1.2 传输层的核心功能</h3>
+<ul>
+<li>传输层协议为运行在不同主机上的<mark><strong>应用进程 (Application Processes)</strong></mark> 之间提供<mark><strong>逻辑通信 (Logical Communication)</strong></mark>。</li>
+<li>传输协议只运行在<strong>端系统 (End Systems)</strong> 中。
+<ul>
+<li><strong>发送方 (Send Side)</strong>: 将应用层的报文 (Messages) 分割成<strong>报文段 (Segments)</strong>，然后传递给网络层。</li>
+<li><strong>接收方 (Rcv Side)</strong>: 将接收到的报文段重组成报文，并传递给应用层。</li>
+</ul>
+</li>
+<li>互联网为应用提供了多种传输协议，主要是 TCP 和 UDP。</li>
+</ul>
+<h3 id="1-3-传输层-vs-网络层-Transport-vs-Network-Layer">1.3 传输层 vs. 网络层 (Transport vs. Network Layer)</h3>
+<ul>
+<li><strong>网络层 (Network Layer)</strong>: 提供主机 (Hosts) 之间的逻辑通信。</li>
+<li><strong>传输层 (Transport Layer)</strong>: 提供进程 (Processes) 之间的<font color="#ffc000">逻辑通信</font>。 它依赖于网络层提供的服务，并对其进行增强。</li>
+</ul>
+<div class="note note-info">
+            <ul><li>12个孩子之间互相写信。</li><li>进程 (Processes) = 孩子们 (Kids)</li><li>应用报文 (App Messages) = 信封里的信件 (Letters)</li><li>主机 (Hosts) = 房子 (Houses)</li><li><strong>传输层协议</strong> = Ann 和 Bill（负责在屋里收发信件，确保信件交给正确的孩子）。</li><li><strong>网络层协议</strong> = 邮政服务 (Postal Service)（负责在房子之间传递信件）。</li></ul>
+          </div>
+<h3 id="1-4-互联网协议栈中的数据单位">1.4 互联网协议栈中的数据单位</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">协议层</th>
+<th style="text-align:left">数据基本单位</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>应用层 (Application Layer)</strong></td>
+<td style="text-align:left">消息 (Message)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>传输层 (Transport Layer)</strong></td>
+<td style="text-align:left">数据段 (Segment)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>网络层 (Network Layer)</strong></td>
+<td style="text-align:left">数据包 (Datagram)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>链路层 (Link Layer)</strong></td>
+<td style="text-align:left">数据帧 (Frame)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>物理层 (Physical Layer)</strong></td>
+<td style="text-align:left">符号 (Symbol)、比特 (Bit)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="二、多路复用与多路分用-Multiplexing-and-Demultiplexing">二、多路复用与多路分用 (Multiplexing and Demultiplexing)</h2>
+<ul>
+<li><strong>多路分用 (Demultiplexing)</strong>: 在接收方主机，将收到的报文段根据头部信息分发给正确的套接字 (Socket)。</li>
+<li><strong>多路复用 (Multiplexing)</strong>: 在发送方主机，从多个套接字收集数据，并为每个数据块封装上头部信息（用于后续的分用），然后传递给网络层。</li>
+</ul>
+<h3 id="2-1-分用是如何工作的">2.1 分用是如何工作的</h3>
+<p>主机使用 <strong>IP 地址</strong> 和 <strong>端口号 (Port Numbers)</strong> 将报文段定向到正确的套接字。</p>
+<ul>
+<li>每个数据报 (Datagram) 都包含源 IP 地址和目的 IP 地址。</li>
+<li>每个数据报携带一个传输层报文段 (Segment)。</li>
+<li>每个报文段都包含源端口号 (Source Port #) 和目的端口号 (Dest Port #)。</li>
+</ul>
+<h3 id="2-2-无连接分用-Connectionless-Demultiplexing-UDP">2.2 无连接分用 (Connectionless Demultiplexing - UDP)</h3>
+<ul>
+<li>一个 UDP 套接字由一个包含<mark><strong>两个元素</mark>的元组 (Two-tuple)</strong> 来标识：<code>(目的IP地址, 目的端口号)</code>。</li>
+<li>当主机收到一个 UDP 报文段时，它检查报文段中的<strong>目的端口号</strong>，并将其定向到绑定该端口号的套接字。</li>
+<li>因此，来自不同源 IP 地址或源端口号的 IP 数据报，只要它们的目的端口号相同，都会被定向到同一个 UDP 套接字。</li>
+</ul>
+<h3 id="2-3-面向连接的分用-Connection-oriented-Demultiplexing-TCP">2.3 面向连接的分用 (Connection-oriented Demultiplexing - TCP)</h3>
+<ul>
+<li>一个 TCP 套接字由一个包含<strong>四个元素的元组 (Four-tuple)</strong> 来标识：<code>(源IP地址, 源端口号, 目的IP地址, 目的端口号)</code>。</li>
+<li>接收方主机会使用这<strong>全部四个值</strong>来将报文段定向到正确的套接字。</li>
+<li>这意味着服务器可以为每一个连接的客户端维护一个独立的套接字，每个套接字都由其唯一的四元组标识。</li>
+</ul>
+<hr>
+<h2 id="三、无连接传输-UDP-User-Datagram-Protocol">三、无连接传输: UDP (User Datagram Protocol)</h2>
+<p>UDP 是一种 “精简” 或 “最基本” 的互联网传输协议。</p>
+<h3 id="3-1-UDP-的特点">3.1 UDP 的特点</h3>
+<ul>
+<li><strong>尽力而为 (Best Effort)</strong>: UDP 报文段可能会<strong>丢失 (Lost)</strong> 或<strong>乱序 (Delivered out of order)</strong> 到达。</li>
+<li><strong>无连接 (Connectionless)</strong>: 在数据传输前，发送方和接收方之间没有<strong>握手 (Handshaking)</strong> 过程。 每个 UDP 报文段都是独立处理的。</li>
+<li><strong>为什么需要 UDP?</strong>
+<ul>
+<li><strong>无连接建立延迟</strong>: 省去了建立连接所需的时间。</li>
+<li><strong>简单</strong>: 发送方和接收方无需维护连接状态。</li>
+<li><strong>头部开销小</strong>: UDP 的头部只有 8 字节，非常小。</li>
+<li><strong>无拥塞控制</strong>: UDP 可以按照应用期望的速率发送数据，不会被拥塞控制限制。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-UDP-的应用">3.2 UDP 的应用</h3>
+<ul>
+<li>常用于<mark><strong>流媒体</mark>应用 (Streaming Multimedia Apps)</strong>，因为这类应用能容忍部分数据丢失 (Loss Tolerant)，但对传输速率敏感 (Rate Sensitive)。</li>
+<li>其他用途包括 <mark><strong>DNS</strong> 和 <strong>SNMP</strong></mark>。</li>
+<li>如果需要在 UDP 上实现可靠传输，必须在<strong>应用层 (Application Layer)</strong> 增加可靠性机制。</li>
+</ul>
+<h3 id="3-3-UDP-报文段格式与校验和-Checksum">3.3 UDP 报文段格式与校验和 (Checksum)</h3>
+<ul>
+<li><strong>UDP 头部</strong>: 包括源端口、目的端口、长度和校验和。</li>
+<li><strong>校验和 (Checksum)</strong>: 用于检测传输过程中报文段出现的<strong>差错 (Errors)</strong>，例如比特翻转。
+<ul>
+<li><strong>发送方</strong>: 将报文段内容视为一系列16比特的整数，计算它们的<strong>反码和 (1’s Complement Sum)</strong>（将进位的1加在最低位上），并将结果存入校验和字段。</li>
+<li><strong>接收方</strong>: 对收到的报文段重新计算校验和，并与头部中的校验和字段进行比对。 如果不匹配，则检测到错误。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="四、可靠数据传输原理-Principles-of-Reliable-Data-Transfer-RDT">四、可靠数据传输原理 (Principles of Reliable Data Transfer - RDT)</h2>
+<p>目标：在不可靠的信道上实现可靠的数据传输。 这是网络领域最重要的十大主题之一。 我们将通过有限状态机 (FSM) 逐步构建可靠数据传输协议。</p>
+<h3 id="4-1-RDT-1-0-可靠信道上的可靠传输">4.1 RDT 1.0: 可靠信道上的可靠传输</h3>
+<ul>
+<li><strong>假设</strong>: 底层信道是完全可靠的，没有比特错误，也没有丢包。</li>
+<li><strong>实现</strong>: 发送方从上层接收数据，打包后发送；接收方从信道接收数据，解包后交付给上层。</li>
+</ul>
+<h3 id="4-2-RDT-2-0-应对比特错误-Channel-with-Bit-Errors">4.2 RDT 2.0: 应对<strong>比特错误</strong> (Channel with Bit Errors)</h3>
+<ul>
+<li><strong>新情况</strong>: 底层信道可能会翻转数据包中的比特，但是不会有丢包。<mark>接收方必须要有发现错误的机制</mark></li>
+<li><strong>解决方案</strong>: 引入<strong>错误检测</strong>和<strong>接收方反馈</strong>机制。
+<ul>
+<li><strong>校验和 (Checksum)</strong>: 用于检测比特错误。</li>
+<li><strong>确认 (Acknowledgements, ACKs)</strong>: 接收方告知发送方数据包已成功接收，可以发送下一个数据包。</li>
+<li><strong>否定确认 (Negative Acknowledgements, NAKs)</strong>: 接收方告知发送方数据包已损坏。</li>
+<li><strong>重传 (Retransmission)</strong>: 发送方在收到 NAK 后，重传该数据包。</li>
+</ul>
+</li>
+</ul>
+<img src="Chapter3_part1.pdf#page=37&rect=12,47,699,512" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.37">
+### 4.3 RDT 2.1 & 2.2: 应对**损坏的ACK/NAK**
+<ul>
+<li><strong>RDT 2.0 的致命缺陷</strong>: 如果 ACK 或 NAK 本身在传输中损坏了怎么办？ 发送方无法确定接收方的状态，直接重传可能导致<strong>重复数据包 (Duplicate Packets)</strong>。</li>
+<li><strong>解决方案</strong>:
+<ul>
+<li><strong>RDT 2.1</strong>: 引入<strong>序列号 (Sequence Number)</strong>。 发送方为每个数据包添加序列号（如0和1交替）。 接收方通过检查序列号来判断是否是重复数据包，如果是则直接丢弃。<br>
+<img src="Chapter3_part1.pdf#page=41&rect=27,64,678,499" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.41"><img src="Chapter3_part1.pdf#page=42&rect=5,39,711,507" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.42"></li>
+<li><strong>RDT 2.2 (无 NAK 协议)</strong>: 接收方只发送 ACK。 为了告知哪个包被正确接收，ACK 中必须包含被确认包的序列号。 如果发送方收到一个<mark><strong>重复的 ACK</strong>，就执行与收到 NAK 相同</mark>的操作：重传当前数据包。<br>
+<img src="Chapter3_part1.pdf#page=45&rect=6,8,711,524" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.45"></li>
+</ul>
+</li>
+</ul>
+<h3 id="4-4-RDT-3-0-应对丢包-Packet-Loss">4.4 RDT 3.0: 应对<strong>丢包</strong> (Packet Loss)</h3>
+<ul>
+<li><strong>新情况</strong>: 底层信道不仅会出错，还可能丢失数据包（数据或ACK）。</li>
+<li><strong>解决方案</strong>: 引入<strong>定时器 (Countdown Timer)</strong>。
+<ul>
+<li>发送方在发送数据包后，启动一个定时器。</li>
+<li>如果在定时器超时前没有收到对应的 ACK，就认为数据包丢失，并<strong>重传 (Retransmits)</strong> 该数据包。</li>
+<li>序列号机制可以很好地处理因延迟而非丢失导致的重传（即重复包问题）。</li>
+</ul>
+</li>
+<li>RDT 3.0 也被称为<strong>停等协议 (Stop-and-Wait Protocol)</strong>。<br>
+<img src="Chapter3_part1.pdf#page=47&rect=20,53,681,510" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.47"></li>
+</ul>
+<h3 id="4-5-RDT-机制总结">4.5 RDT 机制总结</h3>
+<p>为了在不可靠信道上实现可靠数据传输，最终的解决方案整合了四项核心机制：</p>
+<ol>
+<li><strong>校验和 (Checksum)</strong>: 解决比特错误问题。</li>
+<li><strong>确认 (ACK)</strong>: 提供接收方反馈。</li>
+<li><strong>序列号 (Sequence Number)</strong>: 解决重复数据包问题。</li>
+<li><strong>定时器 (Timer)</strong>: 解决丢包问题。</li>
+</ol>
+<h3 id="4-6-RDT-3-0-协议性能分析">4.6 RDT 3.0 协议性能分析</h3>
+<p>rdt3.0 协议虽然实现了可靠传输，但其“<strong>停止-等待</strong>”（Stop-and-Wait）机制在现代网络（高带宽、高延迟）中性能极差，导致带宽资源被严重浪费。</p>
+<h4 id="1-问题根源：停止-等待机制">1. 问题根源：停止-等待机制</h4>
+<ul>
+<li><strong>工作模式</strong>: 发送方每发送一个数据包，就必须<strong>停止</strong>并<strong>等待</strong>接收方返回确认（ACK）后，才能发送下一个。</li>
+<li><strong>时间浪费</strong>: 在等待ACK返回的整个往返时间（RTT）内，发送方完全处于<strong>空闲状态</strong>，无法利用链路发送更多数据。</li>
+</ul>
+<h4 id="2-实例量化分析">2. 实例量化分析</h4>
+<p>PPT中的例子生动地展示了这个问题：</p>
+<ul>
+<li><strong>场景</strong>: 在一个 1 Gbps 的高速链路上，往返延迟（RTT）为 30ms。</li>
+<li><strong>发送耗时 (<code>L/R</code>)</strong>: 发送一个数据包本身只需要 <strong>8微秒</strong>。</li>
+<li><strong>等待耗时 (<code>RTT</code>)</strong>: 而等待确认却需要 <strong>30,000微秒</strong>。</li>
+<li><strong>链路利用率 (<code>Utilization</code>)</strong>: 计算得出，发送方真正在发送数据的时间仅占整个周期的 <strong>0.027%</strong>。超过 <strong>99.9%</strong> 的时间里，高速链路都处于闲置状态。</li>
+</ul>
+<hr>
+<h2 id="五、流水线协议-Pipelined-Protocols">五、流水线协议 (Pipelined Protocols)</h2>
+<h3 id="5-1-停等协议的性能问题">5.1 停等协议的性能问题</h3>
+<p>RDT 3.0 (停等协议) 虽然能工作，但性能极差。 发送方在大部分时间里都在等待 ACK，导致链路利用率 (Utilization) 非常低。</p>
+<h3 id="5-2-流水线-Pipelining">5.2 流水线 (Pipelining)</h3>
+<ul>
+<li><strong>核心思想</strong>: 允许发送方在收到 ACK 之前，连续发送多个数据包。 这就像流水线一样，让多个数据包同时处于“在途 (in-flight)”状态。</li>
+<li><strong>优点</strong>: 极大地提高了链路利用率。</li>
+<li><strong>要求</strong>:
+<ul>
+<li>需要更大的序列号范围。</li>
+<li>发送方和/或接收方需要设置缓冲区 (Buffering)。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="六、滑动窗口协议：回退N帧-Go-Back-N-与选择重传-Selective-Repeat">六、滑动窗口协议：回退N帧 (Go-Back-N) 与选择重传 (Selective Repeat)</h2>
+<p>流水线协议有两种通用形式：回退N帧 (Go-Back-N) 和选择重传 (Selective Repeat)。 它们都属于<strong>滑动窗口 (Sliding Window)</strong> 方法。</p>
+<h3 id="6-1-回退N帧-Go-Back-N-GBN">6.1 回退N帧 (Go-Back-N, GBN)</h3>
+<ul>
+<li><strong>发送方</strong>:
+<ul>
+<li>维护一个大小为 N 的发送窗口，最多允许有 N 个未被确认的数据包在流水线中。</li>
+<li>只为<strong>最老的、未被确认的</strong>数据包设置一个计时器。</li>
+<li>当计时器超时，<strong>重传所有已发送但未被确认的</strong>数据包。</li>
+<li>当接收到窗口最左端的包的ACK时，<strong>重置</strong>计时器并<strong>移动窗口</strong>，发送移动后的窗口中未发送的数据包</li>
+</ul>
+</li>
+<li><strong>接收方</strong>:
+<ul>
+<li>只发送<strong>累积确认 (Cumulative ACKs)</strong>。 <code>ACK(n)</code> 表示序列号为 n 及 n 之前的<strong>所有数据包都已正确接收</strong>。</li>
+<li>对于乱序到达的数据包，<strong>直接丢弃 (Discard)</strong>，不进行缓存。 接收方会重新发送具有最高有序序列号的 ACK。<br>
+<img src="Chapter3_part1.pdf#page=60&rect=19,46,710,517&color=yellow" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.60"><br>
+<img src="Chapter3_part1.pdf#page=63&rect=37,42,696,510&color=yellow" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.63"></li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-选择重传-Selective-Repeat-SR">6.2 选择重传 (Selective Repeat, SR)</h3>
+<ul>
+<li><strong>发送方</strong>:
+<ul>
+<li>同样维护一个大小为 N 的发送窗口。</li>
+<li>为<strong>每一个未被确认的</strong>数据包都维护一个<mark>独立</mark>的计时器。</li>
+<li>当某个计时器超时，<strong>只重传那一个未被确认的</strong>数据包。</li>
+</ul>
+</li>
+<li><strong>接收方</strong>:
+<ul>
+<li>对<strong>每一个正确接收的</strong>数据包都进行单独确认 (Individual ACKs)。</li>
+<li>对于乱序到达的数据包，会将其<strong>缓存 (Buffers)</strong> 起来，直到所有缺失的数据包都到达，再按序交付给上层。</li>
+<li>当收到在窗口前的数据包，可能因为之前发送的ACK损坏导致sender计时器超时，这时候再次发送ACK(n)。</li>
+</ul>
+</li>
+<li>发送方和接收方窗口不对齐，是因为sender尚未收到ACK<br>
+<img src="Chapter3_part1.pdf#page=65&rect=19,37,709,498&color=yellow" srcset="/img/loading.gif" lazyload alt="Chapter3_part1, p.65"></li>
+</ul>
+<h3 id="6-3-GBN-与-SR-对比总结">6.3 GBN 与 SR 对比总结</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">对比项</th>
+<th style="text-align:left">回退N帧 (Go-Back-N)</th>
+<th style="text-align:left">选择重传 (Selective Repeat)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>重传机制</strong></td>
+<td style="text-align:left">重传所有已发送但未确认的帧。</td>
+<td style="text-align:left">只重传丢失或损坏的帧。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>接收方行为</strong></td>
+<td style="text-align:left">丢弃所有乱序的帧。</td>
+<td style="text-align:left">缓存乱序的帧，直到空缺被填补。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>确认机制</strong></td>
+<td style="text-align:left">累积确认 (Cumulative ACK)。</td>
+<td style="text-align:left">单独确认 (Individual ACK)。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>复杂度</strong></td>
+<td style="text-align:left">比较简单。</td>
+<td style="text-align:left">逻辑更复杂，发送和接收方都需要排序和存储。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>适用场景</strong></td>
+<td style="text-align:left">适用于网络条件好、误码率低的情况。</td>
+<td style="text-align:left">适用于网络条件差、误码率高的情况。</td>
+</tr>
+</tbody>
+</table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Network/" class="print-no-link">#Network</a>
+      
+        <a href="/tags/Transport-Layer/" class="print-no-link">#Transport-Layer</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Transport-Layer-01</div>
+      <div>https://yima-gu.github.io/2025/10/30/Network/Network-02-Transport-Layer-01/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/30/Network/Network-02-Transport-Layer-02/" title="Transport-Layer-02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Transport-Layer-02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/30/Network/Network-01-Application-Layer/" title="Application-Layer">
+                        <span class="hidden-mobile">Application-Layer</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -17,7 +17,7 @@ index:
   banner_mask_alpha: 0.3
   slogan:
     enable: true
-    text: "你好"
+    text: "祝你早安、午安、晚安"
     api:
       enable: false
 

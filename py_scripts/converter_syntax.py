@@ -10,8 +10,8 @@ def convert_syntax(content):
     转换 Markdown 文件中的语法，只负责文本替换。
     1. ==高亮== -> <mark>高亮</mark>
     2. ![|宽度](路径) -> <img src="文件名" alt="" width="宽度">
-    3. ![[文件名|宽度]] -> <img src="文件名" alt="" width="宽度"> 或 ![[文件名]] -> ![文件名](文件名)
-    4. ![alt](路径) -> ![alt](文件名)
+    3. ![[文件名|宽度]] -> <img src="文件名" alt="" width="宽度"> 或 ![[文件名]] -> <img src="文件名" alt="">
+    4. ![alt](路径) -> <img src="文件名" alt="alt">
     """
     
     # --- 1. 转换 ==高亮== 语法 ---
@@ -33,11 +33,10 @@ def convert_syntax(content):
         
         if width:
             # 如果有宽度，转换为带尺寸的 <img> 标签
-            return f'<img src="{filename}" alt="" width="{width}">'
+            return f'<img src="{filename}" alt="" width="{width}">' 
         else:
-            # 如果没有宽度，转换为标准的 Markdown 图片格式
-            alt_text = os.path.splitext(filename)[0] # 使用文件名（不含扩展名）作为 alt 文本
-            return f'![{alt_text}]({filename})'
+            # 如果没有宽度，同样使用 HTML 语法，但省略宽度属性
+            return f'<img src="{filename}" alt="">'
             
     # 正则表达式匹配 ![[文件名]] 或 ![[文件名|宽度]]
     wiki_image_regex = re.compile(r'!\[\[([^|\]\n]+)(?:\|(\d+))?\]\]')
@@ -48,7 +47,8 @@ def convert_syntax(content):
         alt_text = match.group(1)
         path = match.group(2)
         filename = os.path.basename(path)
-        return f'![{alt_text}]({filename})'
+        alt_attr = alt_text.strip()
+        return f'<img src="{filename}" alt="{alt_attr}">' 
     # 这个正则表达式必须在最后，因为它最通用
     standard_image_regex = re.compile(r'!\[(.*?)\]\((.*?)\)')
     content = standard_image_regex.sub(replace_standard_image, content)

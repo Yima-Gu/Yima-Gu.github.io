@@ -21,20 +21,46 @@
   
     <meta name="description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ∗&#x3D;arg⁡max⁡θEx∼pdatalog⁡pmodel(x∣θ)\theta^* &#x3D; \arg\max_{\theta} \mathbb{E}_{">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Deep Learning Lecture-7">
-<meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/index.html">
+<meta property="og:title" content="DL Notes-7 Generative Models">
+<meta property="og:url" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
 <meta property="og:description" content="Generative Model 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是学习数据的分布，然后生成新的数据。 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。 θ∗&#x3D;arg⁡max⁡θEx∼pdatalog⁡pmodel(x∣θ)\theta^* &#x3D; \arg\max_{\theta} \mathbb{E}_{">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-30T13:07:58.539Z">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330094251.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330094404.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330100434.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330100506.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330102359.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330141642.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330142308.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330144259.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330144556.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330153629.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330161028.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330164549.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250403144444.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250403152841.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250403164408.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250403165731.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405094553.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405161801.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405163042.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405163350.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405163425.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405163914.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405163941.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250405164110.png">
+<meta property="article:published_time" content="2025-08-03T17:41:00.000Z">
+<meta property="article:modified_time" content="2025-11-02T04:44:08.943Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
+<meta property="article:tag" content="GenerativeModel">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/Pasted%20image%2020250330094251.png">
   
   
   
-  <title>Deep Learning Lecture-7 - Yima Gu&#39;s Blog</title>
+  <title>DL Notes-7 Generative Models - Yima Gu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -213,7 +239,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Deep Learning Lecture-7"></span>
+            <span id="subtitle" data-typed-text="DL Notes-7 Generative Models"></span>
           
         </div>
 
@@ -224,8 +250,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-06-21 00:00" pubdate>
-          2025年6月21日 凌晨
+        <time datetime="2025-08-03 17:41" pubdate>
+          2025年8月3日 下午
         </time>
       </span>
     
@@ -247,7 +273,7 @@
         
         
         
-          38 分钟
+          37 分钟
         
       </span>
     
@@ -284,7 +310,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Deep Learning Lecture-7</h1>
+            <h1 id="seo-header">DL Notes-7 Generative Models</h1>
             
             
               <div class="markdown-body">
@@ -294,8 +320,8 @@
 对生成模型的评价是通过生成的数据的质量来评价的，生成的数据越接近真实数据，生成模型的质量越好。</p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mi>θ</mi><mo>∗</mo></msup><mo>=</mo><mi>arg</mi><mo>⁡</mo><munder><mrow><mi>max</mi><mo>⁡</mo></mrow><mi>θ</mi></munder><msub><mi mathvariant="double-struck">E</mi><mrow><mi>x</mi><mo>∼</mo><msub><mi>p</mi><mrow><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi></mrow></msub></mrow></msub><mi>log</mi><mo>⁡</mo><msub><mi>p</mi><mrow><mi>m</mi><mi>o</mi><mi>d</mi><mi>e</mi><mi>l</mi></mrow></msub><mo stretchy="false">(</mo><mi>x</mi><mi mathvariant="normal">∣</mi><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\theta^* = \arg\max_{\theta} \mathbb{E}_{x \sim p_{data}} \log p_{model}(x|\theta)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7387em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7387em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">∗</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.5021em;vertical-align:-0.7521em;"></span><span class="mop">ar<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.4306em;"><span style="top:-2.3479em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">max</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7521em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbb">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="mrel mtight">∼</span><span class="mord mtight"><span class="mord mathnormal mtight">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1512em;"><span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">d</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span></span></p>
-<p>![Pasted image 20250330094251](Pasted image 20250330094251.png)</p>
-<p>![Pasted image 20250330094404](Pasted image 20250330094404.png)</p>
+<img src="Pasted image 20250330094251.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330094251">
+<img src="Pasted image 20250330094404.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330094404">
 <h3 id="GAN-Generative-Adversarial-Network">GAN: Generative Adversarial Network</h3>
 <p>对抗机器学习的思想是通过两个网络之间的对抗来学习。生成器和判别器之间的对抗是GAN的核心思想。<br>
 使用的博弈问题的思想，使用的是最小化最大的思想。</p>
@@ -321,9 +347,9 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <li>网络的非线性能力允许从简单分布（如高斯分布）逼近复杂分布（如图像像素分布）。</li>
 </ul>
 <p>但是GAN的<strong>训练过程是非常困难</strong>的，梯度性质是不好的，因为在比较好的样本中，由于梯度性质的问题会进行较大的更新。</p>
-<p>![Pasted image 20250330100434](Pasted image 20250330100434.png)</p>
+<img src="Pasted image 20250330100434.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330100434">
 <p><strong>训练GAN的技巧</strong><br>
-![Pasted image 20250330100506](Pasted image 20250330100506.png)</p>
+<img src="Pasted image 20250330100506.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330100506"></p>
 <h4 id="DCGAN-Deep-Convolutional-Generative-Adversarial-Networks">DCGAN: Deep Convolutional Generative Adversarial Networks</h4>
 <p>对于生成器和判别器，使用卷积神经网络来进行训练。对于判别器，使用的是较为标准的CNN网络，对于生成器，使用的是转置卷积，先将特征图进行padding，然后进行卷积操作，这样可以获得一个较大的特征图。</p>
 <ul>
@@ -331,7 +357,7 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <li><strong>判别器</strong>：使用标准CNN逐步下采样。</li>
 <li><strong>关键技巧</strong>：批量归一化、Leaky ReLU、全卷积结构。</li>
 </ul>
-<p>![Pasted image 20250330102359](Pasted image 20250330102359.png)</p>
+<img src="Pasted image 20250330102359.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330102359">
 <p>证明了泛化定理：在有限的训练样本之下，可以通过训练得到一个泛化的模型。</p>
 <h4 id="Inception-Score">Inception Score</h4>
 <p>IS 用于衡量生成模型的性能，重点关注两点：</p>
@@ -393,12 +419,12 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mo>=</mo><munder><mrow><mi>inf</mi><mo>⁡</mo></mrow><mrow><mi>γ</mi><mo>∈</mo><mi mathvariant="normal">Γ</mi><mo stretchy="false">(</mo><mi>μ</mi><mo separator="true">,</mo><mi>ν</mi><mo stretchy="false">)</mo></mrow></munder><mo>∫</mo><mi>c</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mtext> </mtext><mi mathvariant="normal">d</mi><mi>γ</mi><mo stretchy="false">(</mo><mi>x</mi><mo separator="true">,</mo><mi>y</mi><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">C = \inf_{\gamma \in \Gamma(\mu,\nu)} \int c(x,y) \, \mathrm{d}\gamma(x,y).
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.326em;vertical-align:-0.966em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6944em;"><span style="top:-2.309em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05556em;">γ</span><span class="mrel mtight">∈</span><span class="mord mtight">Γ</span><span class="mopen mtight">(</span><span class="mord mathnormal mtight">μ</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.06366em;">ν</span><span class="mclose mtight">)</span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">in<span style="margin-right:0.07778em;">f</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.966em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-symbol large-op" style="margin-right:0.44445em;position:relative;top:-0.0011em;">∫</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathrm">d</span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="mclose">)</span><span class="mord">.</span></span></span></span></span></p>
 <h5 id="Wasserstein-GAN">Wasserstein GAN</h5>
-<p>![Pasted image 20250330141642](Pasted image 20250330141642.png)</p>
-<p>![Pasted image 20250330142308](Pasted image 20250330142308.png)</p>
+<img src="Pasted image 20250330141642.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330141642">
+<img src="Pasted image 20250330142308.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330142308">
 <p>对于模式坍塌进一步的理解，如果空间上有一个较大的利普希茨系数，那么说明发生了模式坍塌。</p>
-<p>![Pasted image 20250330144259](Pasted image 20250330144259.png)</p>
+<img src="Pasted image 20250330144259.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330144259">
 <h5 id="Spectral-Normalization">Spectral Normalization</h5>
-<p>![Pasted image 20250330144556](Pasted image 20250330144556.png)</p>
+<img src="Pasted image 20250330144556.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330144556">
 <table>
 <thead>
 <tr>
@@ -431,7 +457,7 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <h4 id="ACGAN-Auxiliary-Classifier-GAN">ACGAN: Auxiliary Classifier GAN</h4>
 <p>是多任务学习的一种方法，除了生成数据，还可以进行分类。在生成数据的过程中还生成标签，所以可以一定程度上避免模式坍塌。</p>
 <h4 id="Cycle-GAN">Cycle GAN</h4>
-<p>![Pasted image 20250330153629](Pasted image 20250330153629.png)</p>
+<img src="Pasted image 20250330153629.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330153629">
 <p>无配对数据下的图像转换（如马→斑马），通过循环一致性损失<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mi>y</mi><mi>c</mi></mrow><annotation encoding="application/x-tex">Cyc</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal">yc</span></span></span></span>保证生成的图像在两个方向上的转换是一致的。</p>
 <h3 id="Self-Attention-GAN">Self-Attention GAN</h3>
 <p>将<em>Self-Attention</em>机制应用到GAN中，这样可以使得生成的数据更加真实。</p>
@@ -478,22 +504,22 @@ c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v1200 v585 h43z"/></svg></span></span
 <p>变分的意思为变量的替换，在概率中为分布率的替换。<br>
 对于这个问题，可以使用一个神经网络来实现，对于这种显式的分布，需要假设分布率，可以指定为高斯分布，用网络来学习均值和协方差，作为<em>Encoder Network</em>。<br>
 对于条件分布<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mi mathvariant="normal">∣</mi><mi>z</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_\theta(x|z)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span></span></span></span>，也可以假定为高斯分布，这样可以计算均值和协方差，作为<em>Decoder Network</em>。</p>
-<p>![Pasted image 20250330161028](Pasted image 20250330161028.png)</p>
+<img src="Pasted image 20250330161028.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330161028">
 <p>但是VAE是<em>Intractable</em>的，这个问题是NP-hard的。对于上面的条件概率，是比较困难的。所以采用一个近似的方法来进行求解。比如假设服从一个高斯分布，之后计算这个分布的均值和协方差矩阵。</p>
 <h4 id="ELBO-Evidence-Lower-Bound">ELBO: Evidence Lower Bound</h4>
 <p>训练的目的是使得<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>log</mi><mo>⁡</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\log p_\theta (x_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>尽可能大，但是很难计算，这里引入“参考系”，也就是引入一个近似的分布<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">q_\phi(z|x_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">ϕ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>。</p>
-<p>![Pasted image 20250330164549](Pasted image 20250330164549.png)</p>
+<img src="Pasted image 20250330164549.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250330164549">
 <p>这里是将最大化似然的过程简化为最大化ELBO的过程。</p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>log</mi><mo>⁡</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mo>=</mo><msub><mi mathvariant="double-struck">E</mi><mrow><msub><mi>q</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow></msub><mrow><mo fence="true">[</mo><mi>log</mi><mo>⁡</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>i</mi></msub><mi mathvariant="normal">∣</mi><mi>z</mi><mo stretchy="false">)</mo><mo fence="true">]</mo></mrow><mo>−</mo><mi>K</mi><mi>L</mi><mo stretchy="false">(</mo><msub><mi>q</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\log p_\theta (x_i) = \mathbb{E}_{q_\phi(z|x_i)} \left[ \log p_\theta(x_i|z) \right] - KL (q_\phi(z|x_i) || p_\theta(z))
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1333em;vertical-align:-0.3833em;"></span><span class="mord"><span class="mord mathbb">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5198em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3488em;margin-left:-0.0359em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">ϕ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2901em;"><span></span></span></span></span></span></span><span class="mopen mtight">(</span><span class="mord mathnormal mtight" style="margin-right:0.04398em;">z</span><span class="mord mtight">∣</span><span class="mord mtight"><span class="mord mathnormal mtight">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3281em;"><span style="top:-2.357em;margin-left:0em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.143em;"><span></span></span></span></span></span></span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3833em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">[</span><span class="mop">lo<span style="margin-right:0.01389em;">g</span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span><span class="mclose delimcenter" style="top:0em;">]</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mord mathnormal">L</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">ϕ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">∣∣</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span></span></span></span></span></p>
 <h4 id="Reparameterization-Trick">Reparameterization Trick</h4>
-<p>![Pasted image 20250403144444](Pasted image 20250403144444.png)</p>
+<img src="Pasted image 20250403144444.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250403144444">
 <p>在VAE的训练过程中，通常需要从潜在变量的分布中采样。直接从分布中采样可能导致梯度无法传播到编码器网络，因此引入了重参数化技巧。<br>
 这是的采样变量是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>，这样的话采样的过程就在计算图的旁路上，这样就可以进行梯度的传播。</p>
 <h4 id="VAE-Inference">VAE Inference</h4>
 <p>在训练的时候是从<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span>中采样得到的，然后由后验分布<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mi mathvariant="normal">∣</mi><mi>x</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">q_\phi(z|x)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">ϕ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mclose">)</span></span></span></span>来进行采样。而在推理过程中，是从潜在变量<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>z</mi></mrow><annotation encoding="application/x-tex">z</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span></span></span></span>中采样得到的，然后由条件分布<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mi mathvariant="normal">∣</mi><mi>z</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_\theta(x|z)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">)</span></span></span></span>来进行进行推理。<br>
 上述过程的合理性在于目标函数ELBO中的第二项：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mi>L</mi><mo stretchy="false">(</mo><msub><mi>q</mi><mi>ϕ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><mi>z</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">KL (q_\phi(z|x_i) || p_\theta(z))</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mord mathnormal">L</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">ϕ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">∣∣</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mclose">))</span></span></span></span>在训练中被最小化了。</p>
-<p>![Pasted image 20250403152841](Pasted image 20250403152841.png)</p>
+<img src="Pasted image 20250403152841.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250403152841">
 <h4 id="VQ-VAE">VQ-VAE</h4>
 <p>VQ-VAE是对VAE的一个改进，使用了向量量化的方法来进行训练。通过对潜在变量进行离散化来进行训练，这样可以避免模式坍塌的问题。</p>
 <h3 id="Diffusion-Probabilistic-Models">Diffusion Probabilistic Models</h3>
@@ -691,12 +717,12 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mn>0</mn><mo>:</mo><mi>T</mi></mrow></msub><mo stretchy="false">)</mo><mo>=</mo><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mi>T</mi></msub><mo stretchy="false">)</mo><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mi mathvariant="normal">∣</mi><msub><mi>x</mi><mi>t</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">p_\theta(x_{0:T}) = p_\theta (x_T)\prod_{t=1}^{T} p_\theta(x_{t-1}|x_t)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">0</span><span class="mrel mtight">:</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.0954em;vertical-align:-1.2671em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8829em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∏</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2671em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
 <p>上述过程可以使用一个网络来实现对于均值和方差的输出。</p>
-<p>![Pasted image 20250403164408](Pasted image 20250403164408.png)</p>
-<p>![Pasted image 20250403165731](Pasted image 20250403165731.png)</p>
+<img src="Pasted image 20250403164408.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250403164408">
+<img src="Pasted image 20250403165731.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250403165731">
 <p><a target="_blank" rel="noopener" href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">What are Diffusion Models? | Lil’Log</a></p>
-<p>![Pasted image 20250405094553](Pasted image 20250405094553.png)</p>
+<img src="Pasted image 20250405094553.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405094553">
 <h5 id="Diffusion-Parameters">Diffusion Parameters</h5>
-<p>![Pasted image 20250405161801](Pasted image 20250405161801.png)</p>
+<img src="Pasted image 20250405161801.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405161801">
 <h5 id="Acceleration-Strategies">Acceleration Strategies</h5>
 <h5 id="Re-design-forward-Sampling">Re-design forward Sampling</h5>
 <ul>
@@ -712,24 +738,30 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 <li>通过引入一个新的参数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">\alpha_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>来控制前向采样的过程。</li>
 <li>通过设计一个新的后验分布来进行采样。</li>
 <li>通过设计一个新的损失函数来进行训练。</li>
-<li>![Pasted image 20250405163042](Pasted image 20250405163042.png)</li>
+<li>
+<img src="Pasted image 20250405163042.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405163042">
+</li>
 </ul>
 </li>
 <li>Denosing Diffusion Models
 <ul>
-<li>![Pasted image 20250405163350](Pasted image 20250405163350.png)</li>
+<li>
+<img src="Pasted image 20250405163350.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405163350">
+</li>
 </ul>
 </li>
 <li>Latent Diffusion Models
 <ul>
-<li>![Pasted image 20250405163425](Pasted image 20250405163425.png)</li>
+<li>
+<img src="Pasted image 20250405163425.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405163425">
+</li>
 </ul>
 </li>
 </ul>
 <h5 id="Conditonal-Diffusion-Models">Conditonal Diffusion Models</h5>
-<p>![Pasted image 20250405163914](Pasted image 20250405163914.png)</p>
-<p>![Pasted image 20250405163941](Pasted image 20250405163941.png)</p>
-<p>![Pasted image 20250405164110](Pasted image 20250405164110.png)</p>
+<img src="Pasted image 20250405163914.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405163914">
+<img src="Pasted image 20250405163941.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405163941">
+<img src="Pasted image 20250405164110.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250405164110">
 
                 
               </div>
@@ -738,11 +770,34 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Deep-Learning/" class="category-chain-item">Deep Learning</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
         <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+        <a href="/tags/GenerativeModel/" class="print-no-link">#GenerativeModel</a>
       
     </div>
   
@@ -754,8 +809,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Deep Learning Lecture-7</div>
-      <div>https://yima-gu.github.io/2025/06/21/Deep Learning/Deep Learning Lecture-7/</div>
+      <div>DL Notes-7 Generative Models</div>
+      <div>https://yima-gu.github.io/2025/08/03/Deep Learning/DL Notes-7 Generative Models/</div>
     </div>
     <div class="license-meta">
       
@@ -767,7 +822,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年6月21日</div>
+          <div>2025年8月3日</div>
         </div>
       
       
@@ -778,9 +833,21 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
             
               
               
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
                   <span class="hint--top hint--rounded" aria-label="BY - 署名">
                     <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
                   </span>
                 </a>
               
@@ -799,15 +866,21 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/" title="Deep Learning Lecture-6">
+                      <a href="/2025/10/30/Network/Network-01-Application-Layer/" title="Application-Layer">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Deep Learning Lecture-6</span>
+                        <span class="hidden-mobile">Application-Layer</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/" title="DL Notes-6 Transformers">
+                        <span class="hidden-mobile">DL Notes-6 Transformers</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>

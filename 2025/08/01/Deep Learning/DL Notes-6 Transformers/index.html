@@ -19,22 +19,45 @@
   <meta name="author" content="Yima Gu">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query qqq, Key kkk和Value vvv，计算相关性，也就是重要性，对于输出序列中的第iii个输出有价值的信息： wij&#x3D;a(qi,kj)w">
+    <meta name="description" content="Transformers Transformers: Attention is All You Need 再次理解Attention的概念：类似于”查字典“的操作，对于Query qqq, Key kkk和Value vvv，计算相关性，也就是重要性，对于输出序列中的第iii个输出有价值的信息： wij&#x3D;a(qi,kj)w_{ij} &#x3D; a(q_i, k_j) wij​&#x3D;a(qi​,kj​) 其中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Deep Learning Lecture-6">
-<meta property="og:url" content="https://yima-gu.github.io/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-6/index.html">
+<meta property="og:title" content="DL Notes-6 Transformers">
+<meta property="og:url" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="Transformers Transformers: Attention is All You Need [[Deep Learning Lecture-5#Attention]] 再次理解Attention的概念：类似于”查字典“的操作，对于Query qqq, Key kkk和Value vvv，计算相关性，也就是重要性，对于输出序列中的第iii个输出有价值的信息： wij&#x3D;a(qi,kj)w">
+<meta property="og:description" content="Transformers Transformers: Attention is All You Need 再次理解Attention的概念：类似于”查字典“的操作，对于Query qqq, Key kkk和Value vvv，计算相关性，也就是重要性，对于输出序列中的第iii个输出有价值的信息： wij&#x3D;a(qi,kj)w_{ij} &#x3D; a(q_i, k_j) wij​&#x3D;a(qi​,kj​) 其中">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-06-21T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-10-30T13:07:58.523Z">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323133751.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323141917.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323145847.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323151056.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323161530.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323163151.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323185530.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323185720.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323190623.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323190856.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323191632.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323191637.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324190821.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324193704.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324194137.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324195035.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324203227.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324203639.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324205304.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324205845.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250324205921.png">
+<meta property="article:published_time" content="2025-08-01T15:41:00.000Z">
+<meta property="article:modified_time" content="2025-11-02T04:44:08.928Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
+<meta property="article:tag" content="Transformer">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/08/01/Deep%20Learning/DL%20Notes-6%20Transformers/Pasted%20image%2020250323133751.png">
   
   
   
-  <title>Deep Learning Lecture-6 - Yima Gu&#39;s Blog</title>
+  <title>DL Notes-6 Transformers - Yima Gu&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -213,7 +236,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Deep Learning Lecture-6"></span>
+            <span id="subtitle" data-typed-text="DL Notes-6 Transformers"></span>
           
         </div>
 
@@ -224,8 +247,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-06-21 00:00" pubdate>
-          2025年6月21日 凌晨
+        <time datetime="2025-08-01 15:41" pubdate>
+          2025年8月1日 下午
         </time>
       </span>
     
@@ -236,7 +259,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.1k 字
+          4k 字
         
       </span>
     
@@ -247,7 +270,7 @@
         
         
         
-          35 分钟
+          34 分钟
         
       </span>
     
@@ -284,14 +307,13 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Deep Learning Lecture-6</h1>
+            <h1 id="seo-header">DL Notes-6 Transformers</h1>
             
             
               <div class="markdown-body">
                 
                 <h2 id="Transformers">Transformers</h2>
 <h3 id="Transformers-Attention-is-All-You-Need">Transformers: Attention is All You Need</h3>
-<p>[[Deep Learning Lecture-5#Attention]]</p>
 <p>再次理解Attention的概念：类似于”查字典“的操作，对于Query <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi></mrow><annotation encoding="application/x-tex">q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span></span></span></span>, Key <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>和Value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi></mrow><annotation encoding="application/x-tex">v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span></span></span></span>，计算相关性，也就是重要性，对于输出序列中的第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>个输出有价值的信息：</p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>w</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mi>a</mi><mo stretchy="false">(</mo><msub><mi>q</mi><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>k</mi><mi>j</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">w_{ij} = a(q_i, k_j)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">ij</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord mathnormal">a</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
@@ -308,7 +330,7 @@
 <h4 id="Self-Attention">Self-Attention</h4>
 <p>计算的是同一条序列中的不同位置之间的相关性，也就是自注意力。对于输入序列中的第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>个位置，计算与其他位置的相关性，然后对于所有的位置进行加权求和：<br>
 规定Query <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><mo>=</mo><mo stretchy="false">[</mo><msub><mi>q</mi><mn>1</mn></msub><mo>…</mo><msub><mi>q</mi><mi>n</mi></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">Q = [q_1 \dots q_n]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">Q</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span>，Key <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo><mo stretchy="false">[</mo><msub><mi>k</mi><mn>1</mn></msub><mo>…</mo><msub><mi>k</mi><mi>n</mi></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">K = [k_1 \dots k_n]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span>，Value <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mo>=</mo><mo stretchy="false">[</mo><msub><mi>v</mi><mn>1</mn></msub><mo>…</mo><msub><mi>v</mi><mi>k</mi></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">V = [v_1 \dots v_k]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span>，则：</p>
-<p>![Pasted image 20250323133751](Pasted image 20250323133751.png)</p>
+<img src="Pasted image 20250323133751.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323133751">
 <h4 id="Scaled-Dot-Product-Attention">Scaled Dot-Product Attention</h4>
 <p>我们认为使用一个网络来计算相关性太复杂了，当两个向量是相同维度的时候可以直接计算内积。在这里，在计算先引入参数，使得其维度是一样的，从而可以计算内积：</p>
 <p><em>Scaled Dot-Product</em> :</p>
@@ -340,7 +362,7 @@ s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
 c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
 M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1828em;"><span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.93em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">)</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span></span></p>
 <p>上面的式子将得到的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">n \times n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>的矩阵进行softmax操作，在归一化的过程中，<strong>是某一个query在所有的key上的注意力分配一定是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn mathvariant="bold">1</mn></mrow><annotation encoding="application/x-tex">\mathbf{1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord mathbf">1</span></span></span></span></strong>。后面是对于Value的加权求和。<strong>在上面的公式中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">Q</span></span></span></span>、<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span>和<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>中的向量都是行向量，进行softmax操作时也是在同一行上操作</strong>。</p>
-<p>![Pasted image 20250323141917](Pasted image 20250323141917.png)</p>
+<img src="Pasted image 20250323141917.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323141917">
 <p>对于同一组输入，经过不同的线性变换得到的不同的Query、Key和Value，在样本数量为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span>的情况下，可以进行计算：</p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mtable rowspacing="0.25em" columnalign="right left" columnspacing="0em"><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msup><mi>W</mi><mi>Q</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><msub><mi>d</mi><mi>k</mi></msub><mo>×</mo><msub><mi>d</mi><mtext>input</mtext></msub></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msup><mi>W</mi><mi>K</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><msub><mi>d</mi><mi>k</mi></msub><mo>×</mo><msub><mi>d</mi><mtext>input</mtext></msub></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><msup><mi>W</mi><mi>V</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><msub><mi>d</mi><mi>v</mi></msub><mo>×</mo><msub><mi>d</mi><mtext>input</mtext></msub></mrow></msup></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>Q</mi><mo>=</mo><mi>X</mi><msup><mi>W</mi><mi>Q</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><msub><mi>d</mi><mi>k</mi></msub></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>K</mi><mo>=</mo><mi>X</mi><msup><mi>W</mi><mi>K</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><msub><mi>d</mi><mi>k</mi></msub></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>V</mi><mo>=</mo><mi>X</mi><msup><mi>W</mi><mi>V</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><msub><mi>d</mi><mi>v</mi></msub></mrow></msup><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><mi>m</mi></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mtext>softmax</mtext><mrow><mo fence="true">(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo fence="true">)</mo></mrow><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><mi>m</mi></mrow></msup><mo separator="true">,</mo></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="true"><mrow><mrow></mrow><mtext>Attention</mtext><mo stretchy="false">(</mo><mi>Q</mi><mo separator="true">,</mo><mi>K</mi><mo separator="true">,</mo><mi>V</mi><mo stretchy="false">)</mo><mo>=</mo><mtext>softmax</mtext><mrow><mo fence="true">(</mo><mfrac><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><msqrt><msub><mi>d</mi><mi>k</mi></msub></msqrt></mfrac><mo fence="true">)</mo></mrow><mi>V</mi><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>m</mi><mo>×</mo><msub><mi>d</mi><mi>v</mi></msub></mrow></msup><mi mathvariant="normal">.</mi></mrow></mstyle></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{aligned}
 &amp;W^Q \in \mathbb{R}^{d_k \times d_{\text{input}}}, \\
@@ -430,8 +452,8 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 与CNN相比，CNN的不同的通道之间与上一层的每一个通道之间都是有连接的；但是在这里，不同的头之间是没有连接的，这样可以使得不同的头可以关注不同的信息。</p>
 <p>不同的头之间是可以并行计算的，这样可以加速计算；但是缺点是内存占用会很大。</p>
 <h4 id="Position-wise-Feed-Forward-Networks">Position-wise Feed-Forward Networks</h4>
-<p>![Pasted image 20250323145847](Pasted image 20250323145847.png)<br>
-在标准 Transformer Block 中，注意力层之后会接一个前馈神经网络（FFN），其结构如下：</p>
+<img src="Pasted image 20250323145847.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323145847">
+在标准 Transformer Block 中，注意力层之后会接一个前馈神经网络（FFN），其结构如下：
 <ol>
 <li>输入张量形状：</li>
 </ol>
@@ -489,7 +511,7 @@ Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\; b_2\in\m
 <h4 id="Layer-Normalization">Layer Normalization</h4>
 <p>目的是使得每一层经过Attention和Feed-Forward之后的输出的分布是一样的，这样可以使得梯度更加稳定。<br>
 [[Deep Learning Lecture-5#Layer Normalization]]</p>
-<p>![Pasted image 20250323151056](Pasted image 20250323151056.png)</p>
+<img src="Pasted image 20250323151056.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323151056">
 <h4 id="Value-Embedding">Value Embedding</h4>
 <ul>
 <li>
@@ -543,15 +565,15 @@ Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\; b_2\in\m
 <p>训练阶段要使用多个头，发现有些头的权重较低，可以在推理阶段去掉这些头。</p>
 <h4 id="Decoder">Decoder</h4>
 <h5 id="Autoregressive">Autoregressive</h5>
-<p>![Pasted image 20250323161530](Pasted image 20250323161530.png)</p>
+<img src="Pasted image 20250323161530.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323161530">
 <p>预测阶段一定要使用滚动预测，这是一个自回归的状态，但是这是一个串行的操作，会比较慢。但是在训练阶段这样是不能接受的，我希望训练的不同阶段可以并行计算，但是这里要求在一开始输入所有的序列，所以这里需要<strong>遮挡</strong>。<br>
 在算Attention的时候，对于当前的位置，只能看到之前的位置，不能看到之后的位置。</p>
-<p>![Pasted image 20250323163151](Pasted image 20250323163151.png)</p>
+<img src="Pasted image 20250323163151.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323163151">
 <p>在编码器上是不能用的，因为防止解码器在训练时利用未来的目标序列信息（即“作弊”），确保模型逐步生成的能力与推理阶段一致。训练过程中仍然需要真实标签作为目标输出，但掩码限制了模型在生成当前词时对未来的访问。</p>
 <h4 id="Encoder-Decoder-Attention">Encoder-Decoder Attention</h4>
 <p>计算的是解码器的输出和编码器的输出之间的相关性，这里的Query是解码器的输出，Key和Value是编码器的输出。</p>
-<p>![Pasted image 20250323185530](Pasted image 20250323185530.png)</p>
-<p>![Pasted image 20250323185720](Pasted image 20250323185720.png)</p>
+<img src="Pasted image 20250323185530.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323185530">
+<img src="Pasted image 20250323185720.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323185720">
 <p>注意这里是将编码器的输出输入到解码器中的每一层的Encoder-Decoder Attention中。这里是神经网络中的<strong>特征重用</strong>思想，并且解码器中的网络是直筒式的，所以这些特征是可以重用的。</p>
 <h4 id="RNN-vs-Transformer">RNN vs. Transformer</h4>
 <ul>
@@ -560,19 +582,19 @@ Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\; b_2\in\m
 <li>对于长序列，Transformer更适合</li>
 <li>对于较小的数据量，Transformers参数量较大，表现可能不如RNN</li>
 </ul>
-<p>![Pasted image 20250323190623](Pasted image 20250323190623.png)</p>
-<p>![Pasted image 20250323190856](Pasted image 20250323190856.png)</p>
-<h3 id="X-formers-Variance-with-Improvements">X-formers Variance with Improvements</h3>
+<img src="Pasted image 20250323190623.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323190623">
+<img src="Pasted image 20250323190856.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323190856">
+### X-formers Variance with Improvements
 <p><a target="_blank" rel="noopener" href="https://arxiv.org/abs/2106.04554">[2106.04554] A Survey of Transformers</a></p>
-<p>![Pasted image 20250323191632](Pasted image 20250323191632.png)</p>
-<p>![Pasted image 20250323191637](Pasted image 20250323191637.png)</p>
+<img src="Pasted image 20250323191632.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323191632">
+<img src="Pasted image 20250323191637.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250323191637">
 <h4 id="Lineariezd-Attention">Lineariezd Attention</h4>
 <h4 id="Flow-Attention">Flow Attention</h4>
 <h3 id="GPT-Generative-Pre-trained-Transformer">GPT: Generative Pre-trained Transformer</h3>
 <h4 id="Transfer-Learning">Transfer Learning</h4>
 <p>先将一个模型预训练好，然后在特定的任务上进行微调。一般而言，预训练的过程是无监督的，优点是可以使用大规模数据。</p>
 <h4 id="Pre-Training">Pre-Training</h4>
-<p>![Pasted image 20250324190821](Pasted image 20250324190821.png)</p>
+<img src="Pasted image 20250324190821.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324190821">
 <ul>
 <li>直接使用的是Transformers中的block，但是这里使用12层</li>
 <li>只使用decoder没有encoder，因为这不是一个机器翻译的任务</li>
@@ -580,15 +602,15 @@ Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\; b_2\in\m
 </ul>
 <h4 id="Supervised-Fine-Tuning">Supervised Fine-Tuning</h4>
 <p>对于不同的任务，需要更换模型的输出头，并且还要使用新的损失函数。关注上下文建模。<br>
-![Pasted image 20250324193704](Pasted image 20250324193704.png)</p>
+<img src="Pasted image 20250324193704.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324193704"></p>
 <p>最后是使用无监督训练的损失函数和有监督训练的损失函数的加权和，这是一个<strong>多任务学习</strong>。当微调的数据比较少的时候，可以使用无监督训练的损失函数的权重较大。</p>
 <p>对于不同的下游任务，要进行任务适配<em>Task Specific Adaptation</em>。对于不同的下游任务，可以使用不同的头。<br>
-![Pasted image 20250324194137](Pasted image 20250324194137.png)</p>
+<img src="Pasted image 20250324194137.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324194137"></p>
 <h4 id="GPT-2-GPT-3">GPT-2 &amp; GPT-3</h4>
 <p>Zero-shot learning：在没有看到训练数据的情况下，直接在测试集上进行预测。通过在预训练阶段使用大规模的数据，可以使得模型具有更好的泛化能力，这样可以提高在一些常见问题上的表现。</p>
 <h3 id="BERT-Bidirectional-Encoder-Representations-from-Transformers">BERT: Bidirectional Encoder Representations from Transformers</h3>
 <p>与GPT不同的是，BERT是双向的，可以看到上下文的信息。<br>
-![Pasted image 20250324195035](Pasted image 20250324195035.png)</p>
+<img src="Pasted image 20250324195035.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324195035"></p>
 <p>BERT在encoder阶段就使用了mask，这样可以使得模型在训练的时候不会看到未来的信息。在训练的过程中随机地mask掉一些词，然后预测这些词。如果遮挡的词太少，那么模型得到的训练不够， 如果遮挡的词太多，那么得到的上下文就很少。<br>
 在训练的过程中就使用了102种语言。<br>
 特征工程：使用了更多的特征，引入了更多的embedding<br>
@@ -599,12 +621,12 @@ Z_2 &amp;= Z_1 W_2 + b_2,\quad W_2\in\mathbb{R}^{d_{ff}\times(H\!D)},\; b_2\in\m
 mask的pattern可以动态调整</p>
 <h4 id="ALBERT-A-Lite-BERT-for-Self-supervised-Learning-of-Language-Representations">ALBERT: A Lite BERT for Self-supervised Learning of Language Representations</h4>
 <p>低秩分解，减少参数量<br>
-![Pasted image 20250324203227](Pasted image 20250324203227.png)</p>
+<img src="Pasted image 20250324203227.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324203227"></p>
 <p>跨层参数共享：可以让模型更加稳定</p>
 <h4 id="T5-Text-to-Text-Transfer-Transformer">T5: Text-to-Text Transfer Transformer</h4>
 <p>迁移是泛化的高级形式：可以将多种文本任务统一为文本到文本的形式，这样可以使得模型更加通用。</p>
 <p>架构层面的创新：<br>
-![Pasted image 20250324203639](Pasted image 20250324203639.png)</p>
+<img src="Pasted image 20250324203639.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324203639"></p>
 <p>这里使用的是prefix-LM，这样可以使得模型更加通用。</p>
 <h3 id="Vision-Transformer">Vision Transformer</h3>
 <h4 id="ViT">ViT</h4>
@@ -614,11 +636,11 @@ mask的pattern可以动态调整</p>
 <h4 id="Swim-Transformer">Swim Transformer</h4>
 <p>将CNN中的一些归纳偏好引入，可以使用局部的注意力，但是在一定程度上能捕捉全局的信息，通过Shifted Window Mechanism来实现。<br>
 层次化特征：<br>
-![Pasted image 20250324205304](Pasted image 20250324205304.png)</p>
+<img src="Pasted image 20250324205304.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324205304"></p>
 <p>密集预测任务对于层次化特征需求更高，于是这个模型的表现是更好地。</p>
 <h4 id="DETR">DETR</h4>
-<p>![Pasted image 20250324205845](Pasted image 20250324205845.png)</p>
-<p>![Pasted image 20250324205921](Pasted image 20250324205921.png)</p>
+<img src="Pasted image 20250324205845.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324205845">
+<img src="Pasted image 20250324205921.png" srcset="/img/loading.gif" lazyload alt="Pasted image 20250324205921">
 <h3 id="Fundation-Models">Fundation Models</h3>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msup><mi>e</mi><mrow><mi>α</mi><mo>+</mo><mi>β</mi><mi>i</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mi>α</mi></msup><msup><mi>e</mi><mrow><mi>β</mi><mi>i</mi></mrow></msup><mo>=</mo><msup><mi>e</mi><mi>α</mi></msup><mo stretchy="false">(</mo><mi>cos</mi><mo>⁡</mo><mi>β</mi><mo>+</mo><mi>i</mi><mi>sin</mi><mo>⁡</mo><mi>β</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">e^{\alpha+ \beta i } = e^{\alpha} e^{\beta i} = e^{\alpha}(\cos \beta + i \sin \beta)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8991em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span><span class="mbin mtight">+</span><span class="mord mathnormal mtight" style="margin-right:0.05278em;">β</span><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8991em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8991em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05278em;">β</span><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span></span></span></span></span></span><span class="mopen">(</span><span class="mop">cos</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">sin</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mclose">)</span></span></span></span></span></p>
@@ -630,11 +652,34 @@ mask的pattern可以动态调整</p>
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Deep-Learning/" class="category-chain-item">Deep Learning</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
         <a href="/tags/DeepLearning/" class="print-no-link">#DeepLearning</a>
+      
+        <a href="/tags/Transformer/" class="print-no-link">#Transformer</a>
       
     </div>
   
@@ -646,8 +691,8 @@ mask的pattern可以动态调整</p>
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Deep Learning Lecture-6</div>
-      <div>https://yima-gu.github.io/2025/06/21/Deep Learning/Deep Learning Lecture-6/</div>
+      <div>DL Notes-6 Transformers</div>
+      <div>https://yima-gu.github.io/2025/08/01/Deep Learning/DL Notes-6 Transformers/</div>
     </div>
     <div class="license-meta">
       
@@ -659,7 +704,7 @@ mask的pattern可以动态调整</p>
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年6月21日</div>
+          <div>2025年8月1日</div>
         </div>
       
       
@@ -670,9 +715,21 @@ mask的pattern可以动态调整</p>
             
               
               
-                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
                   <span class="hint--top hint--rounded" aria-label="BY - 署名">
                     <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
                   </span>
                 </a>
               
@@ -691,9 +748,9 @@ mask的pattern可以动态调整</p>
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/06/21/Deep%20Learning/DL%20Note-1%20Intro/" title="DL Note-1 Intro">
+                      <a href="/2025/08/03/Deep%20Learning/DL%20Notes-7%20Generative%20Models/" title="DL Notes-7 Generative Models">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DL Note-1 Intro</span>
+                        <span class="hidden-mobile">DL Notes-7 Generative Models</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -701,8 +758,8 @@ mask的pattern可以动态调整</p>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/06/21/Deep%20Learning/Deep%20Learning%20Lecture-7/" title="Deep Learning Lecture-7">
-                        <span class="hidden-mobile">Deep Learning Lecture-7</span>
+                      <a href="/2025/07/28/Deep%20Learning/DL%20Note-5%20RNN/" title="DL Note-5 RNN">
+                        <span class="hidden-mobile">DL Note-5 RNN</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

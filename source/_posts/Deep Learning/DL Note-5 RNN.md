@@ -4,6 +4,8 @@ date: 2025-07-28 12:30
 tags:
   - DeepLearning
   - RNN
+categories:
+  - Deep Learning
 math: true
 syntax_converted: true
 

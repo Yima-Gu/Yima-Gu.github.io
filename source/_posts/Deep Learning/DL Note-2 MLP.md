@@ -4,6 +4,8 @@ date: 2025-06-28 12:30
 tags:
   - DeepLearning
   - MLP
+categories:
+  - Deep Learning
 math: true
 syntax_converted: true
 

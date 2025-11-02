@@ -3,6 +3,8 @@ title: DL Note-1 Intro
 date: 2025-06-21 12:30
 tags:
   - DeepLearning
+categories:
+  - Deep Learning
 math: true
 comments: true
 ---

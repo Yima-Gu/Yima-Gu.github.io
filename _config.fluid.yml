@@ -47,6 +47,16 @@ post:
     enable: true
     type: giscus
 
+  copyright:
+    enable: true
+    license: 'BY-NC-SA'  # <--- 就是这里！
+    author:
+      enable: true
+    post_date:
+      enable: true
+    update_date:
+      enable: false
+
 # giscus 评论系统配置（需与 layout/_partials/comments/giscus.ejs 条件匹配）
 # 注意：键名使用官方要求的短横线形式，如 repo-id、category-id 等
 giscus:

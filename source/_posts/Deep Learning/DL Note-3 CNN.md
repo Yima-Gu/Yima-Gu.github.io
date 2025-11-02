@@ -4,6 +4,8 @@ date: 2025-07-10 20:30:00 +0800
 tags:
   - DeepLearning
   - CNN
+categories:
+  - Deep Learning
 math: true
 syntax_converted: true
 

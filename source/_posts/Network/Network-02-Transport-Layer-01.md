@@ -4,6 +4,8 @@ date: 2025-10-30 20:49
 tags:
     - Network
     - Transport-Layer
+categories:
+  - Network
 math: true
 syntax_converted: true
 
@@ -130,15 +132,18 @@ UDP 是一种 “精简” 或 “最基本” 的互联网传输协议。
     * **否定确认 (Negative Acknowledgements, NAKs)**: 接收方告知发送方数据包已损坏。
     * **重传 (Retransmission)**: 发送方在收到 NAK 后，重传该数据包。
     
-<img src="Chapter3_part1.pdf#page=37&rect=12,47,699,512" alt="Chapter3_part1, p.37">
+<img src="Pasted image 20251030215417.png" alt="">
+
 ### 4.3 RDT 2.1 & 2.2: 应对**损坏的ACK/NAK**
 
 * **RDT 2.0 的致命缺陷**: 如果 ACK 或 NAK 本身在传输中损坏了怎么办？ 发送方无法确定接收方的状态，直接重传可能导致**重复数据包 (Duplicate Packets)**。
 * **解决方案**:
     * **RDT 2.1**: 引入**序列号 (Sequence Number)**。 发送方为每个数据包添加序列号（如0和1交替）。 接收方通过检查序列号来判断是否是重复数据包，如果是则直接丢弃。
-      <img src="Chapter3_part1.pdf#page=41&rect=27,64,678,499" alt="Chapter3_part1, p.41"><img src="Chapter3_part1.pdf#page=42&rect=5,39,711,507" alt="Chapter3_part1, p.42">
+      <img src="Pasted image 20251030215438.png" alt="">
+      <img src="Pasted image 20251030215457.png" alt="">
+      
     * **RDT 2.2 (无 NAK 协议)**: 接收方只发送 ACK。 为了告知哪个包被正确接收，ACK 中必须包含被确认包的序列号。 如果发送方收到一个<mark>**重复的 ACK**，就执行与收到 NAK 相同</mark>的操作：重传当前数据包。
-      <img src="Chapter3_part1.pdf#page=45&rect=6,8,711,524" alt="Chapter3_part1, p.45">
+      <img src="Pasted image 20251030215542.png" alt="">
 
 ### 4.4 RDT 3.0: 应对**丢包** (Packet Loss)
 
@@ -148,7 +153,7 @@ UDP 是一种 “精简” 或 “最基本” 的互联网传输协议。
     * 如果在定时器超时前没有收到对应的 ACK，就认为数据包丢失，并**重传 (Retransmits)** 该数据包。
     * 序列号机制可以很好地处理因延迟而非丢失导致的重传（即重复包问题）。
 * RDT 3.0 也被称为**停等协议 (Stop-and-Wait Protocol)**。
-  <img src="Chapter3_part1.pdf#page=47&rect=20,53,681,510" alt="Chapter3_part1, p.47">
+  <img src="Pasted image 20251030215602.png" alt="">
 
 ### 4.5 RDT 机制总结
 
@@ -204,9 +209,10 @@ RDT 3.0 (停等协议) 虽然能工作，但性能极差。 发送方在大部�
 * **接收方**:
     * 只发送**累积确认 (Cumulative ACKs)**。 `ACK(n)` 表示序列号为 n 及 n 之前的**所有数据包都已正确接收**。
     * 对于乱序到达的数据包，**直接丢弃 (Discard)**，不进行缓存。 接收方会重新发送具有最高有序序列号的 ACK。
-<img src="Chapter3_part1.pdf#page=60&rect=19,46,710,517&color=yellow" alt="Chapter3_part1, p.60">
-<img src="Chapter3_part1.pdf#page=63&rect=37,42,696,510&color=yellow" alt="Chapter3_part1, p.63">
+      <img src="Pasted image 20251030215632.png" alt="">
+      <img src="Pasted image 20251030215652.png" alt="">
 
+    
 ### 6.2 选择重传 (Selective Repeat, SR)
 * **发送方**:
     * 同样维护一个大小为 N 的发送窗口。
@@ -217,7 +223,9 @@ RDT 3.0 (停等协议) 虽然能工作，但性能极差。 发送方在大部�
     * 对于乱序到达的数据包，会将其**缓存 (Buffers)** 起来，直到所有缺失的数据包都到达，再按序交付给上层。
     * 当收到在窗口前的数据包，可能因为之前发送的ACK损坏导致sender计时器超时，这时候再次发送ACK(n)。
 * 发送方和接收方窗口不对齐，是因为sender尚未收到ACK
-<img src="Chapter3_part1.pdf#page=65&rect=19,37,709,498&color=yellow" alt="Chapter3_part1, p.65">
+  <img src="Pasted image 20251030215708.png" alt="">
+
+  
 ### 6.3 GBN 与 SR 对比总结
 
 | 对比项         | 回退N帧 (Go-Back-N)                  | 选择重传 (Selective Repeat)          |

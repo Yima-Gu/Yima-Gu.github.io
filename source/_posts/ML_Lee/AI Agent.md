@@ -5,6 +5,8 @@ tags:
   - DeepLearning
   - AI
   - 李宏毅机器学习
+categories:
+  - Deep Learning
 math: true
 syntax_converted: true
 

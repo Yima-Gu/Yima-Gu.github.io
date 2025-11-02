@@ -4,6 +4,8 @@ date: 2025-07-21 14:30
 tags:
   - DeepLearning
   - Optimization
+categories:
+  - Deep Learning
 math: true
 ---
 ## Optimization

@@ -1,14 +1,13 @@
 ---
-title: Deep Learning Lecture-7
-date: 2025-06-21
+title: DL Notes-7 Generative Models
+date: 2025-08-03 17:41
 tags:
   - DeepLearning
+  - GenerativeModel
 math: true
-syntax_converted: true
-
 ---
-## Generative Model
 
+## Generative Model
 
 
 数据分布是生成模型的核心。生成模型的目标是学习数据的分布，然后生成新的数据。目标是**学习数据的分布**，然后生成新的数据。

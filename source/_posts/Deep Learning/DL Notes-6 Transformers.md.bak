@@ -1,18 +1,15 @@
 ---
-title: Deep Learning Lecture-6
-date: 2025-06-21
+title: DL Notes-6 Transformers
+date: 2025-08-01 15:41
 tags:
   - DeepLearning
+  - Transformer
 math: true
-syntax_converted: true
-
 ---
 
 ## Transformers
 
 ### Transformers: Attention is All You Need
-
-[[Deep Learning Lecture-5#Attention]]
 
 再次理解Attention的概念：类似于”查字典“的操作，对于Query $q$, Key $k$和Value $v$，计算相关性，也就是重要性，对于输出序列中的第$i$个输出有价值的信息：
 $$

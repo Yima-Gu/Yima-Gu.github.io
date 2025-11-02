@@ -4,6 +4,8 @@ date: 2025-10-30 20:45
 tags:
     - Network
     - Application-Layer
+categories:
+  - Network
 math: true
 syntax_converted: true
 ---

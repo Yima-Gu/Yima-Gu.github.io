@@ -106,7 +106,7 @@ about:
   banner_mask_alpha: 0.3
   avatar: /img/my_avatar.png
   name: "Yima Gu"
-  intro: "六月的花儿"
+  intro: ""
   icons:
     - { class: 'iconfont icon-zhihu-fill', link: 'https://www.zhihu.com/people/84-53-25-53', tip: 'zhihu' }
     - { class: 'iconfont icon-github-fill', link: 'https://github.com/Yima-Gu', tip: 'GitHub' }

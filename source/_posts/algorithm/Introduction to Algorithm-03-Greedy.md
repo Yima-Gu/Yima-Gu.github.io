@@ -1,0 +1,247 @@
+---
+title: Introduction to Algorithm-03-Greedy
+date: 2025-06-15 19:45
+tags:
+    - Greedy
+    - Algorithm
+categories:
+  - Algorithm
+math: true
+syntax_converted: true
+---
+
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.252' %}
+读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。
+{% endnote %}
+
+> 更一般地，我们可以按如下步骤设计贪心算法：
+> 1. 将最优化问题转化为这样的形式：对其做出一次选择后，只剩下一个子问题需要求解。
+> 2.  证明做出贪心选择后，原问题总是存在最优解，即贪心选择总是安全的。 
+> 3. 证明做出贪心选择后，剩余的子问题满足性质：其最优解与贪心选择组合即可得到原问题的最优解，这样就得到了最优子结构。
+
+
+### An activity-selection problem
+
+问题描述：假设有n个活动，每个活动都要占用同一资源，而且每个活动都有一个开始时间和一个结束时间。如果两个活动时间不重叠，就可以同时进行。给定n个活动的开始时间和结束时间，如何安排活动，使得尽可能多的活动能够同时进行？
+
+#### Characterize the structure of an optimal solution
+
+对于活动选择问题，可以将问题分解为两个子问题，选择中间的某一个活动，然后递归地求解左右两边的活动。这样就可以得到一个状态转移方程。
+
+$$
+c[i,j] = \begin{cases}
+0 & \text{if} \quad  S_{ij} = \emptyset \\
+\max_{a_k \in S_{ij}} \{c[i,k] + c[k,j] + 1\} & \text{if} \quad  S_{ij} \neq \emptyset
+\end{cases}
+$$
+其中的 $S_{ij}$ 表示活动 $a_i$ 和 $a_j$ 之间的活动集合，$c[i,j]$ 表示活动 $a_i$ 到 $a_j$ 的最大活动集合。
+
+#### Theorem
+
+考虑任意的$S_k \neq \emptyset$，$a_m$是$S_k$中结束时间最早的活动。那么$a_m$一定包含在$S_k$中的某个最大兼容活动子集中。
+所以基于上面的定理，我们可以得到一个贪心算法。
+```python
+def greedy_activity_selector(s, f):
+		n = len(s)
+		A = [0]
+		k = 0
+		for m in range(1, n):
+				if s[m] >= f[k]:
+						A.append(m)
+						k = m
+		return A
+```
+于是我们可以得到一个贪心算法，时间复杂度为$O(n)$。
+
+### Knapsack Problem
+
+问题描述：给定n个物品，每个物品都有一个重量和一个价值，如何选择物品使得总重量不超过背包的容量，并且总价值最大？
+
+问题的变体：分数背包问题（Fractional Knapsack Problem），允许将物品分割成任意大小的部分。
+
+#### Characterize the structure of an optimal solution
+
+对于0-1背包问题，如果在背包中取出一个物体$j$，那么对于剩下n-1个物体，和$W-w_j$的背包，仍然是最优解。
+
+对于分数背包问题，仍然成立。
+
+对于分数背包问题，可以使用贪心算法来解决：每次选取单位价值最高的问题即可。
+
+#### Time complexity of the Fractional Knapsack Problem
+
+时间复杂度为$O(n \log n)$，因为需要对物品进行排序。
+
+可以使用最大堆来优化时间复杂度，时间复杂度为$O(n \log n)$因为在最坏的情况下仍然退化成堆排序问题。
+
+这里可以使用快速选择的方式来将时间优化得到$O(n)$。
+
+- 首先快速选取中位数，复杂度为$O(n)$。
+- 将物体分为两部：
+	- 如果大于等于中位数的所有物体的价值之和小于等于背包容量，可以全部放入背包，继续考虑小于中位数的物体的子问题
+	- 否则，考虑考虑大于等于中位数的物体的子问题
+	- 对于只剩下一个物体的情况，则直接取分数将包填满即可
+
+时间复杂度为：
+$$
+T(n) = T(n/2) + O(n)
+$$
+$$
+T(n) = O(n)
+$$
+
+
+### Huffman code
+
+关键在于证明Huffman编码是正确的，即需要证明有**最优子结构**和**贪心选择性**。
+
+#### Greedy choice property
+
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.262' %}
+下面的引理证明问题具有贪心选择性质。
+引理 16.2： 令 C 为一个字母表，其中每个字符 $c \in C$ 都有一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。那么存在 C 的一个最优前缀码， x 和 y 的码字长度相同，且只有最后一个二进制位不同。
+{% endnote %}
+
+
+**上述证明的是，全局最优解一定包含局部最优解，或者说贪心算法总是安全的**！可以构造一个最优解，并且证明可以找到满足上面的条件的解表现一定不会更差！
+
+<img src="Pasted image 20250408085148.png" alt="">
+
+<img src="Pasted image 20250408085155.png" alt="">
+
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.263' %}
+下面的引理证明了构造最优前缀码的问题具有最优子结构性质。
+引理 16.3：令 C 为一个给定的字母表，其中每个字符$c \in C$都定义了一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。令 C' 为 C 去掉字符 x 和 y, 加入一个新字符 z 后得到的字母表，即$C' = C-\{x,y\}\cup \{z\}$。类似 C, 也为 C' 定义 freq, 不同之处只是$z. freq= x. freq + y. freq$。令 T' 为字母表 C' 的任意一个最优前缀码对应的编码树。于是我们可以将 T' 中叶结点 z 替换为一个以 x 和 y 为孩子的内部结点，得到树 T, 而 T 表示字母表 C 的一个最优前缀码。
+{% endnote %}
+
+
+$$
+
+\begin{aligned}
+&x.freq \cdot d_{T}(x) + y.freq \cdot d_T(y) = z.freq \cdot d_{T'}(z) + (x.freq + y.freq)\\
+& B(T )= B(T') +  (x.freq + y.freq)
+\end{aligned}
+$$
+
+**上述定理证明的是最优子结构，即为在将原问题分解为子问题之后一定有子问题是最优的**
+
+对于 Huffman 编码树问题，可以将问题分解为两个子问题：选择两个频率最小的符号（或子树）合并为一个新的节点，然后在剩余符号集中继续构造最优的 Huffman 编码树。
+
+### Offline Caching
+
+问题的直观描述为：
+在已知**完整请求序列**（$b_1, b_2, \ldots, b_n$）和**缓存容量 $k$** 的前提下，设计缓存替换策略，最小化整个序列的**缓存未命中（Cache Miss）次数**。
+
+1. **三类请求处理**：  
+   - **缓存命中（Hit）**：请求块已在缓存中 → 无操作。  
+   - **非满未命中**：请求块不在缓存，但缓存未满 → 直接加载。  
+   - **满未命中**：请求块不在缓存，且缓存已满 → 需**淘汰一个块**再加载。
+
+2. **未命中类型**：  
+   - **强制未命中（Compulsory Miss）**：首次加载某块必然发生（缓存初始空）。  
+   - **策略相关未命中**：因淘汰策略不当导致的未命中（需优化）。
+
+**核心思想**：
+直观的并且贪心的解法是：
+
+> 当缓存满且发生未命中时，**淘汰最久不被访问的块**（即下次访问时间最晚的块）。
+
+**算法步骤**：  
+1. 遍历请求序列 $b_i$（$i = 1 \to n$）。  
+2. 若 $b_i$ 在缓存中，跳过。  
+3. 若 $b_i$ 不在缓存：  
+   - 缓存未满 → 加载 $b_i$。  
+   - 缓存已满 → 淘汰缓存中**下次出现位置最晚**的块，再加载 $b_i$。
+
+**定理 15.5**：  
+> 在子问题 $(C, i)$（缓存配置 $C$，当前请求 $b_i$）中，若发生满未命中，淘汰**最久不被访问的块 $z$** 属于某个最优解。
+
+**证明逻辑**（简略）：
+
+1. 假设存在一个最优解 $S$，在请求块 $b_i$ 时没有淘汰最远未来才使用的块 $z$，而是淘汰了其他某个块 $x$
+   我们构造另一个解 $S'$，让它在请求 $b_i$ 时淘汰 $z$ 而不是 $x$。然后我们证明：这个新解 $S'$ 与原解 $S$ 在之后的访问中，最多只会有同样多的缓存未命中（cache miss），甚至可能更少。
+2. 核心是维护两个解 $S$ 和 $S′$ 的缓存状态差异不会太大
+	- 定义在每次请求前，两个解的缓存状态交集为 $D_j$
+	- 证明从 $j = i+1$ 到 $m$，两个缓存状态至多只差一个块
+	- 并追踪这个“唯一不同”的块是如何在各次请求中变化的
+3. 对于从 $b_{i+1}$ 到 $b_m$ 的每一次请求，分析在不同缓存状态下两个解是如何命中或未命中的，处理过程中用具体分类讨论（比如是否命中、是否淘汰的是不同的块、是否请求的是那个不同块等）来维护前述的性质。
+4. 最终请求 $b_m = z$ 的处理
+	- 如果两个解缓存状态一致，那就一样处理
+	- 如果不同，说明 $S$ 命中了 $z$ 而 $S′$ 没有，这样 $S′$ 会多一次 miss
+	-  如果 $S′$ 多了一次 miss，就说明在之前的某个请求中，$S′$ 至少少了一次 miss，从而总的 miss 数量并不增加
+	- 这个部分用到了“反证法”：  假如 $S′$ 总是比 $S$ 多 miss，那说明 $x$ 这个被保留下来的块应该在中间某次请求中被访问。但那时它在 $S′$ 的缓存中、而不在 $S$ 中 $\Rightarrow$ $S′$ 命中而 $S$ 未命中 $\Rightarrow$ 矛盾
+5. 我们构造了一个不比原解差的新解 $S'$，它选择在 $b_i$ 请求时淘汰了 $z$，这说明**存在一个最优解在该时刻淘汰 $z$**。
+
+
+
+- **动态规划解法，同样是上述问题具有最优子结构的说明**
+  定义子问题 $(C, i)$：从请求 $b_i$ 开始，缓存配置为 $C$ 时的最小未命中数。  
+  递推关系：  
+  $$
+  \text{miss}(C, i) = 
+  \begin{cases} 
+  0 & i=n \land b_n \in C \\
+  1 & i=n \land b_n \notin C \\
+  \text{miss}(C, i+1) & i<n \land b_i \in C \\
+  1 + \min \{ \text{miss}(C', i+1) \mid C' \in R_{C,i} \} & i<n \land b_i \notin C
+  \end{cases}
+  $$
+- **贪心优势**：  
+  - 直接应用 **Furthest-in-Future** 策略。  
+  - **时间复杂度**：用哈希表 + 优先队列跟踪下次访问位置 → $O(n \log k)$。
+
+算法实现：
+
+```python
+from collections import defaultdict
+import heapq
+
+def offline_cache(requests, k):
+    n = len(requests)
+    cache = set()
+    misses = 0
+    
+    # 预计算每个块在每个位置后的下次出现
+    next_positions = defaultdict(list)
+    for i in range(n):
+        next_positions[requests[i]].append(i)
+    
+    # 构建每个位置的next_occurrence
+    next_occurrence = {}
+    for block in next_positions:
+        positions = next_positions[block]
+        pos_idx = 0
+        for i in range(n):
+            while pos_idx < len(positions) and positions[pos_idx] <= i:
+                pos_idx += 1
+            next_occurrence[(block, i)] = positions[pos_idx] if pos_idx < len(positions) else float('inf')
+    
+    # 优先队列存储 (负下次出现位置, 块)
+    pq = []
+    
+    # 遍历请求序列
+    for i in range(n):
+        block = requests[i]
+        
+        # 获取当前块的下次出现位置（O(1)）
+        next_pos = next_occurrence[(block, i)]
+        
+        if block in cache:
+            pass
+        else:
+            misses += 1
+            if len(cache) < k:
+                cache.add(block)
+                heapq.heappush(pq, (-next_pos, block))
+            else:
+                while pq and pq[0][1] not in cache:
+                    heapq.heappop(pq)
+                if pq:
+                    _, to_evict = heapq.heappop(pq)
+                    cache.remove(to_evict)
+                    cache.add(block)
+                    heapq.heappush(pq, (-next_pos, block))
+    
+    return misses
+```
+
+上面主要实现的是预处理每个块在每个位置后的下次出现位置$O(n)$，然后使用优先队列来维护缓存中的块和它们的下次出现位置$O(n \lg k)$。

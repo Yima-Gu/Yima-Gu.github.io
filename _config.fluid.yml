@@ -126,4 +126,5 @@ custom_css:
 
 # 网站统计
 web_analytics:
-  enable: true
+  enable: true                 # 1. 确保这里是 true
+  google: G-JFL0C5NV2V       # 2. 把你的 ID 粘贴在这里

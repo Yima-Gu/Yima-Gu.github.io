@@ -73,7 +73,7 @@ post:
 
   copyright:
     enable: true
-    license: 'BY-NC-SA'  # <--- 就是这里！
+    license: 'BY-NC-SA'  # 署名-非商业性使用-相同方式共享
     author:
       enable: true
     post_date:
@@ -119,6 +119,11 @@ footer:
     <i class="iconfont icon-love"></i>
     <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
     '
+  statistics:
+    enable: true
+    source: "busuanzi"  # 可选 leancloud | busuanzi  根据自己需求选择
+    pv_format: "总访问量 {} 次"  # 显示的文本，{}是数字的占位符（必须包含)，下同
+    uv_format: "总访客数 {} 人"
 
 # 自定义样式和脚本
 custom_js:
@@ -126,5 +131,5 @@ custom_css:
 
 # 网站统计
 web_analytics:
-  enable: true                 # 1. 确保这里是 true
-  google: G-JFL0C5NV2V       # 2. 把你的 ID 粘贴在这里
+  enable: true
+  google: G-JFL0C5NV2V 

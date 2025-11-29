@@ -1,0 +1,18 @@
+/* source/css/custom.css */
+
+/* 仅在宽屏电脑上生效 (防止影响手机版) */
+@media (min-width: 1200px) {
+  
+  /* 找到文章页面的主容器，将它的排列方向“反转” */
+  main > .container-fluid > .row {
+    flex-direction: row-reverse;
+  }
+
+  /* 可选：如果你觉得反转后，左边的目录离文章太远或太近 */
+  /* 可以微调中间文章区域的边距 */
+  .col-lg-8 {
+    /* 这里的 padding 可以根据你的喜好微调 */
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}

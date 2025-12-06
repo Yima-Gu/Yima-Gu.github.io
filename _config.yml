@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/hexo.json
+
 # Hexo Configuration
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
@@ -9,7 +11,7 @@ description: ''
 keywords:
 author: Yima Gu
 language: zh-CN
-timezone: ''
+timezone: Asia/Shanghai
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -89,9 +91,9 @@ pagination_dir: page
 
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
-include:
-exclude:
-ignore:
+include: []
+exclude: []
+ignore: []
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
@@ -112,3 +114,18 @@ markdown:
   plugins:
     # 启用你 package.json 中安装的 katex 插件
     - '@traptitech/markdown-it-katex'
+
+# Mermaid 渲染（配合 hexo-filter-mermaid-diagrams 插件）
+mermaid:
+  enable: true
+  version: '10.9.1'
+  options:
+    startOnLoad: true
+    securityLevel: 'loose'
+    theme: 'default'
+    flowchart:
+      useMaxWidth: true
+    sequence:
+      useMaxWidth: true
+    gantt:
+      barHeight: 30

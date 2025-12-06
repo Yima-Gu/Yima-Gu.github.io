@@ -1,18 +1,150 @@
 /* source/css/custom.css */
 
-/* 仅在宽屏电脑上生效 (防止影响手机版) */
+:root {
+  --mermaid-font-family: 'Inter', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  --mermaid-panel-gradient: linear-gradient(135deg, #fefcf5 0%, #f5efe1 50%, #fdf8ec 100%);
+  --mermaid-canvas: #f6f2e7;
+  --mermaid-panel-shadow: rgba(18, 24, 38, 0.12);
+  --mermaid-panel-border: rgba(255, 255, 255, 0.6);
+  --mermaid-node-bg: #fffdf5;
+  --mermaid-node-border: #d6c39b;
+  --mermaid-node-text: #1f2937;
+  --mermaid-highlight-bg: #ffe08a;
+  --mermaid-highlight-border: #d49c00;
+  --mermaid-secondary-bg: #d4ebff;
+  --mermaid-secondary-border: #5dade2;
+  --mermaid-cluster-bg: #f5f1e3;
+  --mermaid-cluster-border: #d8ceb8;
+  --mermaid-edge-color: #f2990c;
+  --mermaid-edge-glow: rgba(242, 153, 12, 0.55);
+  --mermaid-edge-label: #3b4255;
+  --mermaid-edge-label-stroke: rgba(255, 255, 255, 0.8);
+  --mermaid-text-shadow: rgba(15, 23, 42, 0.15);
+}
+
+html[data-user-color-scheme="dark"],
+html[data-default-color-scheme="dark"]:not([data-user-color-scheme]) {
+  --mermaid-panel-gradient: radial-gradient(circle at 25% 25%, #172033 0%, #0f172a 55%, #0c1422 100%);
+  --mermaid-canvas: #060b13;
+  --mermaid-panel-shadow: rgba(5, 8, 20, 0.7);
+  --mermaid-panel-border: rgba(255, 255, 255, 0.08);
+  --mermaid-node-bg: #121b2f;
+  --mermaid-node-border: #2f4364;
+  --mermaid-node-text: #f8fbff;
+  --mermaid-highlight-bg: #f6c343;
+  --mermaid-highlight-border: #f3a712;
+  --mermaid-secondary-bg: #284e73;
+  --mermaid-secondary-border: #5dade2;
+  --mermaid-cluster-bg: rgba(255, 255, 255, 0.03);
+  --mermaid-cluster-border: rgba(255, 255, 255, 0.08);
+  --mermaid-edge-color: #fdbb3c;
+  --mermaid-edge-glow: rgba(253, 187, 60, 0.65);
+  --mermaid-edge-label: #fff7dd;
+  --mermaid-edge-label-stroke: rgba(7, 9, 17, 0.75);
+  --mermaid-text-shadow: rgba(2, 6, 23, 0.65);
+}
+
+/* 仅在宽屏电脑上生效 */
 @media (min-width: 1200px) {
   
-  /* 找到文章页面的主容器，将它的排列方向“反转” */
+  /* 1. 核心：布局镜像翻转 (把目录换到左边) */
   main > .container-fluid > .row {
     flex-direction: row-reverse;
   }
 
-  /* 可选：如果你觉得反转后，左边的目录离文章太远或太近 */
-  /* 可以微调中间文章区域的边距 */
+  /* 2. 【重点修改】调整 TOC (目录) 的间距 */
+  /* 这里针对的是存放目录的那一列 */
+  .col-lg-2 {
+    /* 核心代码：增加左边距，把目录从屏幕边缘往右推 */
+    padding-left: 60px !important;  /* 你可以试着改这个数字：40px, 60px, 80px */
+    
+    /* 可选：减少右边距，让它稍微靠近文章一点 */
+    padding-right: 10px !important; 
+  }
+
+  /* 3. 调整文章主体 (中间部分) 的间距 */
+  /* 保持文章居中感，防止离目录太近或太远 */
   .col-lg-8 {
-    /* 这里的 padding 可以根据你的喜好微调 */
-    padding-left: 15px !important;
-    padding-right: 15px !important;
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+  }
+}
+
+/* 4. (推荐) 增加正文的呼吸感 (保留之前的优化) */
+.markdown-body {
+    line-height: 1.8 !important;
+    letter-spacing: 0.02em;
+}
+.markdown-body p {
+    margin-bottom: 1.5em !important;
+}
+
+/* Mermaid diagrams: responsive sizing & emphasis */
+.mermaid {
+  background: var(--mermaid-panel-gradient);
+  border-radius: 18px;
+  padding: 1.5rem;
+  margin: 2rem auto;
+  overflow-x: auto;
+  box-shadow: 0 30px 60px var(--mermaid-panel-shadow);
+  border: 1px solid var(--mermaid-panel-border);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.mermaid svg {
+  width: 100% !important;
+  height: auto !important;
+  max-width: min(1100px, 100%);
+  display: block;
+  margin: 0 auto;
+}
+
+
+.mermaid text,
+.mermaid tspan {
+  fill: var(--mermaid-node-text) !important;
+  color: var(--mermaid-node-text) !important;
+  font-size: clamp(15px, 1.2vw, 20px);
+  letter-spacing: 0.01em;
+  transition: fill 0.35s ease;
+  text-shadow: 0 1px 2px var(--mermaid-text-shadow);
+}
+
+.mermaid .edgePath path {
+  stroke-width: 3px !important;
+  stroke: var(--mermaid-edge-color) !important;
+  filter: drop-shadow(0 0 8px var(--mermaid-edge-glow));
+}
+
+.mermaid .edgeLabel text,
+.mermaid .edgeLabel tspan {
+  fill: var(--mermaid-edge-label) !important;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--mermaid-edge-label-stroke);
+  stroke-width: 2px;
+  letter-spacing: 0.02em;
+}
+
+.mermaid .label,
+.mermaid text {
+  font-weight: 600;
+  font-family: var(--mermaid-font-family);
+}
+
+@media (max-width: 768px) {
+  .mermaid {
+    padding: 1rem;
+    margin: 1.25rem auto;
+  }
+}
+
+@media (min-width: 900px) {
+  .markdown-body .mermaid {
+    width: min(90vw, 1100px);
+    max-width: 1100px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

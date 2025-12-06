@@ -88,6 +88,10 @@ post:
   lazyload:
     enable: true
 
+  mermaid:
+    enable: false      # 切断主题内置 v8.14
+    specific: true     # 可留着，方便将来切回
+
   # 评论系统：这里只保留开关和类型；具体 giscus 参数需放在根级 giscus: 下
   comments:
     enable: true
@@ -149,6 +153,7 @@ footer:
 
 # 自定义样式和脚本
 custom_js:
+  - /js/mermaid-init.js
 custom_css:
   - /css/custom.css
   

@@ -22,24 +22,24 @@
     <meta name="description" content="AI Agent：人类只给AI目标，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的行动（下棋），来最大化">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AI Agent Notes">
-<meta property="og:url" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/index.html">
+<meta property="og:url" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
 <meta property="og:description" content="AI Agent：人类只给AI目标，AI自己想办法完成某个研究问题。  整个图示清晰地展现了强化学习的核心循环：智能体观察环境的状态 (棋盘布局)，基于其策略和目标 (赢棋) 来选择一个行动 (下一步棋)，该行动改变了环境的状态，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：如何选择一系列的行动（下棋），来最大化">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/Pasted%20image%2020250720102659.png">
-<meta property="og:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
-<meta property="article:published_time" content="2025-07-20T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-11-29T12:15:05.399Z">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7BFC397F83-D2DE-4C4E-9F05-5329C2558432%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7B22EECDE5-9FA4-41A9-A3AA-02B15F268B9A%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7BD54BA4B1-ACDF-404C-968F-018E57CD0D26%7D.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/Pasted%20image%2020250720102659.png">
+<meta property="og:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7BBBAE77B9-5B82-4103-88B0-BEB5D20B0FA6%7D.png">
+<meta property="article:published_time" content="2025-07-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-06T05:26:59.504Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="DeepLearning">
 <meta property="article:tag" content="AI">
 <meta property="article:tag" content="李宏毅机器学习">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://yima-gu.github.io/2025/07/20/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
+<meta name="twitter:image" content="https://yima-gu.github.io/2025/07/19/ML_Lee/AI%20Agent/%7B281D8726-4976-4970-BCA0-4A9C9D175927%7D.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -468,7 +468,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>AI Agent Notes</div>
-      <div>https://yima-gu.github.io/2025/07/20/ML_Lee/AI Agent/</div>
+      <div>https://yima-gu.github.io/2025/07/19/ML_Lee/AI Agent/</div>
     </div>
     <div class="license-meta">
       
@@ -523,6 +523,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2025/11/30/talks/The%20Era%20of%20Experience/" title="The Era of Experience">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">The Era of Experience</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
@@ -853,6 +859,10 @@
   <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
 
 
+
+
+  
+<script src="/js/mermaid-init.js"></script>
 
 
 

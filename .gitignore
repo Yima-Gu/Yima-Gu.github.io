@@ -12,3 +12,5 @@ _multiconfig.yml
 *_posts_backup/
 *.env
 source/_posts_backup/
+
+.specstory/

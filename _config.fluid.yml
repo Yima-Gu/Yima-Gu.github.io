@@ -27,9 +27,9 @@ navbar:
       link: /about/
       icon: iconfont icon-user-fill
 
-    - key: links
-      link: '/links/'
-      icon: 'iconfont icon-link-fill'
+    # - key: links
+    #   link: '/links/'
+    #   icon: 'iconfont icon-link-fill'
 
 
 favicon: /img/my_icon.png  # 网站图标路径

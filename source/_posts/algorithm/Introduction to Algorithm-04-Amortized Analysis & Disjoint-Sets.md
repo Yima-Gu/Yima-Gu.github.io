@@ -1,0 +1,166 @@
+---
+title: Introduction to Algorithm-04-Amortized Analysis and Disjoint-Sets
+date: 2025-06-16 08:45
+tags:
+    - Amortized Analysis
+    - Disjoint Sets
+    - Algorithm
+categories:
+  - Algorithm
+math: true
+syntax_converted: true
+---
+
+### Dynamic tables
+#### Dynamic array
+
+1. **初始容量**：向量从一个初始容量开始。 
+2. **扩容条件**：当向量的大小达到当前容量时，触发扩容。 
+3. **倍增扩容**：将当前容量加倍（例如，从 $n$ 增加到 $2n$）。 
+4. **数据复制**：将现有元素复制到新的更大容量的存储空间中。
+
+数据结构中的向量的倍增扩容的方法，在均摊分析下算法的时间复杂度为$\Theta(1)$
+
+1. **插入操作**：大多数插入操作只需在末尾添加元素，时间复杂度为 $O(1)$。 
+2. **扩容操作**：每次扩容时，需要进行 $O(n)$ 的复制操作。 
+3. **均摊成本**：在 $n$ 次插入操作中，扩容操作发生的次数是对数级别的（即 $\log n$ 次），因此每次插入的均摊成本为： 
+$$ \frac{ 1 + 2 +4 + 8 + \cdots 2^{\left[\lg n \right]} }{n} = O(1) $$ 
+其中，$1, 2, 4, \ldots, n$ 表示每次扩容时的元素复制次数。
+
+### Aggregate analysis
+
+对于n个元素进行的**所有**操作进行求和，然后除以n，得到平均值
+#### Increment a binary counter
+
+问题描述：设计一个二进制计数器，初始值为0，每次加1，直到$2^n-1$，然后重置为0
+
+在分析的过程中发现，不是每一个比特位都会变化，分析发现：第$i$位变化时的周期为$2^{i}$。
+$$
+T(n) = \sum_{i=0}^{\lg n} \left\lfloor \frac{n}{2^{i}} \right\rfloor < \sum_{i=0}^{\lg n} \frac{n}{2^{i}} < n \sum_{i=0}^{\infty} \frac{1}{2^{i}} = n \cdot 2 = O(n)
+$$
+
+### The Accounting method
+
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.275' %}
+用核算法 (accounting method) 进行摊还分析时，我们对不同操作赋予不同费用，赋予某些操作的费用可能多于或少于其实际代价。
+我们将赋予一个操作的费用称为它的摊还代价。当一个操作的摊还代价超出其实际代价时，我们将差额**存入数据结构中的特定对象**，存入的差额称为信用。
+对于后续操作中摊还代价小于实际代价的情况，信用可以用来支付差额。因此，我们可以将一个操作的摊还代价分解为其实际代价和信用（存入的或用掉的）。不同的操作可能有不同的摊还代价。这种方法不同于聚合分析中所有操作都赋予相同摊还代价的方式。
+{% endnote %}
+
+
+
+**每次操作**都分配一个固定的费用，实际上可能会比实际的费用要多，剩余的费用可以用来支付后续的操作。正确的操作要求**银行的存款总是非负的**，即：
+$$
+\sum_{i=1}^{n} \hat{c_i} \geq \sum_{i=1}^{n} c_i \quad \forall n
+$$
+其中$\hat{c_i}$是分配的费用，$c_i$是实际的费用，在满足前提的情况下使得$\hat{c_i}$尽量小。
+
+
+
+### Potential method
+
+势能法的工作方式为，**对一个数据结构分配一个势能函数$\Phi$**，在每次**操作**时，势能函数的值会发生变化。势能函数的变化量可以看作是对操作的额外费用。对于每个操作$i$，我们可以定义：
+$$
+\hat{c_i} = c_i + \Phi(D_i)- \Phi(D_{i-1})
+$$
+$$
+\sum_{i=i}^{n} \hat{c_i} = \sum_{i=1}^{n} c_i + \Phi(D_n) - \Phi(D_0) \quad \forall n
+$$
+只需要$\Phi(D_n) \geq \Phi(D_0)$即可满足在支付分析中要求的条件，不妨令$\Phi(D_0) = 0$
+
+
+
+### Data Structures for Disjoint Sets
+
+并查集是一种用于处理不交集（Disjoint Sets）数据结构，支持以下操作：
+- **MakeSet**：创建一个新的集合
+- **Find**：确定元素属于哪个子集
+- **Union**：将两个子集合并为一个
+
+#### Linked-list reprsentation of disjoint sets
+
+每个集合用一个链表表示，链表的头结点为集合的代表元素。每个元素都有一个指向其父节点的指针，根节点的父节点指向自己。
+在这种情况下，Find操作的时间复杂度为$O(1)$，Union操作的时间复杂度为$O(n)$。在合并的过程中**将较短的链表连接到较长的链表上**。
+
+上面的操作可以将复杂度降低为$O(\log n)$。在$m$次操作中，其中$n$个是MakeSet操作，$m-n$个是Find和Union操作，时间复杂度为：$O(m + n \lg n)$
+由于每一次更新指针一定是在较小的集合中，每个元素更新指针的次数不会超过$\lg n$
+
+
+
+#### Disjoint set forests
+
+每个集合用一棵树表示，树的根节点为集合的代表元素。每个元素都有一个指向其父节点的指针，根节点的父节点指向自己。每个节点都有一个**秩**（rank）属性，用于表示树的高度。
+
+在上面的操作中，MakeSet操作的时间复杂度为$O(1)$，Union操作的时间复杂度为$O(1)$。
+
+- Union by rank: 在合并两个集合时，将树的高度较小的树连接到高度较大的树上，维护两个树的高度
+
+```python
+Union(x, y):
+    root_x = Find(x)
+    root_y = Find(y)
+    if root_x ≠ root_y:
+        if rank[root_x] < rank[root_y]:
+            parent[root_x] = root_y
+        else if rank[root_x] > rank[root_y]:
+            parent[root_y] = root_x
+        else:
+            parent[root_y] = root_x
+            rank[root_x] += 1
+```
+
+- Path compression: 在Find操作中，将路径上的所有节点直接连接到根节点上，减少树的高度
+``` python
+Find(x):
+    if x ≠ parent[x]:
+        parent[x] = Find(parent[x])  // 递归地将父指针指向根
+    return parent[x]
+```
+#### Analysis of union-find
+
+##### Ackerman function
+
+阿克曼函数是一个非常快速增长的函数，定义如下：
+$$
+A_k(j) = \begin{cases}
+		j + 1 & \text{if } k = 0 \\
+		A_{k-1}^{(j+1)} (j) & \text{if } k> 0
+		\end{cases}
+		$$
+$$
+A_1(j) = 2j+1
+$$
+$$
+A_2(j) = 2^{j+1}(j+1)-1
+$$
+
+定义上面的函数的反函数有：
+$$
+\alpha(n) = \min \{ k | A_k(n) \geq n \}
+$$
+
+
+##### Analysis of union-find
+
+使用势能方法案来分析均摊时间复杂度
+
+对于每个节点 $x$，其势能 $\phi(x)$ 根据以下规则分配：
+
+- 如果 $x$ 是根节点或其秩为 0，则 $\phi(x) = 0$。
+    
+- 否则，$\phi(x) = (\alpha(n) - \text{level}(x)) \cdot x.\text{rank} - \text{iter}(x)$
+
+其中：
+
+- $\alpha(n)$：阿克曼函数的反函数（Inverse Ackermann Function），增长极慢，在实际应用中几乎是常数。
+- $\text{level}(x)$：节点 $x$ 的级别，定义为最大的整数 $k$，满足 $x$ 的父节点秩 $x.p.\text{rank} \geq A_k(x.\text{rank})$，其中 $A_k$ 是阿克曼函数的第 $k$ 阶迭代。
+- $\text{iter}(x)$：节点 $x$ 在当前级别内的“迭代”次数，表示路径压缩过程中节点状态的微调。
+- $x.\text{rank}$：节点 $x$ 的秩，通常是树高度的上界（在使用按秩合并时）。
+这种势能函数的设计反映了路径压缩和按秩合并对树结构的影响
+
+#### Applications of Disjoint Sets
+
+##### Connected Components
+
+可以使用并查集来计算无向图的连通分量。每个顶点初始化为一个独立的集合，然后通过遍历边来合并顶点所在的集合。
+

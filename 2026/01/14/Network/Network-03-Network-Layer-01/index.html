@@ -1,0 +1,1525 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="主要任务： 将数据报 (datagrams) 从源主机跨越多个网络路由 (routing) 到目标主机。逻辑寻址 (Addressing)： 定义全局唯一的 IP 地址（如 IPv4、IPv6）来标识网络中的主机 。路由 (Routing)： 决定数据包从源到目标的最佳路径。这是通过路由算法（如链路状态算法 或距离向量算法 ）实现的。转发 (Forwarding)： (讲">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Network - 03.Network Layer-01">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/Network/Network-03-Network-Layer-01/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="主要任务： 将数据报 (datagrams) 从源主机跨越多个网络路由 (routing) 到目标主机。逻辑寻址 (Addressing)： 定义全局唯一的 IP 地址（如 IPv4、IPv6）来标识网络中的主机 。路由 (Routing)： 决定数据包从源到目标的最佳路径。这是通过路由算法（如链路状态算法 或距离向量算法 ）实现的。转发 (Forwarding)： (讲">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T19:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.358Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Network - 03.Network Layer-01 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Network - 03.Network Layer-01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 03:00" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          68 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Network - 03.Network Layer-01</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <div class="note note-success **主要任务**">
+            <ul><li><strong>主要任务：</strong> 将数据报 (datagrams) 从源主机跨越多个网络<strong>路由 (routing)</strong> 到目标主机。<ul><li><strong>逻辑寻址 (Addressing)：</strong> 定义全局唯一的 IP 地址（如 IPv4、IPv6）来标识网络中的主机 。</li><li><strong>路由 (Routing)：</strong> 决定数据包从源到目标的最佳路径。这是通过路由算法（如链路状态算法 或距离向量算法 ）实现的。</li><li><strong>转发 (Forwarding)：</strong> (讲稿第 4 章内容) 路由器根据转发表将数据包从输入端口移动到正确的输出端口。</li><li><strong>数据报封装：</strong> 将来自传输层的报文段 (segment) 封装成数据报 (datagram) 。</li><li><strong>地址管理：</strong> CIDR 和路由地址聚合 用于高效管理地址空间。</li></ul></li></ul>
+          </div>
+<h2 id="第-4-章：网络层-Chapter-4-Network-Layer">第 4 章：网络层 (Chapter 4: Network Layer)</h2>
+<h3 id="4-1-简介-Introduction">4.1 简介 (Introduction)</h3>
+<p>网络层 (Network Layer) 的主要任务是实现<mark><strong>主机到主机 (host-to-host)</strong></mark> 的通信。它负责将<strong>报文段 (segment)</strong>（来自传输层的数据单元）从源主机安全、准确地传输到目的主机。<br>
+* <strong>主机到主机通信</strong>：与传输层负责的进程到进程通信不同，网络层关注的是将数据从一台计算机发送到另一台计算机，而不关心这些数据最终是由哪个应用程序接收的。 <br>
+* <strong>无处不在</strong>：网络是互联网的核心，因此网络中的每一个<strong>主机 (host)</strong> 和每一个<strong>路由器 (router)</strong> 都必须实现网络层协议。</p>
+<h4 id="1-网络层的功能">1. 网络层的功能</h4>
+<ul>
+<li><strong>发送端主机</strong>：
+<ul>
+<li>网络层从上层的传输层接收<strong>报文段 (segment)</strong>。</li>
+<li>它将这些报文段进行<strong>封装 (encapsulates)</strong>，即在报文段前面加上网络层的首部信息（如源IP地址、目的IP地址等），形成<strong>数据报 (datagram)</strong>。</li>
+<li>封装好的数据报随后被传递给链路层进行发送。</li>
+</ul>
+</li>
+<li><strong>网络中的路由器</strong>：
+<ul>
+<li>当一个数据报到达路由器的输入链路时，路由器的网络层会<strong>检查数据报的首部字段</strong>。</li>
+<li>通过检查首部中的目的地址，路由器决定将该数据报转发到哪个输出链路。</li>
+</ul>
+</li>
+<li><strong>接收端主机</strong>：
+<ul>
+<li>当数据报到达目的主机时，网络层接收该数据报。 *它会去掉网络层首部，取出其中的<strong>报文段</strong>，并将其向上递交给<strong>传输层</strong>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-两个关键功能：转发与路由">2. 两个关键功能：转发与路由</h4>
+<ul>
+<li><strong>转发 (Forwarding):</strong>
+<ul>
+<li><strong>定义</strong>：转发（有时也称为<strong>交换 Switching</strong>）是指将数据包从路由器的<strong>输入接口</strong>移动到适当的<strong>输出接口</strong>的过程。 <br>
+* <strong>性质</strong>：这是一个在<strong>单个路由器内部</strong>发生的<strong>本地 (local)</strong> 动作。</li>
+<li><strong>层面</strong>：转发是在<strong>数据平面 (Data Plane)</strong> 上执行的。数据平面指的是路由器中负责实际处理和传送用户数据报的部分。</li>
+<li><strong>实现</strong>：转发通常必须非常快（纳秒到微秒级别），因此通常由专用硬件来完成。路由器通过查询其内部的<strong>转发表 (forwarding table)</strong> 来决定将数据报发送到哪个输出端口。</li>
+</ul>
+</li>
+<li><strong>路由 (Routing):</strong> 决定数据包从源到目标所采用的路径。这是在“控制平面”(Control Plane)上执行的全局操作。<br>
+* <strong>定义</strong>：路由是指确定数据包从源主机到目的主机所经过的<strong>整体路径</strong>的过程。
+<ul>
+<li><strong>性质</strong>：这是一个涉及整个网络的<strong>全局 (global)</strong> 动作。它需要了解网络的拓扑结构和链路状态。</li>
+<li><strong>层面</strong>：路由是在<strong>控制平面 (Control Plane)</strong> 上执行的。控制平面负责管理网络的逻辑和决策，它决定了数据报应该如何流动。</li>
+</ul>
+<ul>
+<li><strong>实现</strong>：路由通常通过在路由器上运行复杂的<strong>路由算法 (Routing algorithms)</strong> 来实现。这些算法计算出最佳路径，并据此填充和更新路由器的<strong>转发表</strong>。路由计算的时间尺度通常比转发要慢得多（秒到分钟级别），并且通常由软件实现。</li>
+</ul>
+</li>
+<li><strong>路由算法 (Routing algorithms)</strong> 决定了路由器的<strong>转发表 (forwarding table)</strong>。路由算法生成 <strong>路由表 (RIB)</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 经过优选和编译 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\rightarrow</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 生成 <strong>转发表 (FIB)</strong>。</li>
+</ul>
+<blockquote>
+<p><strong>比喻：</strong></p>
+<ul>
+<li><strong>路由 (Routing)</strong> 就像是规划一次从源头到目的地的完整旅行路线。</li>
+<li><strong>转发 (Forwarding)</strong> 就像是在一个交叉路口（路由器）决定从哪条路（输出端口）离开。</li>
+</ul>
+</blockquote>
+<h4 id="3-连接建立-Connection-Setup">3. 连接建立 (Connection Setup)</h4>
+<ul>
+<li>某些网络架构（如 ATM, X.25）中存在<strong>连接建立 (Connection setup)</strong>。</li>
+<li>在数据流开始前，端系统和中间的路由器会建立<strong>虚连接 (virtual connection)</strong>。</li>
+<li>这与传输层的连接（进程到进程）不同，网络层的连接是主机到主机 (host-to-host) 的。</li>
+</ul>
+<h4 id="4-网络服务模型-Network-Service-Model">4. 网络服务模型 (Network Service Model)</h4>
+<ul>
+<li><strong>网络服务模型</strong>本质上是网络（快递公司）和用户（发件人）之间的一份 <strong>“服务合同”</strong>。它定义了当你把一个数据包（包裹）交给网络后，网络承诺会如何对待这个包裹。在这个“合同”里，可能会包含以下条款：
+<ul>
+<li><strong>确保送达吗？</strong> (Guaranteed delivery) —— 丢件了赔不赔？</li>
+<li><strong>有时限吗？</strong> (Delay) —— 承诺3天内必达吗？</li>
+<li><strong>不仅送达，还要按顺序吗？</strong> (In-order) —— 我发了包裹A和包裹B，你能保证A先到，B后到吗？</li>
+<li><strong>带宽保证吗？</strong> (Bandwidth) —— 能给我预留一条专用车道，确保我不堵车吗？</li>
+</ul>
+</li>
+<li><strong>服务示例：</strong>
+<ul>
+<li><strong>单个数据报：</strong> 保证交付 (guaranteed delivery)、带延迟上界的保证交付 (guaranteed delivery with delay)。</li>
+<li><strong>数据流：</strong> 按序数据报交付 (in-order datagram delivery)、保证最小带宽 (guaranteed minimum bandwidth)。</li>
+</ul>
+</li>
+<li><strong>互联网 (Internet)</strong> 的服务模型是 <strong>尽力而为 (best effort)</strong>：
+<ul>
+<li>不保证带宽 (Bandwidth)</li>
+<li>不保证不丢包 (Loss)</li>
+<li>不保证按序 (Order)</li>
+<li>不保证时序 (Timing)</li>
+</ul>
+</li>
+<li><strong>ATM</strong> 提供了多种服务模型，如 CBR (恒定比特率)、VBR (可变比特率) 等，提供严格的保证。
+<ul>
+<li><strong>ATM (Asynchronous Transfer Mode)</strong> 是老一代的电信网络技术（主要用于电话网核心）</li>
+<li><strong>CBR (Constant Bit Rate，恒定比特率)</strong>：
+<ul>
+<li>就像传统的电话线路。网络承诺：“我给你预留一条 64kbps 的专用通道，不管网络多忙，这条通道都是你的，延时极低且固定。”这非常适合传输语音，但如果没人说话，这带宽就浪费了。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>VBR (Variable Bit Rate，可变比特率)</strong>：
+<ul>
+<li>允许速率在一定范围内波动，但依然有严格的平均带宽和延迟保证。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-2-虚电路和数据报网络-Virtual-Circuit-and-Datagram-Networks">4.2 虚电路和数据报网络 (Virtual Circuit and Datagram Networks)</h3>
+<p>网络层可以提供两种服务：</p>
+<ol>
+<li><strong>数据报网络 (Datagram network)</strong> 提供网络层的<strong>无连接服务 (connectionless service)</strong>。</li>
+<li><strong>虚电路网络 (Virtual circuit network)</strong> 提供网络层的<strong>连接服务 (connection service)</strong>。</li>
+</ol>
+<h4 id="1-虚电路-Virtual-Circuits-VCs">1. 虚电路 (Virtual Circuits - VCs)</h4>
+<ul>
+<li>VC 网络的行为类似于电话电路，在数据传输前需要建立连接。</li>
+<li><strong>流程：</strong> 1. 呼叫建立 (call setup) -&gt; 2. 数据流动 -&gt; 3. 呼叫拆除 (teardown)。</li>
+<li>每个数据包携带 <strong>VC 标识符 (VC identifier)</strong>，而不是目的主机地址。</li>
+<li>路径上的每个路由器都为通过的连接维护<strong>状态 (state)</strong>。</li>
+<li><strong>信令协议 (Signaling protocols)</strong> (如 ATM, X.25) 用于建立、维护和拆除 VC。</li>
+<li><strong>互联网不使用信令协议</strong>。</li>
+</ul>
+<h4 id="2-数据报网络-Datagram-Networks">2. 数据报网络 (Datagram Networks)</h4>
+<ul>
+<li>这是互联网采用的模式。</li>
+<li>网络层<strong>没有呼叫建立 (no call setup)</strong>。</li>
+<li>路由器<strong>不维护 (no state)</strong> 关于端到端连接的状态。</li>
+<li>数据包使用<strong>目的主机地址 (destination host address)</strong> 进行转发。</li>
+<li>同一源-目标对之间的数据包可能走<strong>不同路径</strong>。</li>
+<li><strong>转发表 (Forwarding table)</strong> 是基于目的地址范围的。存储的是<mark>前缀</mark></li>
+<li><strong>最长前缀匹配 (Longest prefix matching):</strong> 路由器在转发表中查找与数据包目的地址匹配的“最具体”的条目（即前缀最长的条目），并据此转发。</li>
+<li>通过这种方式，路由器的转发表可以非常紧凑和高效。它不需要知道 40 亿个地址，它可能只需要几万到几十万个“前缀”（即地址范围）就能覆盖整个互联网的路由。</li>
+</ul>
+<h4 id="3-对比：数据报-vs-虚电路">3. 对比：数据报 vs. 虚电路</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">特性</th>
+<th style="text-align:left">数据报网络 (Internet)</th>
+<th style="text-align:left">虚电路网络 (ATM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>设计目标</strong></td>
+<td style="text-align:left">计算机数据交换（弹性服务）</td>
+<td style="text-align:left">电话网演进（严格时序）</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>端系统</strong></td>
+<td style="text-align:left">“智能” (Smart end systems)</td>
+<td style="text-align:left">“哑” (Dumb end systems)</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>复杂性</strong></td>
+<td style="text-align:left"><strong>在“边缘” (complexity at “edge”)</strong></td>
+<td style="text-align:left"><strong>在“内部” (complexity inside network)</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="4-3-路由器内部-What’s-Inside-a-Router">4.3 路由器内部 (What’s Inside a Router)</h3>
+<h4 id="1-路由器架构-Router-Architecture">1. 路由器架构 (Router Architecture)</h4>
+<ul>
+<li><strong>路由处理器 (Routing processor):</strong> (运行在控制平面)
+<ul>
+<li>执行路由协议（如 OSPF, BGP）。</li>
+<li>维护路由表。</li>
+<li>计算转发表。</li>
+</ul>
+</li>
+<li><strong>交换与转发：</strong> (运行在数据平面)
+<ul>
+<li><strong>输入端口 (Input port)</strong></li>
+<li><strong>交换结构 (Switching fabric)</strong></li>
+<li><strong>输出端口 (Output port)</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="2-输入端口-Input-Port">2. 输入端口 (Input Port)</h4>
+<ul>
+<li><strong>功能：</strong>
+<ol>
+<li>物理层：接收比特。接收光纤或网线传来的光电信号，把它们还原成 0 和 1 的比特流。</li>
+<li>数据链路层：解封装。从以太网帧头取出里面的 IP 数据包。</li>
+<li>网络层：查找转发表，决定输出端口。</li>
+</ol>
+</li>
+<li><strong>去中心化交换 (Decentralized switching):</strong> 路由处理器把计算好的“转发表”，<strong>复制</strong>一份给每一个输入端口。在输入端口<strong>本地维护</strong>一份转发表的副本，以实现<strong>线速 (line speed)</strong> 处理，避免路由处理器成为瓶颈。</li>
+<li>如果数据报到达速度快于转发速率，会发生<strong>队列 (queuing)</strong>。</li>
+</ul>
+<h4 id="3-交换结构-Switching-Fabric">3. 交换结构 (Switching Fabric)</h4>
+<ul>
+<li>
+<p><strong>功能：</strong> 将数据包从输入端口连接到输出端口。</p>
+</li>
+<li>
+<p><strong>三种类型：</strong></p>
+<ol>
+<li><strong>通过内存交换 (Switching Via Memory):</strong>
+<ul>
+<li>第一代路由器。由 CPU 控制。</li>
+<li>数据包需要两次穿过系统总线（输入-&gt;内存，内存-&gt;输出）。</li>
+<li>速度受限于内存带宽。</li>
+</ul>
+</li>
+<li><strong>通过总线交换 (Switching Via a Bus):</strong>
+<ul>
+<li>输入端口通过<strong>共享总线</strong>将数据报传输到输出端口。</li>
+<li>速度受限于总线带宽，存在<strong>总线竞争 (bus contention)</strong>。</li>
+</ul>
+</li>
+<li><strong>通过互连网络交换 (Switching Via An Interconnection Network):</strong>
+<ul>
+<li>例如<strong>纵横式交换机 (crossbar switch)</strong>。</li>
+<li>克服总线带宽限制，可并行转发多个数据包。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="4-输出端口-Output-Port">4. 输出端口 (Output Port)</h4>
+<ul>
+<li><strong>功能：</strong>
+<ol>
+<li>网络层：排队（缓冲区管理）。
+<ul>
+<li><strong>缓冲区管理</strong>：这是输出端口最忙碌的工作。如果交换结构送来的包太快，而外面的网线（链路）发得太慢，数据包就必须在这里<strong>排队</strong>。</li>
+<li><strong>丢包</strong>：如果缓冲区（排队大厅）满了，新来的数据包就会被无情地丢弃（Packet Drop）。</li>
+</ul>
+</li>
+<li>数据链路层：封装（添加头部和尾部）。
+<ul>
+<li>数据包在路由器内部“裸奔”（只有 IP 内容）。在发出去之前，必须给它穿上“外套”。</li>
+<li>比如，如果出口连的是以太网，就要加上<strong>以太网帧头 (Header)</strong> 和 <strong>帧尾 (Trailer)</strong>。</li>
+</ul>
+</li>
+<li>物理层：发送比特。
+<ul>
+<li>这是最后一步。将封装好的帧（Frame）转换成光信号或电信号，推送到网线上。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>缓冲 (Buffering)</strong> 是必需的：当数据报从交换结构到达的速率快于输出链路的传输速率时。</li>
+<li><strong>调度策略 (Scheduling discipline)</strong> 决定了在队列中选择哪个数据包进行下一次传输（例如 FIFO 或<br>
+WFQ）。
+<ul>
+<li><strong>FIFO (First-In-First-Out, 先进先出)</strong>：
+<ul>
+<li><strong>最简单</strong>：大家按顺序排队，谁先来谁先走。</li>
+<li><strong>缺点</strong>：不灵活。如果前面有个巨大的数据包在传，后面紧急的语音通话数据包也得干等（导致语音卡顿）。</li>
+</ul>
+</li>
+<li><strong>优先级队列 (Priority Queuing)</strong>：
+<ul>
+<li><strong>VIP 通道</strong>：给数据包分类。比如，标记为“VoIP 语音”或“网络管理”的包属于高优先级。</li>
+<li><strong>机制</strong>：只要高优先级队列里有包，就先发高优先级的；只有高优先级空了，才发普通优先级的（如邮件、下载）。</li>
+</ul>
+</li>
+<li><strong>WFQ (Weighted Fair Queuing, 加权公平队列)</strong>：
+<ul>
+<li><strong>相对公平</strong>：它把排队的包按“流 (Flow)”（比如视频流、网页流）分开。</li>
+<li><strong>机制</strong>：各个流轮流发送，但是<strong>权重</strong>不同。比如给视频流分配 50% 的带宽，给网页流分配 20%。这样既保证了关键业务，又不会让低优先级的业务完全饿死。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-队列-Queuing">5. 队列 (Queuing)</h4>
+<ul>
+<li><strong>队列发生的位置：</strong> 输入端口和输出端口都可能发生。</li>
+<li><strong>缓冲区大小 (Buffering Size):</strong>
+<ul>
+<li><em>传统经验法则 (RFC 3439):</em> 缓冲区大小 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mi>R</mi><mi>T</mi><mi>T</mi><mo>⋅</mo><mi>C</mi></mrow><annotation encoding="application/x-tex">B = RTT \cdot C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">RTT</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span> (往返时间 * 链路容量)。</li>
+<li><em>近期推荐：</em> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>B</mi><mo>=</mo><mfrac><mrow><mi>R</mi><mi>T</mi><mi>T</mi><mo>⋅</mo><mi>C</mi></mrow><msqrt><mi>N</mi></msqrt></mfrac></mrow><annotation encoding="application/x-tex">B = \frac{RTT \cdot C}{\sqrt{N}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.4103em;vertical-align:-0.538em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8723em;"><span style="top:-2.5374em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord sqrt mtight"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9323em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mtight" style="padding-left:0.833em;"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span><span style="top:-2.8923em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail mtight" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1077em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">RTT</span><span class="mbin mtight">⋅</span><span class="mord mathnormal mtight" style="margin-right:0.07153em;">C</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.538em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span> (N 为流的数量)。</li>
+</ul>
+</li>
+<li><strong>输入队列的队头阻塞 (Head-of-the-Line (HOL) blocking):</strong>
+<ul>
+<li>当输入队列的第一个数据包（例如，一个红色的包）因其目标输出端口忙碌而被阻塞时，它会阻止队列中后续的数据包（例如，一个绿色的包），即使绿色包的目标输出端口是空闲的。</li>
+</ul>
+</li>
+<li><strong>输出端口的队列：</strong>
+<ul>
+<li>当多个输入端口同时向同一个输出端口发送数据包，且速度超过输出链路容量时，会在输出端口形成队列。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-4-IP：互联网协议-IP-Internet-Protocol">4.4 IP：互联网协议 (IP: Internet Protocol)</h3>
+<p><strong>互联网网络层</strong></p>
+<p>互联网网络层相关的三个主要协议：</p>
+<ol>
+<li><strong>IP 协议 (IP protocol):</strong> 寻址、数据报格式、分片等。<mark>网络层只有这一个协议</mark></li>
+<li><strong>路由协议 (Routing protocols):</strong> 路径选择 (如 RIP, OSPF, BGP)。</li>
+<li><strong>ICMP 协议 (ICMP protocol):</strong> 错误报告、网络查询。</li>
+</ol>
+<h4 id="4-4-1-IP-数据报格式-IPv4-Datagram-Format">4.4.1 IP 数据报格式 (IPv4 Datagram Format)</h4>
+<ul>
+<li><strong>版本 (Version):</strong> 4 (表示 IPv4)。</li>
+<li><strong>首部长度 (Header length):</strong> IP 头部的长度（以 32 位字为单位即4字节）。</li>
+<li><strong>总长度 (Total length):</strong> 整个数据报（首部 + 数据）的长度（以字节为单位）。</li>
+<li><strong>标识 (Identifier), 标志 (Flags), 片偏移 (Fragment offset):</strong> 这三个字段用于 IP 分片。
+<ul>
+<li><strong>标识 (Identifier)</strong>: 16 bits。主机发送的每个数据报都有唯一的 ID。当数据报被分片时，所有分片都复制同一个 ID，以便接收方能将它们识别为同一个原始包。</li>
+<li><strong>标志 (Flags)</strong>: 3 bits。
+<ul>
+<li>Bit 0: 保留。</li>
+<li>Bit 1: <strong>DF (Don’t Fragment)</strong>。如果置 1，强制路由器不要分片（如果包太大传不过去，路由器只能丢包并报错）。</li>
+<li>Bit 2: <strong>MF (More Fragments)</strong>。如果置 1，表示后面还有分片；如果置 0，表示这是最后一个分片。</li>
+</ul>
+</li>
+<li><strong>片偏移 (Fragment Offset)</strong>: 13 bits。指示当前分片在原始数据报中的位置。用于接收方将乱序到达的分片重新拼装。</li>
+</ul>
+</li>
+<li><strong>生存时间 (Time to Live - TTL):</strong> 数据包在网络中可通过的最大跳数。<strong>每经过一个路由器减 1</strong>，若减到 0，则丢弃该包（防止无限循环）。
+<ul>
+<li><strong>目的</strong>: 防止路由环路（Routing Loop）。如果路由表配置错误导致数据包在网络中无限兜圈子，TTL 最终会减为 0。</li>
+</ul>
+</li>
+<li><strong>上层协议 (Upper layer protocol):</strong> 指示负载 (payload) 应交付给哪个传输层协议（例如 TCP (6) 或 UDP (17)）。</li>
+<li><strong>首部校验和 (Header checksum):</strong> <strong>仅对头部</strong>进行校验。每经过一个路由器都会重新计算（因为 TTL 字段会改变）。（数据部分的校验由 TCP/UDP 自己负责）因为 TTL 字段在每经过一个路由器时都会改变，所以<strong>校验和必须在每个路由器上重新计算</strong>。</li>
+<li><strong>源 IP 地址 (Source IP address):</strong> 32 位。</li>
+<li><strong>目的 IP 地址 (Destination IP address):</strong> 32 位。</li>
+<li><strong>选项 (Options):</strong> (可选) 用于时间戳、记录路由等。</li>
+<li><strong>开销 (Overhead):</strong>
+<ul>
+<li>一个典型的 IP 头部有 <strong>20 字节</strong> (没有选项时)。</li>
+<li>一个典型的 TCP 头部有 <strong>20 字节</strong>。</li>
+<li>因此，传输数据至少有 40 字节的头部开销。</li>
+</ul>
+<ul>
+<li><strong>意义</strong>: 如果你只发送 1 个字节的数据（例如 Telnet 按键），实际需要传输 41 字节。这就解释了为什么在流媒体或游戏中，我们倾向于尽量填满数据包载荷，以提高带宽利用率。<br>
+网络层的功能是从<mark>主机到主机</mark>的，而不是从<mark>进程到进程</mark>的，所以没有端口号。</li>
+</ul>
+</li>
+</ul>
+<h5 id="IP-分片与重组-IP-Fragmentation-Reassembly">IP 分片与重组 (IP Fragmentation &amp; Reassembly)</h5>
+<ul>
+<li><strong>最大传输单元 (Max Transfer Unit - MTU):</strong> 链路层帧能承载的最大数据量。</li>
+<li><strong>分片 (Fragmentation):</strong> 当一个 IP 数据报大于链路的 MTU 时，路由器会将其分割成多个较小的数据报（<strong>分片 (fragments)</strong>）。</li>
+<li><strong>重组 (Reassembly):</strong> <mark>只在<strong>最终目的地 (final destination)</strong> 进行</mark>。</li>
+<li><em>示例：</em> 一个 4000 字节的数据报（20 字节头 + 3980 字节数据）在 MTU=1500 字节的链路上分片：
+<ol>
+<li><strong>片 1：</strong> 1500 字节（20 字节头 + 1480 字节数据）。
+<ul>
+<li><code>fragflag=1</code> (表示还有更多分片)</li>
+<li><code>offset=0</code></li>
+</ul>
+</li>
+<li><strong>片 2：</strong> 1500 字节（20 字节头 + 1480 字节数据）。
+<ul>
+<li><code>fragflag=1</code></li>
+<li><code>offset=185</code> (偏移量以 8 字节为单位, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>185</mn><mo>×</mo><mn>8</mn><mo>=</mo><mn>1480</mn></mrow><annotation encoding="application/x-tex">185 \times 8 = 1480</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">185</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1480</span></span></span></span>)</li>
+</ul>
+</li>
+<li><strong>片 3：</strong> 1040 字节（20 字节头 + 1020 字节数据）。
+<ul>
+<li><code>fragflag=0</code> (表示这是最后的分片)</li>
+<li><code>offset=370</code> (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>370</mn><mo>×</mo><mn>8</mn><mo>=</mo><mn>2960</mn></mrow><annotation encoding="application/x-tex">370 \times 8 = 2960</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">370</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2960</span></span></span></span>)</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">分片</th>
+<th style="text-align:left">数据部分 (Bytes)</th>
+<th style="text-align:left">头部 (Bytes)</th>
+<th style="text-align:left">总长度 (Total Length)</th>
+<th style="text-align:left">标志 (MF)</th>
+<th style="text-align:left">偏移 (Offset)</th>
+<th style="text-align:left">实际对应的原始字节位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>片 1</strong></td>
+<td style="text-align:left">1480</td>
+<td style="text-align:left">20</td>
+<td style="text-align:left">1500</td>
+<td style="text-align:left">1 (还有)</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">0 ~ 1479</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>片 2</strong></td>
+<td style="text-align:left">1480</td>
+<td style="text-align:left">20</td>
+<td style="text-align:left">1500</td>
+<td style="text-align:left">1 (还有)</td>
+<td style="text-align:left">185</td>
+<td style="text-align:left">1480 ~ 2959</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>片 3</strong></td>
+<td style="text-align:left">1020</td>
+<td style="text-align:left">20</td>
+<td style="text-align:left">1040</td>
+<td style="text-align:left">0 (没了)</td>
+<td style="text-align:left">370</td>
+<td style="text-align:left">2960 ~ 3979</td>
+</tr>
+</tbody>
+</table>
+<div class="note note-info">
+            <p>之所以容易混淆，是因为在计算中出现了两次“20 字节”：</p><ol><li><strong>原始包的 20 字节</strong>：这是<strong>原始 IP 头部</strong>。我们在计算 Payload 时把它减掉了 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>4000</mn><mo>−</mo><mn>20</mn><mo>=</mo><mn>3980</mn></mrow><annotation encoding="application/x-tex">4000 - 20 = 3980</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">4000</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">20</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3980</span></span></span></span>)。</li><li><strong>分片时的 20 字节</strong>：这是<strong>新生成的 IP 头部</strong>。我们在计算每个分片能装多少数据时把它减掉了 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1500</mn><mo>−</mo><mn>20</mn><mo>=</mo><mn>1480</mn></mrow><annotation encoding="application/x-tex">1500 - 20 = 1480</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1500</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">20</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1480</span></span></span></span>)。</li></ol><p>题目中看到的“20 字节头”，在分片计算的语境下，始终指的是 IP 协议的头部。TCP 头部在这个过程中被当成了<strong>数据</strong>的一部分，被切分到了第一个分片里。</p>
+          </div>
+<h4 id="4-4-2-IPv4-寻址-IPv4-Addressing">4.4.2 IPv4 寻址 (IPv4 Addressing)</h4>
+<h5 id="1-IP-地址-IP-Address-与-接口-Interface"><strong>1. IP 地址 (IP Address) 与 接口 (Interface)</strong></h5>
+<ul>
+<li><strong>核心定义：</strong> IP 地址并不直接标识一台“主机”或“路由器”，而是标识它们的一个<strong>接口 (Interface)</strong>。
+<ul>
+<li><strong>主机 (Host)：</strong> 通常有<strong>一个或两个接口</strong>（例如有线网卡 + 无线网卡），每个接口都需要一个独立的 IP 地址。</li>
+<li><strong>路由器 (Router)：</strong> 路由器的工作就是在不同网络间转发数据，因此它必须至少有两个或更多的接口。每个接口连接到一个不同的网络，因此<strong>每个接口都有一个属于该特定网络的 IP 地址</strong>。</li>
+</ul>
+</li>
+<li><strong>直观理解：</strong> IP 地址就像是“门牌号”。路由器像是一座连接多条街道（网络）的建筑物，它在每条街道上都有一个大门（接口），每个大门都需要挂上对应街道的门牌号。</li>
+</ul>
+<h5 id="2-子网-Subnet"><strong>2. 子网 (Subnet)</strong></h5>
+<p>子网是理解 IP 网络的基石。</p>
+<ul>
+<li>
+<p><strong>什么是子网？</strong></p>
+<ul>
+<li><strong>物理层面：</strong> 想象一个“孤岛”。如果你把路由器的电源拔掉，甚至把路由器从网络中移除，剩下的设备如果仍然能够通过<mark>交换机</mark>（Switch）或<mark>直接连线互相通信</mark>（发送以太网帧），那么这些设备就构成了一个子网。</li>
+<li><strong>逻辑层面：</strong> 属于同一个子网的接口，其 IP 地址的<strong>网络前缀 (Network Prefix)</strong> 部分必须完全相同。</li>
+</ul>
+</li>
+<li>
+<p><strong>子网掩码 (Subnet Mask) 的作用：</strong></p>
+<ul>
+<li>计算机无法通过肉眼判断 IP 地址哪部分是网络号，哪部分是主机号。子网掩码就是一把“尺子”，用来划分界限。</li>
+<li>例如：<code>255.255.255.0</code> (二进制为 24 个 1) 告诉计算机，IP 地址的前 24 位是子网部分，剩下的 8 位是主机部分。</li>
+</ul>
+</li>
+<li>
+<p><strong>如何判断一个网络中有几个子网？</strong></p>
+<ul>
+<li><strong>方法：</strong> 找到网络拓扑图中的每一个路由器接口。以该接口为中心，向外发散，直到碰到其他路由器接口或终点（主机）。这一片区域就是一个子网。</li>
+<li><strong>注意：</strong> 两个路由器之间的点对点链路（Point-to-Point Link）本身也是一个独立的子网。</li>
+</ul>
+</li>
+</ul>
+<h5 id="3-CIDR-Classless-InterDomain-Routing-——-无类域间路由"><strong>3. CIDR (Classless InterDomain Routing) —— 无类域间路由</strong></h5>
+<p>这是现代互联网分配 IP 地址的标准，它废除了早期死板的 A类、B类、C类 地址划分。</p>
+<ul>
+<li><strong>表示法：</strong> <code>a.b.c.d/x</code>
+<ul>
+<li><code>x</code> 称为前缀长度。</li>
+<li><strong>前 x 位：</strong> 是网络部分（子网 ID）。这部分一旦确定，该子网内所有设备的前 x 位必须一样。</li>
+<li><strong>后 (32-x) 位：</strong> 是主机部分。用于区分子网内的不同设备。</li>
+</ul>
+</li>
+<li><strong>计算能力：</strong>
+<ul>
+<li><strong>子网大小：</strong> 一个 <code>/x</code> 的子网可以容纳 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mrow><mo stretchy="false">(</mo><mn>32</mn><mo>−</mo><mi>x</mi><mo stretchy="false">)</mo></mrow></msup><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2^{(32-x)} - 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9713em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.888em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mtight">32</span><span class="mbin mtight">−</span><span class="mord mathnormal mtight">x</span><span class="mclose mtight">)</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 台主机。</li>
+<li><em>为什么要减 2？</em> 因为主机号全为 0 的地址代表<strong>本网络地址</strong>，主机号全为 1 的地址代表<strong>本子网广播地址</strong>，这两个不能分配给具体设备。</li>
+<li><em>示例：</em> <code>/24</code> 子网（即掩码 255.255.255.0）有 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>32</mn><mo>−</mo><mn>24</mn><mo>=</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">32-24=8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">32</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">24</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span></span></span></span> 位主机号。可分配地址为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>8</mn></msup><mo>−</mo><mn>2</mn><mo>=</mo><mn>254</mn></mrow><annotation encoding="application/x-tex">2^8 - 2 = 254</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8974em;vertical-align:-0.0833em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">8</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">254</span></span></span></span> 个。</li>
+</ul>
+</li>
+</ul>
+<h5 id="4-层次化寻址与路由聚合-Route-Aggregation"><strong>4. 层次化寻址与路由聚合 (Route Aggregation)</strong></h5>
+<p>这是为了解决互联网路由表过于庞大而设计的机制，也称为<strong>超网 (Supernetting)</strong>。</p>
+<ul>
+<li>
+<p><strong>问题背景：</strong></p>
+<ul>
+<li>假设一个 ISP（互联网服务提供商）拥有 8 个连续的 <code>/24</code> 小网段。如果它向全球互联网通告这 8 个独立的路由信息，全球所有核心路由器的路由表都会增加 8 行。这非常浪费资源。</li>
+</ul>
+</li>
+<li>
+<p><strong>解决方案 (路由聚合)：</strong></p>
+<ul>
+<li>ISP 就像一个大的邮局分拣中心。它不告诉外界“我这里有A小区、B小区、C小区…”，而是直接告诉外界“所有邮编开头是 100xxx 的信件都给我”。</li>
+<li><strong>技术实现：</strong> 将这 8 个小网段的共同前缀提取出来，合并成一个更短前缀（例如 <code>/21</code>）的大块地址。</li>
+<li>ISP 只向外界通告这一个 <code>/21</code> 的聚合路由。</li>
+</ul>
+</li>
+<li>
+<p><strong>最长前缀匹配 (Longest Prefix Match)：</strong></p>
+<ul>
+<li>如果路由表中存在一条聚合路由（例如 <code>200.23.16.0/20</code>，指向 ISP A）和一条特例路由（例如 <code>200.23.18.0/24</code>，指向 ISP B），当数据包的目标是 <code>200.23.18.1</code> 时，路由器会优先选择<strong>掩码最长（匹配最精确）</strong> 的那条路（即 <code>/24</code> 指向的 ISP B）。这就是为什么聚合不会导致特例路由失效。</li>
+</ul>
+</li>
+</ul>
+<h5 id="5-ICANN-的角色"><strong>5. ICANN 的角色</strong></h5>
+<ul>
+<li><strong>全称：</strong> Internet Corporation for Assigned Names and Numbers。</li>
+<li><strong>职责：</strong> 它是互联网的“大管家”。
+<ul>
+<li><strong>分配 IP 地址：</strong> 它不直接给个人分 IP，而是把大块的 IP 地址块分配给区域互联网注册机构 (RIRs，如亚太区的 APNIC)。</li>
+<li><strong>管理 DNS 根域：</strong> 确保全球域名解析系统的根基稳定。</li>
+</ul>
+</li>
+</ul>
+<h5 id="6-DHCP：动态主机配置协议-DHCP-Dynamic-Host-Configuration-Protocol">6. DHCP：动态主机配置协议 (DHCP: Dynamic Host Configuration Protocol)</h5>
+<ul>
+<li><strong>功能：</strong> 允许主机在加入网络时从服务器<strong>动态获取 (dynamically obtain)</strong> 其 IP 地址。</li>
+<li><strong>DHCP 交互过程 (D-O-R-A)：</strong>
+<ol>
+<li><strong>Discover (发现):</strong> 主机广播 “DHCP discover” 消息。（源: 0.0.0.0, 目的: 255.255.255.255）</li>
+<li><strong>Offer (提供):</strong> DHCP 服务器响应 “DHCP offer” 消息，提供一个 IP 地址及租期。</li>
+<li><strong>Request (请求):</strong> 主机广播 “DHCP request” 消息，请求所提供的地址。</li>
+<li><strong>Ack (确认):</strong> DHCP 服务器发送 “DHCP ack” 消息，确认地址分配。</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li>后两步使用广播（Broadcast）看起来似乎效率不高，但它们是 DHCP 协议设计中非常关键的环节，主要是为了<strong>解决潜在的冲突</strong>和<strong>确保消息的可靠传递</strong>。
+<ul>
+<li>
+<p><strong>通知“中选”的服务器（服务器 A）：</strong> “我确定要用你提供的 IP 地址！”</p>
+</li>
+<li>
+<p><strong>通知所有“落选”的服务器（服务器 B）：</strong> “我不要你们的 IP 地址了！” 这样，其他服务器（服务器 B）就可以收回它们之前保留的 IP 地址（192.168.1.150），并将其分配给其他需要的主机。</p>
+</li>
+<li>
+<p>如果服务器将 <code>Ack</code> <strong>单播</strong>（直接发送）到那个新分配的 IP 地址（例如 <code>223.1.2.4</code> ），主机的网络功能可能还没有完全准备好接收发往这个新地址的数据包。这个 <code>Ack</code> 很可能会丢失。</p>
+</li>
+<li>
+<p>因此，服务器采用最稳妥的方式：<strong>广播</strong> <code>Ack</code> 消息 。</p>
+</li>
+<li>
+<p>主机此时仍然在监听来自 0.0.0.0 的广播消息。当它收到这个 <code>Ack</code> 广播时，它会检查消息中的事务 ID (Transaction ID) 和自己的 MAC 地址，确认是发给自己的，然后才正式将 <code>223.1.2.4</code> 这个 IP 地址配置到自己的网络接口上</p>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="7-NAT：网络地址转换-NAT-Network-Address-Translation">7. NAT：网络地址转换 (NAT: Network Address Translation)</h5>
+<ul>
+<li><strong>动机：</strong>
+<ul>
+<li>本地网络（如家庭网络）对外界<strong>只使用一个 IP 地址</strong>。</li>
+<li>解决了 IPv4 地址短缺问题。</li>
+<li><strong>安全性：</strong> 本地网络中的设备对外界不可见/不可寻址。</li>
+</ul>
+</li>
+<li><strong>实现：</strong> NAT 路由器维护一个 <strong>NAT 转换表 (NAT translation table)</strong>。
+<ol>
+<li><strong>出站数据报：</strong> 路由器用（NAT IP 地址, 新端口号）替换（源 IP 地址, 源端口号）。</li>
+<li><strong>入站数据报：</strong> 路由器根据 NAT 表，用（原始源 IP 地址, 原始端口号）替换目的地的（NAT IP 地址, 新端口号）。</li>
+</ol>
+</li>
+</ul>
+<ul>
+<li><strong>为什么需要端口号？</strong>
+<ul>
+<li>NAT 路由器的 WAN 口（对外）通常只有<strong>一个</strong>公共 IP 地址（这里是 <code>138.76.29.7</code>）。</li>
+<li>但是 LAN（内网）里有很多台电脑（<code>10.0.0.1</code>, <code>10.0.0.2</code>, <code>10.0.0.3</code>）。</li>
+<li>如果只转换 IP 地址，当外网的数据回来时，路由器不知道该把数据给哪台内网电脑。</li>
+<li><strong>解决方案</strong>：路由器使用 <strong>端口号</strong> 来区分不同的内网连接。它把内网的 <code>IP:端口</code> 映射为外网的 <code>公网IP:新端口</code>。</li>
+<li>图中 NAT 表的意思是：凡是发往 <code>138.76.29.7</code> 且端口号是 <code>5001</code> 的数据包，都要转发给内网的 <code>10.0.0.1</code> 的 <code>3345</code> 端口。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>争议：</strong>
+<ul>
+<li>路由器本应只处理到第 3 层（网络层），但 NAT 触及了第 4 层（传输层）的端口号。</li>
+<li>违反了<strong>端到端论点 (end-to-end argument)</strong>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>私有地址 vs 公有地址</strong>：
+<ul>
+<li>图中内网使用的是 <code>10.0.0.0/24</code> 网段，这是 <strong>RFC 1918</strong> 定义的 <strong>私有 IP 地址</strong>（Private IP）。私有地址在公网（Internet）上是无效的，专门用于局域网。</li>
+<li>图中的 <code>138.76.29.7</code> 是 <strong>公有 IP 地址</strong>（Public IP）。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>NAT 穿越问题 (NAT traversal problem):</strong> 外部客户端无法主动连接到 NAT 后的服务器。
+<ul>
+<li><strong>解决方案 1：静态配置 (Static NAT)</strong> (例如端口转发)。</li>
+<li><strong>解决方案 2：UPnP (Universal Plug and Play)</strong> (通用即插即用)，允许主机自动配置 NAT 端口映射。</li>
+<li><strong>解决方案 3：中继 (Relaying)</strong> (例如 Skype 使用)，两个客户端都连接到一个公共的中继服务器，服务器在两者之间转发数据包。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-4-3-ICMP：互联网控制消息协议-ICMP-Internet-Control-Message-Protocol">4.4.3 ICMP：互联网控制消息协议 (ICMP: Internet Control Message Protocol)</h4>
+<p>IP 协议（网络层）本身是一个“尽力而为”的协议，它只负责把数据包发出去，不保证能送到，也不负责报告错误。<strong>ICMP 就是 IP 协议的“辅助/补丁”</strong>。</p>
+<ul>
+<li><strong>功能</strong>：它用于在主机和路由器之间传递<strong>控制消息</strong>。</li>
+<li><strong>内容</strong>：它不传数据，只传“情报”。比如：“网络不通”、“主机关机了”、“路太远走不到了”或者“请把速度放慢点”。</li>
+<li><strong>封装位置</strong>：ICMP 看起来像是一个上层协议（因为它被封装在 IP 数据报里），但在逻辑上它属于<strong>网络层 (Layer 3)</strong> 的一部分。</li>
+<li>结构：<code>[ IP 头部 | ICMP 消息 ]</code></li>
+</ul>
+<ul>
+<li><strong>主要用途：</strong> 错误报告 (Error reporting) 和 网络查询 (Echo request/reply)。</li>
+<li>ICMP 消息封装在 IP 数据报中。</li>
+<li><strong>常见类型：</strong>
+<ul>
+<li><strong>Type 8 (Echo Request) &amp; Type 0 (Echo Reply)</strong>：
+<ul>
+<li>这是 <strong>Ping</strong> 命令的基础。</li>
+<li>你发一个 Type 8（请求），对方回一个 Type 0（应答）。如果收到了，说明网络层是通的。</li>
+</ul>
+</li>
+<li><strong>Type 3 (Destination Unreachable - 目标不可达)</strong>：
+<ul>
+<li>当路由器无法找到去往目标的路径，或者目标主机被防火墙拦截时，会返回这个错误。</li>
+<li><em>注意</em>：在 Traceroute 的最后一步，正是利用了这个类型（具体是端口不可达）来确认到达终点。</li>
+</ul>
+</li>
+<li><strong>Type 11 (Time Exceeded - TTL 过期)</strong>：
+<ul>
+<li>这是 <strong>Traceroute</strong> 的核心。</li>
+<li>IP 协议规定，每个数据包都有寿命（TTL）。每经过一个路由器，TTL 减 1。</li>
+<li>当 TTL 减为 0 时，路由器<strong>必须</strong>丢弃该包，并向发送者回送一个 Type 11 的 ICMP 消息，告诉发送者：“你的包死在我这里了”。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Traceroute 和 ICMP：</strong> Traceroute 并不想真的发送数据，它的目的是<strong>让沿途的每一个路由器都“报错”</strong>，从而暴露它们的身份。
+<ol>
+<li><strong>探测第一跳 (TTL=1)：</strong>
+<ul>
+<li>源主机发送一个 UDP 数据包，目标是最终目的地，端口号选一个很大的随机数（如 33434，确保目标主机上没有程序在用这个端口）。</li>
+<li>关键点：将 IP 头部的 <strong>TTL 设置为 1</strong>。</li>
+<li><strong>结果</strong>：数据包到达路径上的<strong>第 1 个路由器</strong>。路由器将 TTL 减 1 变为 0。路由器丢弃该包，并向源主机发送 <strong>ICMP Type 11 (TTL expired)</strong>。</li>
+<li><strong>收获</strong>：源主机收到了 ICMP 包，查看其<strong>源 IP 地址</strong>，就知道了第 1 跳路由器的身份；计算往返时间，就得到了 RTT。</li>
+</ul>
+</li>
+<li><strong>探测第二跳 (TTL=2)：</strong>
+<ul>
+<li>源主机再次发送 UDP 包，这次将 <strong>TTL 设置为 2</strong>。</li>
+<li><strong>过程</strong>：
+<ul>
+<li>第 1 个路由器：<code>TTL 2 -&gt; 1</code>，转发通过。</li>
+<li>第 2 个路由器：<code>TTL 1 -&gt; 0</code>，丢弃！</li>
+</ul>
+</li>
+<li><strong>结果</strong>：第 2 个路由器向源主机发送 <strong>ICMP Type 11</strong>。</li>
+<li><strong>收获</strong>：源主机知道了第 2 跳路由器的 IP。</li>
+</ul>
+</li>
+<li><strong>循环递增 (TTL=3, 4, 5…)：</strong>
+<ul>
+<li>Traceroute 程序不断增加 TTL 的值，每次发包都能比上一次多走一步，然后“死”在下一个路由器手里，从而“骗”回下一个路由器的 IP。</li>
+</ul>
+</li>
+<li><strong>到达终点 (Stopping Condition)：</strong>
+<ul>
+<li>假设目的地在第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 跳。源主机发送 TTL=<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 的包。</li>
+<li>沿途所有路由器都放行了，数据包顺利到达了<strong>目标主机</strong>。</li>
+<li>目标主机不会检查 TTL 是否耗尽（因为它是终点），它试图解包并处理 UDP 数据。</li>
+<li><strong>关键反转</strong>：目标主机发现 UDP 目的端口（如 33434）没有程序在监听。</li>
+<li><strong>结果</strong>：目标主机根据网络协议规定，向源主机发送一个 <strong>ICMP Type 3 (Destination Unreachable)</strong>，具体代码为 <strong>Port Unreachable (端口不可达)</strong>。</li>
+</ul>
+</li>
+<li><strong>结束任务：</strong>
+<ul>
+<li>源主机一直在等 ICMP 消息。之前收到的都是 <strong>Type 11 (TTL 过期)</strong>，意味着还在半路上。</li>
+<li>一旦收到 <strong>Type 3 (端口不可达)</strong>，源主机就知道：“啊，这是目标主机发回来的，说明我已经到了！”</li>
+<li>程序停止探测，打印完整路径。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="4-4-4-IPv6">4.4.4 IPv6</h4>
+<ul>
+<li>
+<p><strong>主要动机：</strong> 32 位的 IPv4 地址空间已耗尽。</p>
+</li>
+<li>
+<p><strong>IPv6 地址：</strong> 128 位。</p>
+</li>
+<li>
+<p><strong>IPv6 数据报格式：</strong></p>
+<ul>
+<li><strong>固定的 40 字节首部</strong>。路由器处理起来非常快，硬件实现更简单。</li>
+<li><strong>不允许分片 (no fragmentation allowed)</strong>（分片只能由源主机在发送前进行）。
+<ul>
+<li><strong>IPv6</strong>: <strong>禁止路由器分片</strong>。如果包太大（超过链路 MTU），路由器直接<strong>丢弃</strong>该包，并回送一个 <strong>ICMPv6 “Packet Too Big”</strong> 消息。</li>
+<li><em>处理</em>：源主机收到错误后，必须自己把包切小一点重发（这叫 <strong>路径 MTU 发现</strong>）。</li>
+</ul>
+</li>
+<li><strong>Flow Label (流标签):</strong> 识别同一“流”中的数据报，有助于 QoS。
+<ul>
+<li>用于标识属于同一个“流”（Flow）的数据报（例如一个音视频通话的数据流）。</li>
+<li>这使得路由器可以给特定流提供 <strong>QoS (服务质量)</strong> 保障，而不需要深度包检测。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>与 IPv4 的主要变化：</strong></p>
+<ul>
+<li><strong>Checksum (校验和):</strong> <strong>彻底移除</strong>，以减少每跳的处理时间（依赖链路层和传输层进行校验）。
+<ul>
+<li><em>理由</em>：现代链路层（光纤、以太网）非常可靠，很少出错；且传输层（TCP/UDP）本身就有校验。网络层不做重复劳动，以此加快转发速度。</li>
+</ul>
+</li>
+<li><strong>Options (选项):</strong> 允许，但放在首部之外，通过 “Next Header” 字段指示。</li>
+<li><strong>ICMPv6:</strong> 新版 ICMP，增加了 “Packet Too Big” 等消息类型。</li>
+</ul>
+</li>
+<li>
+<p><strong>隧道 (Tunnel)</strong>：是逻辑上的链路。实际上，它是把 IPv6 数据报当成 IPv4 数据报的 <strong>“数据 (Payload)”</strong> 来传输。</p>
+</li>
+<li>
+<p><strong>双栈路由器 (Dual-stack Router)</strong>：隧道两端的路由器（通常是边缘路由器）必须同时支持 IPv4 和 IPv6。</p>
+</li>
+</ul>
+<p>假设：<strong>主机 A (IPv6)</strong> 想发送数据给 <strong>主机 B (IPv6)</strong>，但中间必须经过一段 <strong>IPv4 网络</strong>。</p>
+<ol>
+<li><strong>源主机发送 (IPv6)</strong>：
+<ul>
+<li>主机 A 发出一个标准的 IPv6 数据报。</li>
+<li><code>[ IPv6 头部 | 数据 ]</code></li>
+<li>源地址：A 的 IPv6 地址；目的地址：B 的 IPv6 地址。</li>
+</ul>
+</li>
+<li><strong>进入隧道 (Encapsulation / 封装)</strong>：
+<ul>
+<li>IPv6 数据报到达了“IPv6 岛屿”边缘的路由器（<strong>入口节点</strong>）。</li>
+<li>该路由器发现要去往 B，必须经过 IPv4 网络。</li>
+<li>路由器创建一个 <strong>IPv4 数据报</strong>。</li>
+<li><strong>关键操作</strong>：<mark>它把完整的 IPv6 数据报塞进 IPv4 的“数据部分”。</mark></li>
+<li><strong>IPv4 头部设置</strong>：
+<ul>
+<li>源 IP：<strong>入口路由器</strong>的 IPv4 地址。</li>
+<li>目的 IP：<strong>出口路由器</strong>的 IPv4 地址。</li>
+<li><strong>Protocol 字段</strong>：设置为 <strong>41</strong> (表示 Payload 是 IPv6)。</li>
+</ul>
+</li>
+<li>现在的包结构：<code>[ IPv4 头部 | IPv6 头部 | 数据 ]</code></li>
+</ul>
+</li>
+<li><strong>穿过隧道 (Transmission)</strong>：
+<ul>
+<li>这个包在中间的 IPv4 网络中传输。</li>
+<li>中间的 IPv4 路由器<strong>只看外层的 IPv4 头部</strong>。它们根本不知道（也不关心）里面包着一个 IPv6 的包裹。它们只负责把包送到出口路由器的 IPv4 地址。</li>
+</ul>
+</li>
+<li><strong>离开隧道 (Decapsulation / 解封装)</strong>：
+<ul>
+<li>数据包到达了“IPv6 岛屿”另一端的边缘路由器（<strong>出口节点</strong>）。</li>
+<li>出口路由器检查 IPv4 头部，发现 Protocol = 41。</li>
+<li>它<strong>剥离</strong>掉外层的 IPv4 头部，取出了里面的 IPv6 数据报。</li>
+</ul>
+</li>
+<li><strong>最终交付</strong>：
+<ul>
+<li>出口路由器读取恢复出来的 IPv6 头部（目的地址是 B）。</li>
+<li>它通过 IPv6 网络将数据报转发给主机 B。</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Network/" class="print-no-link">#Network</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Network - 03.Network Layer-01</div>
+      <div>https://yima-gu.github.io/2026/01/14/Network/Network-03-Network-Layer-01/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-03-Network-Layer-02/" title="Network - 03.Network Layer-02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Network - 03.Network Layer-02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-02-Transport-Layer-02/" title="Network - 02.Transport Layer-02">
+                        <span class="hidden-mobile">Network - 02.Transport Layer-02</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

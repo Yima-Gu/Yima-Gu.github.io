@@ -1,0 +1,931 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="机器级编程 IV：高级 （Advanced Topics）              主要内容：本章探讨内存布局与安全漏洞。内存布局：栈、堆、数据段在 x86-64 Linux 中的分布。缓冲区溢出：演示了如何利用 C 语言不检查数组边界的特性，通过覆盖栈上的“返回地址”来劫持程序控制流。防御机制：介绍了现代系统如何通过栈随机化 (ASLR)、栈金丝雀 (Canary) 和不可执行位 (NX) 来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 03.Machine-Level Programming IV">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-4-advanced/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="机器级编程 IV：高级 （Advanced Topics）              主要内容：本章探讨内存布局与安全漏洞。内存布局：栈、堆、数据段在 x86-64 Linux 中的分布。缓冲区溢出：演示了如何利用 C 语言不检查数组边界的特性，通过覆盖栈上的“返回地址”来劫持程序控制流。防御机制：介绍了现代系统如何通过栈随机化 (ASLR)、栈金丝雀 (Canary) 和不可执行位 (NX) 来">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.349Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 03.Machine-Level Programming IV - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 03.Machine-Level Programming IV"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:00" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 03.Machine-Level Programming IV</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1><strong>机器级编程 IV：高级 （Advanced Topics）</strong></h1>
+<div class="note note-success 核心导读：利用与防御——栈的脆弱性">
+            <p><strong>主要内容</strong>：<br>本章探讨内存布局与安全漏洞。</p><ol><li><strong>内存布局</strong>：栈、堆、数据段在 x86-64 Linux 中的分布。</li><li><strong>缓冲区溢出</strong>：演示了如何利用 C 语言不检查数组边界的特性，通过覆盖栈上的“返回地址”来劫持程序控制流。</li><li><strong>防御机制</strong>：介绍了现代系统如何通过栈随机化 (ASLR)、栈金丝雀 (Canary) 和不可执行位 (NX) 来防御攻击。</li></ol><p><strong>Motivation</strong>：<br>这是一个“黑客与防御者”的章节。它展示了上一章学到的“过程调用机制”如果被滥用会有什么后果。理解这些对编写安全的代码（Secure Coding）和理解系统安全机制至关重要。</p>
+          </div>
+<h2 id="5-1-x86-64-Linux-内存布局"><strong>5.1 x86-64 Linux 内存布局</strong></h2>
+<p>一个程序在运行时，其内存被划分为几个关键区域：</p>
+<ol>
+<li><strong>栈 (Stack)</strong>
+<ul>
+<li>位于内存的最高地址区域（例如 <code>0x00007FFF...</code>）。</li>
+<li><strong>向下增长</strong>（即新数据放在更低的地址）。</li>
+<li>用于存储局部变量、函数参数、返回地址。</li>
+<li>每次函数调用都会创建一个新的<strong>栈帧 (Stack Frame)</strong>。</li>
+<li>通常有大小限制（例如 8MB）。</li>
+<li>为了安全，栈的起始地址是<strong>随机化</strong>的。</li>
+</ul>
+</li>
+<li><strong>共享库 (Shared Libraries)</strong>
+<ul>
+<li>位于栈下方，用于存放像 <code>printf</code> 这样的动态链接库的代码和数据。</li>
+<li>其加载地址也是<strong>随机化</strong>的。</li>
+</ul>
+</li>
+<li><strong>堆 (Heap)</strong>
+<ul>
+<li>位于共享库下方。</li>
+<li><strong>向上增长</strong>（即新数据放在更高的地址）。</li>
+<li>用于<strong>动态内存分配</strong>，即 <code>malloc()</code>、<code>calloc()</code>、<code>new()</code> 申请的内存。</li>
+</ul>
+</li>
+<li><strong>数据段 (Data Segment)</strong>
+<ul>
+<li>用于存放静态分配的数据。</li>
+<li>例如：全局变量、静态变量 (<code>static</code> 修饰的变量)、字符串常量（如 “Hello, World”）。</li>
+</ul>
+</li>
+<li><strong>代码段 (Text Segment)</strong>
+<ul>
+<li>位于内存的最低地址区域（例如 <code>0x000000000040...</code>）。</li>
+<li>存放可执行的机器指令。</li>
+<li>通常是<strong>只读 (Read-only)</strong> 的，防止程序意外修改自身代码。</li>
+</ul>
+</li>
+</ol>
+<p><strong>示例：</strong></p>
+<ul>
+<li><code>int local = 0;</code> (函数内的局部变量) -&gt; <strong>栈 (Stack)</strong></li>
+<li><code>void *p = malloc(100);</code> (指针 <code>p</code> 在栈上, 它指向的100字节) -&gt; <strong>堆 (Heap)</strong></li>
+<li><code>int global = 0;</code> (函数外的全局变量) -&gt; <strong>数据段 (Data Segment)</strong></li>
+<li><code>main()</code> 函数本身的代码 -&gt; <strong>代码段 (Text Segment)</strong></li>
+</ul>
+<hr>
+<h2 id="5-2-缓冲区溢出-Buffer-Overflow"><strong>5.2 缓冲区溢出 (Buffer Overflow)</strong></h2>
+<p>缓冲区溢出是 C 语言程序中最主要、最危险的安全漏洞之一。</p>
+<h3 id="1-什么是缓冲区溢出？"><strong>1. 什么是缓冲区溢出？</strong></h3>
+<p>当向一个数组（缓冲区）写入的数据超出了该数组分配的内存大小时，多出的数据就会“溢出”，并覆盖掉相邻的内存区域。</p>
+<p>这在C语言中尤其危险，因为很多标准库函数<strong>不检查边界</strong>。</p>
+<ul>
+<li><strong>危险函数</strong>：
+<ul>
+<li><code>gets(char *dest)</code>：无法指定读取长度，已废弃。</li>
+<li><code>strcpy(dest, src)</code>：无边界检查地复制字符串。</li>
+<li><code>strcat(dest, src)</code>：无边界检查地拼接字符串。</li>
+<li><code>scanf(&quot;%s&quot;, buf)</code>：读取字符串时，不限制长度。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-栈破坏-Stack-Smashing-示例"><strong>2. 栈破坏 (Stack Smashing) 示例</strong></h3>
+<p>在栈上发生的缓冲区溢出称为“栈破坏”。</p>
+<p><strong>场景</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">echo</span><span class="hljs-params">()</span> &#123;<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">4</span>]; <span class="hljs-comment">// 缓冲区大小只有 4 字节</span><br>    gets(buf);   <span class="hljs-comment">// 从用户读取输入</span><br>    ...<br>&#125;<br>````<br><br>- **编译器的行为**: 编译器在栈上分配空间时，除了 `buf[<span class="hljs-number">4</span>]`，还会在其后（更高地址）分配额外的**填充空间 (padding)**，再往后才是保存的**返回地址 (Return Address)**。<br><br>```text<br>内存地址 (Address)      栈内容 (Stack Content)<br>------------------------------------------------------<br>High (高地址)    |  ...父函数的栈帧...        |<br>      ^          +---------------------------+<br>      |          |  返回地址 (Return Addr)    |  &lt;-- 关键目标！(<span class="hljs-number">8</span>字节)<br>      |          +---------------------------+<br>      |          |  旧 %rbp (Old RBP)        |  &lt;-- 保存的基址指针 (<span class="hljs-number">8</span>字节)<br>      |          +---------------------------+ &lt;--- 栈帧分界线<br>      |          |  (可能存在的填充 Padding)   |  &lt;-- 编译器为了对齐分配的空隙<br>      |          +---------------------------+<br>      |          |  buf[<span class="hljs-number">3</span>]                   |<br>      |          |  buf[<span class="hljs-number">2</span>]                   |<br>      |          |  buf[<span class="hljs-number">1</span>]                   |<br>Low (低地址)     |  buf[<span class="hljs-number">0</span>]                   |  &lt;-- %rsp (栈顶) 指向这里<br>------------------------------------------------------<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>Case 1: 输入 “0123456789”</strong>
+<ul>
+<li>输入字符串的长度超过了 4 字节。</li>
+<li>多出的字符会溢出，并覆盖掉 <code>buf</code> 后面的填充空间。</li>
+<li><strong>但是</strong>，返回地址可能没有被碰到。</li>
+<li><strong>结果</strong>: 函数可能正常返回，程序_看起来_没问题，但内存已经被破坏。</li>
+</ul>
+</li>
+<li><strong>Case 2: 输入 “012345678901234567890123” (24个字符)</strong>
+<ul>
+<li>输入字符串足够长，它会填满 <code>buf</code>、填满所有填充空间，并最终<strong>覆盖掉返回地址</strong>。</li>
+<li>例如，返回地址 <code>0x0000004006c3</code> 被覆盖成了 <code>0x000000400600</code> (来自 “0123” 的ASCII码和最后的 <code>\0</code>)。</li>
+<li><strong>结果</strong>: 当 <code>echo</code> 函数执行 <code>ret</code> 指令时，它不会返回到主函数，而是试图跳转到地址 <code>0x400600</code>。这个地址是无效的，导致<strong>段错误 (Segmentation Fault)</strong>，程序崩溃。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info">
+            <p><strong>1. 核心误区纠正</strong></p><ul><li><strong>误区</strong>：认为栈上有一个名为 <code>buff</code> 的指针变量（占 8 字节）专门用来存首地址。</li><li><strong>真相</strong>：对于 <code>char buff[4]</code>，栈上<strong>只有</strong> 4 个字节用来存数据（字符）。<strong>根本不存在</strong>一个物理上的变量用来存“buff 的地址”。</li><li><strong>本质</strong>：数组名 <code>buff</code> 只是编译器眼中的<strong>符号/标签</strong>。编译后，它直接变成了相对于栈指针 (<code>%rsp</code>) 的<strong>固定偏移量</strong> (如 <code>0(%rsp)</code>)，存在于指令操作数中，不占数据内存。</li></ul><hr><p><strong>2. 内存布局对比</strong></p><ul><li><strong>局部数组 (<code>char buff[4]</code>)</strong>：<ul><li>栈占用：<strong>仅 4 字节</strong> (存 <code>'A', 'B'...</code>)。</li><li>地址存储位置：<strong>无</strong> (直接硬编码在汇编指令里)。</li></ul></li><li><strong>指针变量 (<code>char *ptr</code>)</strong>：<ul><li>栈占用：<strong>8 字节</strong>。</li><li>地址存储位置：<strong>栈上</strong> (确实有一个变量空间用来存地址)。</li></ul></li></ul><hr><p><strong>3. 栈破坏攻击的路径</strong></p><ul><li>由于栈上不存在“buff 指针变量”，当写入数据超过 4 字节时：</li><li><strong>溢出路径</strong>：<code>buff 数据区</code> -&gt; <code>填充(Padding)</code> -&gt; <code>旧 %rbp</code> -&gt; <strong><code>返回地址 (Return Address)</code></strong>。</li><li><strong>结论</strong>：你淹没的是物理上存在的“返回地址”，而不是一个并不存在的“数组指针”。</li></ul><hr><p><strong>4. 形象类比</strong></p><ul><li><strong>数组 (<code>buff</code>) 是房子</strong>：房子本身占地（内存），虽有地址，但房子里不需要专门建个房间存“地址纸条”。</li><li><strong>指针变量 (<code>ptr</code>) 是名片</strong>：名片本身占地，上面写着地址。</li></ul>
+          </div>
+<h3 id="3-栈破坏攻击-Stack-Smashing-Attack"><strong>3. 栈破坏攻击 (Stack Smashing Attack)</strong></h3>
+<p>黑客利用上述原理，不只是让程序崩溃，而是让程序执行恶意代码。</p>
+<ul>
+<li>
+<p><strong>攻击1：跳转到已有代码</strong></p>
+<ol>
+<li>攻击者知道程序中有一个恶意函数（例如 <code>smash()</code>）的地址，比如 <code>0x4006c8</code>。</li>
+<li>攻击者构造一个特殊的输入字符串，称为<strong>攻击载荷 (exploit code)</strong>。</li>
+<li>这个字符串包含：<code>[任意填充字符 (24字节)] + [恶意函数的地址 (8字节)]</code></li>
+<li>例如 (Hex): <code>3031...33</code> (24字节) + <code>c8 06 40 00 00 00 00 00</code> (小端序地址)</li>
+<li><code>gets(buf)</code> 将这个字符串读入栈中，<code>buf</code> 和填充区被填满，而<strong>返回地址</strong>被精确地覆盖为 <code>0x4006c8</code>。</li>
+<li><strong>结果</strong>: 当 <code>echo</code> 函数 <code>ret</code> 时，它会跳转到 <code>smash()</code> 函数并执行，导致攻击成功。</li>
+</ol>
+</li>
+<li>
+<p><strong>攻击2：代码注入 (Code Injection)</strong></p>
+<ol>
+<li>这是更致命的攻击。攻击者将<strong>可执行的机器码</strong>作为字符串的一部分输入。</li>
+<li>攻击者将返回地址覆盖为<strong>缓冲区 <code>buf</code> 自己的地址</strong>。</li>
+<li><strong>结果</strong>: 当函数 <code>ret</code> 时，它会跳转到 <code>buf</code> 的起始地址，并<strong>开始执行</strong>黑客注入的恶意代码。</li>
+<li>这就是1988年<strong>互联网蠕虫 (Internet Worm)</strong> 和 <strong>红色代码 (Code Red)</strong> 蠕虫病毒的攻击原理。</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="5-3-缓冲区溢出保护机制"><strong>5.3 缓冲区溢出保护机制</strong></h2>
+<p>为了应对这些攻击，现代操作系统和编译器提供了多层防御：</p>
+<h3 id="1-编写安全的代码-程序员的责任"><strong>1. 编写安全的代码 (程序员的责任)</strong></h3>
+<ul>
+<li><strong>永远不要使用 <code>gets()</code></strong>。</li>
+<li>使用有边界检查的安全函数替代：
+<ul>
+<li><code>fgets(buf, size, stdin)</code> 替代 <code>gets()</code>。</li>
+<li><code>strncpy()</code> 替代 <code>strcpy()</code>。</li>
+<li><code>snprintf()</code> 替代 <code>sprintf()</code>。</li>
+</ul>
+</li>
+<li>使用 <code>scanf()</code> 时，<strong>必须</strong>指定字段宽度，例如 <code>scanf(&quot;%10s&quot;, buf)</code>，以限制最多读取10个字符。</li>
+</ul>
+<h3 id="2-系统级保护-操作系统的责任"><strong>2. 系统级保护 (操作系统的责任)</strong></h3>
+<ul>
+<li>
+<p><strong>A. 栈随机化 (ASLR)</strong></p>
+<ul>
+<li><strong>全称</strong>: 地址空间布局随机化 (Address-Space Layout Randomization)。</li>
+<li><strong>原理</strong>: 每次程序运行时，操作系统都将栈、堆、共享库的起始地址设置在一个<strong>随机</strong>的位置。</li>
+<li><strong>效果</strong>: 攻击者无法预测 <code>buf</code> 的地址（用于代码注入）或 <code>smash()</code> 函数的地址（库函数可能在不同位置）。</li>
+<li><strong>局限性</strong>: 攻击者可以通过“NOP雪橇”(NOP Sled) 进行暴力破解。即在恶意代码前放置大量空操作指令(<code>nop</code>)，只要返回地址猜中了雪橇上的任意一点，程序就会“滑行”到恶意代码并执行。</li>
+</ul>
+</li>
+<li>
+<p><strong>B. 不可执行内存 (Non-Executable / NX bit)</strong></p>
+<ul>
+<li><strong>原理</strong>: 现代 CPU 硬件允许操作系统将内存页标记为“不可执行”。</li>
+<li><strong>效果</strong>: 操作系统将栈和堆都标记为“可读/可写”，但 <strong>“不可执行”</strong> 。</li>
+<li><strong>防御</strong>: 这是<strong>对抗代码注入攻击最有效的手段</strong>。即使攻击者成功将返回地址指向了栈上的 <code>buf</code>，当 CPU 试图执行那里的代码时，会立即触发硬件异常，程序崩溃，攻击失败。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-栈金丝雀-Stack-Canaries-编译器的责任"><strong>3. 栈金丝雀 (Stack Canaries) (编译器的责任)</strong></h3>
+<ul>
+<li>
+<p><strong>原理</strong>: 编译器在函数开始时，从一个秘密位置取出一个特殊的随机值，称为 <strong>“金丝雀” (Canary)</strong>，并将其放在栈帧中，位于所有缓冲区和返回地址<strong>之间</strong>。</p>
+</li>
+<li>
+<p><strong>机制</strong>:</p>
+<ol>
+<li><strong>函数开始</strong>: <code>mov %fs:0x28, %rax</code> (获取金丝雀) -&gt; <code>mov %rax, 0x8(%rsp)</code> (存入栈中)。</li>
+<li><strong>函数返回前</strong>: <code>mov 0x8(%rsp), %rax</code> (从栈中取回) -&gt; <code>xor %fs:0x28, %rax</code> (与原始值比较)。</li>
+<li><strong>检查</strong>:
+<ul>
+<li>如果 <code>xor</code> 结果为 0 (值未变)，说明没有发生溢出，正常执行 <code>ret</code>。</li>
+<li>如果 <code>xor</code> 结果非 0 (值被修改)，说明缓冲区溢出<strong>已经</strong>破坏了金丝雀。程序会立即跳转到 <code>__stack_chk_fail</code>，<strong>直接终止程序</strong>，而不会执行 <code>ret</code>。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>效果</strong>: 这种方法可以有效防止任何试图通过溢出缓冲区来覆盖返回地址的攻击。</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 03.Machine-Level Programming IV</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-4-advanced/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/04-ISA/" title="CSAPP - 04.ISA">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 04.ISA</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/03-machine-level-3-procedures/" title="CSAPP - 03.Machine-Level Programming III">
+                        <span class="hidden-mobile">CSAPP - 03.Machine-Level Programming III</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

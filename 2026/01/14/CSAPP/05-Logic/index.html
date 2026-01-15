@@ -1,0 +1,1129 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)              主要内容 (Overview)：本章深入计算机的微架构 (Microarchitecture) 层面，讲解如何用基础的电子元件搭建出计算核心：数字电路基础：组合逻辑 (Combinational Logic)：如 ALU 和 MUX，负责“计算”，输出只取决于当前输入，没">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 05.Logic">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/05-Logic/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)              主要内容 (Overview)：本章深入计算机的微架构 (Microarchitecture) 层面，讲解如何用基础的电子元件搭建出计算核心：数字电路基础：组合逻辑 (Combinational Logic)：如 ALU 和 MUX，负责“计算”，输出只取决于当前输入，没">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:10:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.349Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 05.Logic - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 05.Logic"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:10" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          32 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 05.Logic</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)</h1>
+<div class="note note-success 核心导读：从 0/1 到 处理器 (From Logic Gates to CPU)">
+            <p><strong>主要内容 (Overview)</strong>：<br>本章深入计算机的<strong>微架构 (Microarchitecture)</strong> 层面，讲解如何用基础的电子元件搭建出计算核心：</p><ol><li><strong>数字电路基础</strong>：<ul><li><strong>组合逻辑 (Combinational Logic)</strong>：如 ALU 和 MUX，负责“计算”，输出只取决于当前输入，没有记忆。</li><li><strong>时序逻辑 (Sequential Logic)</strong>：如寄存器和 RAM，负责“存储”，由<strong>时钟 (Clock)</strong> 控制状态更新。</li></ul></li><li><strong>HCL (Hardware Control Language)</strong>：学习一种类 C 的简单语言，用来描述硬件的控制逻辑（例如：ALU 该做加法还是减法？）。</li></ol><p><strong>Motivation</strong>：</p><ul><li><strong>打破黑盒</strong>：之前我们把 CPU 当作一个能执行指令的黑盒子。这一章打开了这个盒子，看到 <code>addq</code> 指令在物理上是如何通过导线、晶体管和电压变化来实现的。</li><li><strong>理解时序</strong>：理解<strong>时钟周期</strong>和<strong>边沿触发</strong>是理解计算机性能（频率）、流水线设计以及并发问题的物理基础。这是连接软件逻辑与物理硬件的关键桥梁。</li><li></li></ul>
+          </div>
+<h2 id="1-逻辑设计基础-Logic-Design-Fundamentals">1. 逻辑设计基础 (Logic Design Fundamentals)</h2>
+<h3 id="硬件的基本需求">硬件的基本需求</h3>
+<ol>
+<li><strong>通信 (Communication)</strong>：如何将值从一个地方传到另一个地方。</li>
+<li><strong>计算 (Computation)</strong>：如何对值进行处理。</li>
+<li><strong>存储 (Storage)</strong>：如何保存这些值。</li>
+</ol>
+<h3 id="数字化：比特-Bits">数字化：比特 (Bits)</h3>
+<ul>
+<li>所有事物都用 0 和 1 来表示。</li>
+<li><strong>通信</strong>：导线上的低电压 (0) 或高电压 (1)。</li>
+<li><strong>计算</strong>：计算布尔函数 (Boolean functions)。</li>
+<li><strong>存储</strong>：存储信息位。</li>
+<li><strong>数字信号</strong>：我们使用电压阈值从连续信号中提取离散的 0 和 1。这种方式不易受噪声影响，可以使电路简单、小巧且快速。</li>
+</ul>
+<h2 id="2-组合逻辑-Combinational-Logic">2. 组合逻辑 (Combinational Logic)</h2>
+<p>组合电路从本质上来讲，<strong>不存储任何信息</strong>，它只是简单地响应输入信号，并（经过短暂延迟后）产生等于输入信号某个函数的输出。</p>
+<h3 id="逻辑门-Logic-Gates">逻辑门 (Logic Gates)</h3>
+<ul>
+<li>数字电路的基本计算元素。</li>
+<li><strong>与 (AND)</strong>: <code>out = a &amp;&amp; b</code></li>
+<li><strong>或 (OR)</strong>: <code>out = a || b</code></li>
+<li><strong>非 (NOT)</strong>: <code>out = !a</code></li>
+</ul>
+<h3 id="组合电路-Combinational-Circuits">组合电路 (Combinational Circuits)</h3>
+<ul>
+<li>由逻辑门组成的<strong>无环网络 (Acyclic Network)</strong>。</li>
+<li>网络中不能有回路，否则会导致函数计算有歧义。</li>
+<li>它的输出是其输入的布尔函数。</li>
+</ul>
+<h3 id="HCL-Hardware-Control-Language">HCL (Hardware Control Language)</h3>
+<p>HCL 是一种非常简单的硬件描述语言，语法类似 C 语言，用于描述处理器的控制逻辑。</p>
+<ul>
+<li><strong>数据类型</strong>：
+<ul>
+<li><code>bool</code>：布尔值 (a, b, c, …)</li>
+<li><code>int</code>：字 (A, B, C, …)</li>
+</ul>
+</li>
+<li><strong>HCL 表达式</strong>：
+<ul>
+<li><strong>布尔表达式 (Boolean Expressions)</strong>：
+<ul>
+<li>逻辑操作: <code>a &amp;&amp; b</code>, <code>a || b</code>, <code>!a</code></li>
+<li>字比较: <code>A == B</code>, <code>A != B</code>, <code>A &lt; B</code>, <code>A &lt;= B</code>, <code>A &gt;= B</code>, <code>A &gt; B</code></li>
+<li>集合成员: <code>A in &#123; B, C, D &#125;</code> (等价于 <code>A &lt;mark&gt; B || A &lt;/mark&gt; C || A == D</code>)</li>
+</ul>
+</li>
+<li><strong>字表达式 (Word Expressions)</strong>：
+<ul>
+<li><strong>案例表达式 (Case expression)</strong>：按顺序评估测试，并为第一个成功的测试返回其对应的值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="HCL-组合电路示例：">HCL 组合电路示例：</h4>
+<ol>
+<li><strong>位相等 (Bit Equality)</strong>：
+<ul>
+<li><code>bool eq = (a &amp;&amp; b) || (!a &amp;&amp; !b);</code></li>
+<li>如果 a 和 b 相等，则产生 1。</li>
+</ul>
+</li>
+<li><strong>字相等 (Word Equality)</strong>：
+<ul>
+<li><code>bool Eq = (A == B);</code></li>
+<li>这是位相等的 64 位版本。</li>
+</ul>
+</li>
+<li><strong>位多路复用器 (Bit MUX - Multiplexor)</strong>：
+<ul>
+<li><code>bool out = (s &amp;&amp; a) || (!s &amp;&amp; b);</code></li>
+<li>根据<strong>控制信号 s</strong>，从 <code>a</code> 和 <code>b</code> 两个数据信号中选择一个作为输出。</li>
+<li>如果 <code>s=1</code>，输出 <code>a</code>；如果 <code>s=0</code>，输出 <code>b</code>。</li>
+</ul>
+</li>
+<li><strong>字多路复用器 (Word MUX)</strong>：
+<ul>
+<li>使用 HCL 的案例表达式来表示。</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs Terraform">int Out = [<br>    s : A;  // 如果 s 为 1, 输出 A<br>    1 : B;  // 否则 (s 为 0), 输出 B<br>];<br></code></pre></td></tr></table></figure>
+<ol start="5">
+<li><strong>4路 MUX (4-Way Multiplexor)</strong>：
+<ul>
+<li>使用两个控制信号 <code>s1</code> 和 <code>s0</code> 从 4 个输入 (<code>D0</code>, <code>D1</code>, <code>D2</code>, <code>D3</code>) 中选择一个。</li>
+</ul>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs Terraform">int Out4 = [<br>    !s1 &amp;&amp; !s0 : D0; // s1=0, s0=0<br>    !s1        : D1; // s1=0, s0=1<br>    !s0        : D2; // s1=1, s0=0<br>    1          : D3; // s1=1, s0=1<br>];<br></code></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="ALU-Arithmetic-Logic-Unit-算术逻辑单元">ALU (Arithmetic Logic Unit - 算术逻辑单元)</h3>
+<ul>
+<li>这是一个组合逻辑块。</li>
+<li>有一个<strong>控制信号</strong>输入，用于选择它执行哪种计算。</li>
+<li>对应 Y86-64 中的 4 种算术/逻辑操作 (Add, Sub, And, Xor)。</li>
+<li>除了计算结果 (X+Y, X-Y, …)，它还计算<strong>条件码 (Condition Codes)</strong>：<code>OF</code> (溢出), <code>ZF</code> (零), <code>CF</code> (进位)。</li>
+</ul>
+<h2 id="3-时序电路-Sequential-Circuits-存储">3. 时序电路 (Sequential Circuits) - 存储</h2>
+<p>为了创建<strong>状态 (State)</strong>，我们必须引入<strong>存储 (Storage)</strong> 设备。</p>
+<h3 id="存储-1-比特：双稳态元件-Bistable-Element">存储 1 比特：双稳态元件 (Bistable Element)</h3>
+<ul>
+<li>通过将两个<strong>非门 (NOT gate)</strong> 的输出交叉连接到对方的输入，可以构成一个<strong>双稳态元件</strong>。</li>
+<li>这个电路有两个<strong>稳定状态</strong> (Stable 0, Stable 1) 和一个<strong>亚稳态</strong> (Metastable)。</li>
+<li>它可以无限期地保持一个比特（0 或 1）。</li>
+</ul>
+<h3 id="锁存器-Latch">锁存器 (Latch)</h3>
+<ul>
+<li><strong>R-S 锁存器</strong>：基于双稳态元件构建，有两个输入 S (Set, 置位) 和 R (Reset, 复位)。
+<ul>
+<li>*输入 S (Set - 置位)**: 用于将锁存器的状态设置为 1。</li>
+<li>*输入 R (Reset - 复位)**: 用于将锁存器的状态清零为 0。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>存储模式 (Storing Mode) (S=0, R=0)</strong>:
+<ul>
+<li>当 S 和 R 均为 0 时，锁存器“锁住”当前状态。</li>
+<li>两个门的交叉反馈会无限期地保持当前的值（Q+ 保持为 q, Q- 保持为 !q）。这就是它的记忆功能。</li>
+</ul>
+</li>
+<li><strong>置位模式 (Setting Mode) (S=1, R=0)</strong>:
+<ul>
+<li>当 S 输入为 1 (R为0) 时，它会强制 <code>Q+</code> 输出变为 1，同时 <code>Q-</code> 输出变为0。</li>
+</ul>
+</li>
+<li><strong>复位模式 (Resetting Mode) (S=0, R=1)</strong>:
+<ul>
+<li>当 R 输入为 1 (S为0) 时，它会强制 <code>Q+</code> 输出变为 0，同时 <code>Q-</code> 输出变为1。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>D 锁存器 (D Latch)</strong>：
+<ul>
+<li>有两个输入：数据 <code>D</code> (Data) 和时钟 <code>C</code> (Clock)。</li>
+<li>当 <code>C=1</code> 时，锁存器处于 <strong>“锁存模式” (Latching)</strong>：输出 <code>Q+</code> 会跟随输入 <code>D</code> 的变化（此时电路是<strong>透明的</strong>）。</li>
+<li>当 <code>C=0</code> 时，锁存器处于 <strong>“存储模式” (Storing)</strong>：输出 <code>Q+</code> 保持 <code>C</code> 从 1 变为 0 瞬间 <code>D</code> 的值，不再随 <code>D</code>变化。</li>
+</ul>
+</li>
+</ul>
+<h3 id="D-触发器-Edge-Triggered-Latch-Flip-Flop">D 触发器 (Edge-Triggered Latch / Flip-Flop)</h3>
+<ul>
+<li>D 锁存器的问题在于它在 <code>C=1</code> 的整个期间都是透明的。</li>
+<li><strong>边沿触发</strong>的设计只在时钟信号的<strong>上升沿 (Rising edge)</strong> 这个极短的瞬间才进入锁存模式。</li>
+<li>在时钟的所有其他时间，它都处于存储模式，输出保持稳定。</li>
+<li><strong>这是构建处理器存储（如寄存器）的基础。</strong></li>
+</ul>
+<h3 id="硬件寄存器-Registers">硬件寄存器 (Registers)</h3>
+<ul>
+<li>一个<strong>硬件寄存器</strong>是多个<strong>边沿触发锁存器</strong>的集合，用于存储一个完整的<strong>字 (Word)</strong>（例如，一个 64 位的寄存器由 64 个 D 触发器并排组成，共享同一个时钟信号）。</li>
+<li>在时钟<strong>上升沿</strong>时，它加载输入值 <code>I</code>，并将其作为输出值 <code>O</code>。</li>
+<li><strong>寄存器的作用</strong>：作为电路中不同组合逻辑块之间的<strong>屏障 (barrier)</strong>，用来控制数据流，确保在一个时钟周期内，数据能稳定地从一个阶段传播到下一个阶段。</li>
+</ul>
+<h3 id="随机访问存储器-Random-Access-Memory-RAM">随机访问存储器 (Random-Access Memory - RAM)</h3>
+<p>在 SEQ 处理器设计中，<strong>随机访问存储器 (RAM)</strong> 是一个通用的概念，指的是可以根据<strong>地址 (Address)</strong> 读写数据的存储设备。<br>
+最典型的实现就是 CPU 内部的 <strong>寄存器文件 (Register File)</strong>。它就像一个超高速的小型 RAM。</p>
+<ul>
+<li>用于存储多个字（例如内存或寄存器文件）。</li>
+<li>有一个<strong>地址 (Address)</strong> 输入，用于指定要读取或写入哪个字。</li>
+</ul>
+<h4 id="寄存器文件-Register-File">寄存器文件 (Register File)</h4>
+<ul>
+<li>是一种特殊的 RAM，用于保存程序寄存器（如 <code>%rax</code>, <code>%rsp</code> 等）。</li>
+<li>它使用寄存器 ID (如 <code>%rax</code> 的 <code>0</code>) 作为地址。</li>
+<li><strong>多端口 (Multiple Ports)</strong>：允许在一个时钟周期内同时进行多次读写。Y86-64 需要两个读端口（<code>srcA</code>, <code>srcB</code>）和两个写端口（<code>dstE</code>, <code>dstM</code>，在 SEQ 设计中合并为 <code>dstW</code>）。</li>
+<li><strong>寄存器文件时序 (Timing)</strong>：
+<ul>
+<li><strong>读操作</strong>：类似于组合逻辑。一旦地址（如 <code>srcA</code>）稳定，数据（<code>valA</code>）就会（经过延迟后）出现在输出端。</li>
+<li><strong>写操作</strong>：是时序逻辑。数据（<code>valW</code>）仅在时钟<strong>上升沿</strong>才会被写入到地址（<code>dstW</code>）指定的寄存器中。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info">
+            <p>在计算机体系结构中，“Register” 一词指代两个完全不同的硬件实体，<strong>混淆它们会导致无法理解 CPU 时序</strong>。</p><table><thead><tr><th style="text-align:left">特性</th><th style="text-align:left">1. 程序寄存器 (Program Registers)</th><th style="text-align:left">2. 硬件寄存器 (Hardware Registers)</th></tr></thead><tbody><tr><td style="text-align:left"><strong>别名</strong></td><td style="text-align:left"><strong>寄存器文件 (Register File)</strong></td><td style="text-align:left"><strong>时序寄存器 / 状态寄存器</strong></td></tr><tr><td style="text-align:left"><strong>具体例子</strong></td><td style="text-align:left"><code>%rax</code>, <code>%rsp</code>, <code>%rbx</code> (共15个)</td><td style="text-align:left"><code>PC</code>, <code>CC</code>, <code>Stat</code>, 流水线寄存器(F/D/E…)</td></tr><tr><td style="text-align:left"><strong>核心本质</strong></td><td style="text-align:left"><strong>ISA 层的“变量”</strong> (数据容器)</td><td style="text-align:left"><strong>微架构层的“门栓”</strong> (时序屏障)</td></tr><tr><td style="text-align:left"><strong>可见性</strong></td><td style="text-align:left"><strong>可见</strong> (程序员用汇编直接读写)</td><td style="text-align:left"><strong>不可见</strong> (硬件自动维护，程序员无法接触)</td></tr><tr><td style="text-align:left"><strong>物理实现</strong></td><td style="text-align:left"><strong>存储阵列 (SRAM)</strong><br>必须通过 <strong>ID (地址)</strong> 灵活寻址访问。</td><td style="text-align:left"><strong>D 触发器组 (D Flip-Flops)</strong><br>物理位置固定“焊死”，<strong>无需寻址</strong>。</td></tr><tr><td style="text-align:left"><strong>电路作用</strong></td><td style="text-align:left">提供运算所需的数据源。</td><td style="text-align:left"><strong>隔离时钟周期</strong>。在时钟上升沿截断信号，防止数据在阶段间乱窜。</td></tr></tbody></table><p><strong>为什么必须区分？</strong></p><ul><li><strong>设计视角</strong>：你在写汇编 <code>addq %rax, %rbx</code> 时，把它们看作变量（瞬间读写）。</li><li><strong>硬件视角</strong>：在电路中，<strong>程序寄存器</strong>负责在周期内<strong>提供</strong>数据，而<strong>硬件寄存器</strong>负责在周期结束时<strong>锁住</strong>结果。如果不区分，就会误以为数据能瞬间更新，从而画错时序图。</li></ul>
+          </div>
+<hr>
+<h2 id="4-SEQ-顺序-处理器设计">4. SEQ (顺序) 处理器设计</h2>
+<p>我们将设计一个 CPU，这个 CPU 在一个时钟周期内<strong>顺序</strong>地完成执行一条指令的所有步骤。</p>
+<h3 id="SEQ-核心思想：复用-Reuse">SEQ 核心思想：复用 (Reuse)</h3>
+<ul>
+<li>执行一条指令需要很多处理（计算操作、计算地址、更新栈指针、确定下一条指令地址）。</li>
+<li>幸运的是，每条指令的整个流程都比较相似。</li>
+<li><strong>降低复杂度</strong>：让不同的指令共享尽量多的硬件。</li>
+<li><strong>挑战</strong>：将每条不同指令所需要的计算放入到一个<strong>通用框架</strong>中。</li>
+</ul>
+<h3 id="SEQ-硬件结构-Hardware-Structure">SEQ 硬件结构 (Hardware Structure)</h3>
+<ul>
+<li><strong>状态元件 (State)</strong>：
+<ul>
+<li>PC (Program Counter) 寄存器</li>
+<li>条件码寄存器 (CC)</li>
+<li>寄存器文件 (Register File)</li>
+<li>内存 (Memories)：分为指令内存 (Instruction memory) 和数据内存 (Data memory)。</li>
+</ul>
+</li>
+<li><strong>指令流 (Instruction Flow)</strong>：
+<ul>
+<li>处理器无限循环，执行这些阶段。</li>
+<li>从 PC 指定的地址读取指令。</li>
+<li>按阶段处理指令。</li>
+<li>更新 PC。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Y86-64-数据信号定义-Key-Data-Signals">Y86-64 数据信号定义 (Key Data Signals)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">信号 (Symbol)</th>
+<th style="text-align:left">产生阶段 (Stage)</th>
+<th style="text-align:left">来源 (Source)</th>
+<th style="text-align:left">含义与作用 (Description)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong><code>valP</code></strong></td>
+<td style="text-align:left"><strong>取指 (Fetch)</strong></td>
+<td style="text-align:left">PC + 指令长度</td>
+<td style="text-align:left"><strong>顺序下一条指令地址</strong> (Fall-through PC)。即便发生跳转，第一步也会先计算出如果“不跳”该去的地址。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>valC</code></strong></td>
+<td style="text-align:left"><strong>取指 (Fetch)</strong></td>
+<td style="text-align:left">指令代码</td>
+<td style="text-align:left"><strong>立即数 / 常数</strong>。直接编码在指令中的 8 字节常数（如 <code>irmovq</code> 的立即数 V 或 <code>rmmovq</code> 的偏移量 D）。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>valA</code></strong></td>
+<td style="text-align:left"><strong>译码 (Decode)</strong></td>
+<td style="text-align:left">寄存器文件 (Port A)</td>
+<td style="text-align:left"><strong>寄存器读出值 A</strong>。通常是指令中 <code>rA</code> 对应的寄存器值；在 <code>pop</code>/<code>ret</code> 中对应 <code>%rsp</code>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>valB</code></strong></td>
+<td style="text-align:left"><strong>译码 (Decode)</strong></td>
+<td style="text-align:left">寄存器文件 (Port B)</td>
+<td style="text-align:left"><strong>寄存器读出值 B</strong>。通常是指令中 <code>rB</code> 对应的寄存器值；常作为 ALU 运算的被加数或基址。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>valE</code></strong></td>
+<td style="text-align:left"><strong>执行 (Execute)</strong></td>
+<td style="text-align:left">ALU 输出</td>
+<td style="text-align:left"><strong>执行结果</strong>。是 ALU 计算出的数值结果，或者是计算出的<strong>有效内存地址</strong>。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong><code>valM</code></strong></td>
+<td style="text-align:left"><strong>访存 (Memory)</strong></td>
+<td style="text-align:left">数据内存</td>
+<td style="text-align:left"><strong>内存读出值</strong>。仅在涉及读内存操作（<code>mrmovq</code>, <code>popq</code>, <code>ret</code>）时有效。</td>
+</tr>
+</tbody>
+</table>
+<h3 id="SEQ-的-6-个阶段-SEQ-Stages">SEQ 的 6 个阶段 (SEQ Stages)</h3>
+<ol>
+<li><strong>取指 (Fetch)</strong>
+<ul>
+<li>从<strong>指令内存 (Instruction memory)</strong> 中读取指令字节。</li>
+<li>PC 作为地址。</li>
+<li>计算 <code>valP</code>（下一条指令的地址）。</li>
+</ul>
+</li>
+<li><strong>译码 (Decode)</strong>
+<ul>
+<li>从<strong>寄存器文件 (Register file)</strong> 中读取操作数。</li>
+<li>例如，读取 <code>rA</code> 和 <code>rB</code> 对应的寄存器值 <code>valA</code> 和 <code>valB</code>。</li>
+</ul>
+</li>
+<li><strong>执行 (Execute)</strong>
+<ul>
+<li><strong>ALU (算术逻辑单元)</strong> 执行指令指定的操作（加、减、计算地址等）。</li>
+<li>得到结果 <code>valE</code>。</li>
+<li>设置或使用<strong>条件码 (CC)</strong>。</li>
+</ul>
+</li>
+<li><strong>访存 (Memory)</strong>
+<ul>
+<li>从<strong>数据内存 (Data memory)</strong> 中读取数据（<code>valM</code>），或向其写入数据。</li>
+</ul>
+</li>
+<li><strong>写回 (Write Back)</strong>
+<ul>
+<li>将结果（来自<strong>执行</strong>阶段的 <code>valE</code> 或来自<strong>访存</strong>阶段的 <code>valM</code>）写回到<strong>寄存器文件 (Register file)</strong>。</li>
+</ul>
+</li>
+<li><strong>PC 更新 (PC Update)</strong>
+<ul>
+<li>更新 PC (程序计数器) 为下一条指令的地址。</li>
+</ul>
+</li>
+</ol>
+<h2 id="5-详解：每条指令的-6-阶段计算">5. 详解：每条指令的 6 阶段计算</h2>
+<p>所有指令都遵循这个通用模式，只是在每一步具体计算的内容不同。</p>
+<h4 id="1-OPq-rA-rB-例如-addq-rax-rbx">1. <code>OPq rA, rB</code> (例如 <code>addq %rax, %rbx</code>)</h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 2 字节 (<code>icode:ifun</code>, <code>rA:rB</code>)。<code>valP = PC + 2</code>。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>valA = R[rA]</code>，读 <code>valB = R[rB]</code>。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = valB OP valA</code> (ALU 执行加/减/与/异或)。设置 CC。</li>
+<li><strong>访存 (Memory)</strong>: (什么也不做)。</li>
+<li><strong>写回 (Write Back)</strong>: 将 <code>valE</code> 写入 <code>R[rB]</code> (<code>dstE = rB</code>)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valP</code>。</li>
+</ul>
+<h4 id="2-rmmovq-rA-D-rB-写内存">2. <code>rmmovq rA, D(rB)</code> (写内存)</h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 10 字节 (<code>icode:ifun</code>, <code>rA:rB</code>, <code>valC=D</code>)。<code>valP = PC + 10</code>。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>valA = R[rA]</code>，读 <code>valB = R[rB]</code>。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = valB + valC</code> (ALU 计算有效地址 D+rB)。</li>
+<li><strong>访存 (Memory)</strong>: 将 <code>valA</code> 写入内存 <code>M[valE]</code>。</li>
+<li><strong>写回 (Write Back)</strong>: (什么也不做)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valP</code>。</li>
+</ul>
+<h4 id="3-popq-rA">3. <code>popq rA</code></h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 2 字节 (<code>icode:ifun</code>, <code>rA:rB</code>)。<code>valP = PC + 2</code>。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>%rsp</code> 两次 (得 <code>valA = R[%rsp]</code>, <code>valB = R[%rsp]</code>)。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = valB + 8</code> (ALU 计算新栈顶地址)。</li>
+<li><strong>访存 (Memory)</strong>: 从 <code>M[valA]</code> (旧栈顶) 读取 <code>valM</code>。</li>
+<li><strong>写回 (Write Back)</strong>: 将 <code>valE</code> 写入 <code>%rsp</code> (更新栈顶)，将 <code>valM</code> 写入 <code>R[rA]</code> (写入弹出的值)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valP</code>。</li>
+</ul>
+<h4 id="4-cmovXX-rA-rB-条件传送">4. <code>cmovXX rA, rB</code> (条件传送)</h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 2 字节 (<code>icode:ifun</code>, <code>rA:rB</code>)。<code>valP = PC + 2</code>。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>valA = R[rA]</code>。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = 0 + valA</code> (ALU 仅仅传递 <code>valA</code>)。</li>
+<li><strong>访存 (Memory)</strong>: 没有操作。</li>
+<li><strong>写回 (Write Back)</strong>: <strong>根据条件码</strong>和 <code>ifun</code> 判断。如果条件不满足，则不写入 (<code>rB</code> 设为 <code>0xF</code> 来禁用)。如果条件满足，<code>R[rB] = valE</code>。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valP</code>。</li>
+</ul>
+<h4 id="5-jXX-Dest-条件跳转">5. <code>jXX Dest</code> (条件跳转)</h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 9 字节 (<code>icode:ifun</code>, <code>valC=Dest</code>)。<code>valP = PC + 9</code> (valP 是 “fall-thru” 地址)。</li>
+<li><strong>译码 (Decode)</strong>: (什么也不做)。</li>
+<li><strong>执行 (Execute)</strong>: <code>Cnd = Cond(CC, ifun)</code> (ALU 检查条件码，输出 Cnd 标志)。
+<ul>
+<li>逻辑电路（我们称为 <code>Cond</code> 模块）<strong>输入</strong>：<strong><code>ifun</code></strong>：指令里的功能码，告诉 CPU 是哪种跳转；<strong><code>CC</code></strong>：当前的条件码状态。</li>
+<li>产生一个 1 位的信号 <strong><code>Cnd</code></strong> (Condition Holds)，表示是否跳转。</li>
+</ul>
+</li>
+<li><strong>访存 (Memory)</strong>: (什么也不做)。</li>
+<li><strong>写回 (Write Back)</strong>: (什么也不做)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = Cnd ? valC : valP</code> (根据 Cnd 标志，选择 Dest 或 fall-through 地址)。</li>
+</ul>
+<h4 id="6-call-Dest">6. <code>call Dest</code></h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 9 字节 (<code>icode:ifun</code>, <code>valC=Dest</code>)。<code>valP = PC + 9</code> (valP 是<mark><strong>返回地址</strong></mark>)。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>valB = R[%rsp]</code>。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = valB + -8</code> (ALU 计算 <code>rsp-8</code>，即新栈顶)。</li>
+<li><strong>访存 (Memory)</strong>: 将 <code>valP</code> (返回地址) 写入内存 <code>M[valE]</code> (压入栈)。</li>
+<li><strong>写回 (Write Back)</strong>: 将 <code>valE</code> 写入 <code>%rsp</code> (更新栈顶)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valC</code> (跳转到 Dest)。</li>
+</ul>
+<h4 id="7-ret-返回">7. <code>ret</code> (返回)</h4>
+<ul>
+<li><strong>取指 (Fetch)</strong>: 读 1 字节 (<code>icode:ifun</code>)。</li>
+<li><strong>译码 (Decode)</strong>: 读 <code>%rsp</code> <mark>两次</mark> (得 <code>valA = R[%rsp]</code>, <code>valB = R[%rsp]</code>)。</li>
+<li><strong>执行 (Execute)</strong>: <code>valE = valB + 8</code> (ALU 计算 <code>rsp+8</code>，即新栈顶)。</li>
+<li><strong>访存 (Memory)</strong>: 从 <code>M[valA]</code> (旧栈顶) 读取 <code>valM</code> (即<strong>返回地址</strong>)。</li>
+<li><strong>写回 (Write Back)</strong>: 将 <code>valE</code> 写入 <code>%rsp</code> (更新栈顶)。</li>
+<li><strong>PC 更新 (PC Update)</strong>: <code>PC = valM</code> (跳转到返回地址)。</li>
+</ul>
+<div class="note note-info">
+            <p><strong>1. <code>valA</code>, <code>valE</code>, <code>valM</code> 是寄存器吗？</strong></p><ul><li><strong>不是</strong>。它们是 CPU 内部的<strong>临时信号线 (Wires)</strong>，仅在当前时钟周期内有效。</li><li><strong>对比</strong>：<code>%rax</code>, <code>%rsp</code> 是<strong>架构寄存器</strong>（仓库/存储）；<code>valA</code>, <code>valE</code> 是<strong>内部信号</strong>（传送带/运输）。</li><li><strong>速查字典</strong>：<ul><li><code>valP</code>: 下一条指令地址 (Next <strong>P</strong>C)。</li><li><code>valC</code>: 指令中的常数/立即数 (<strong>C</strong>onstant)。</li><li><code>valE</code>: <strong>ALU</strong> 计算出的结果 (<strong>E</strong>xecute)。</li><li><code>valM</code>: <strong>数据内存</strong>读出的值 (<strong>M</strong>emory)。</li></ul></li></ul><hr><p><strong>2. 为什么 <code>popq</code> 或 <code>ret</code> 需要读两次 <code>%rsp</code>？</strong></p><ul><li><strong>根本原因</strong>：SEQ 处理器的硬件连线是固定的，必须并行工作。</li><li><strong>分工需求</strong>：这条指令既要用 <code>%rsp</code> 指向的地址<strong>去读内存</strong>，又要用 <code>%rsp</code> 的值<strong>去加 8</strong>。</li><li><strong>硬件实现</strong>：<ul><li><strong>读端口 A (<code>valA</code>)</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 物理连向 <strong>内存地址端</strong> (Memory Address)。</li><li><strong>读端口 B (<code>valB</code>)</strong> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 物理连向 <strong>ALU 输入端</strong> (ALU Input)。</li></ul></li><li><strong>结论</strong>：为了让内存和 ALU 同时拿到 <code>%rsp</code> 的旧值开始干活，控制逻辑必须让寄存器文件同时从 A、B 两个端口输出 <code>%rsp</code> 的值。</li></ul>
+          </div>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 05.Logic</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/05-Logic/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/06-SEQ/" title="CSAPP - 06. SEQ">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 06. SEQ</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/04-ISA/" title="CSAPP - 04.ISA">
+                        <span class="hidden-mobile">CSAPP - 04.ISA</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1128 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Motivation冲突的本质： 互联网最初是为数据传输（如文件、邮件）设计的，提供的是“尽力而为 (Best-Effort)”的服务——不保证时间，但保证完整。然而，多媒体应用（音频&#x2F;视频）的需求恰恰相反：它们对延迟和抖动极度敏感，但对少量丢包可以容忍。核心挑战： 如何在不提供服务质量保证（无 QoS）的现有互联网架构上，让对 QoS 要求极高的多媒体应用流畅运行？Co">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Network - 05.Multimedia Networking">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/Network/Network-05-Multimedia/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Motivation冲突的本质： 互联网最初是为数据传输（如文件、邮件）设计的，提供的是“尽力而为 (Best-Effort)”的服务——不保证时间，但保证完整。然而，多媒体应用（音频&#x2F;视频）的需求恰恰相反：它们对延迟和抖动极度敏感，但对少量丢包可以容忍。核心挑战： 如何在不提供服务质量保证（无 QoS）的现有互联网架构上，让对 QoS 要求极高的多媒体应用流畅运行？Co">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T19:20:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.359Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Network - 05.Multimedia Networking - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Network - 05.Multimedia Networking"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 03:20" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          33 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Network - 05.Multimedia Networking</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <div class="note note-success Motivation & Summary">
+            <p><strong>Motivation</strong></p><ul><li><strong>冲突的本质：</strong> 互联网最初是为<strong>数据传输</strong>（如文件、邮件）设计的，提供的是“尽力而为 (Best-Effort)”的服务——不保证时间，但保证完整。然而，<strong>多媒体应用</strong>（音频/视频）的需求恰恰相反：它们对<strong>延迟和抖动</strong>极度敏感，但对少量<strong>丢包</strong>可以容忍。</li><li><strong>核心挑战：</strong> 如何在不提供服务质量保证（无 QoS）的现有互联网架构上，让对 QoS 要求极高的多媒体应用流畅运行？</li></ul><p><strong>Content Summary</strong></p><ol><li><strong>应用分类：</strong> 区分了存储流式、直播流式和实时交互式应用的不同需求。</li><li><strong>应用层解决方案：</strong> 在网络层无法改变的情况下，利用<strong>客户端缓冲</strong>、<strong>CDN</strong>、<strong>FEC (前向纠错)</strong> 和 <strong>交织</strong> 等技术在端系统解决抖动和丢包问题。</li><li><strong>专用协议：</strong> 介绍了 <strong>RTP</strong> (传输媒体数据) 和 <strong>SIP</strong> (信令控制)。</li><li><strong>网络层演进 (QoS)：</strong> 探讨了如何通过<strong>调度算法</strong> (如 WFQ)、<strong>监管机制</strong> (令牌桶) 以及 <strong>DiffServ/IntServ</strong> 架构，让网络从“尽力而为”向“提供服务保证”演进。</li></ol>
+          </div>
+<h2 id="第-7-章：多媒体网络-Chapter-7-Multimedia-Networking">第 7 章：多媒体网络 (Chapter 7: Multimedia Networking)</h2>
+<h3 id="7-1-引言与原则-Principles">7.1 引言与原则 (Principles)</h3>
+<ul>
+<li><strong>多媒体应用的分类 (Classify multimedia applications):</strong>
+<ol>
+<li><strong>存储流式 (Stored streaming):</strong>
+<ul>
+<li>媒体存储在源端，传输给客户端。</li>
+<li>客户端在所有数据到达前就开始播放 (streaming)。</li>
+<li>关键是<strong>播放时机 (playout timing)</strong>。</li>
+<li>具有 VCR 功能（暂停、倒带、快进），允许初始延迟。</li>
+</ul>
+</li>
+<li><strong>直播流式 (Live streaming):</strong>
+<ul>
+<li>例如：互联网广播、体育赛事直播。</li>
+<li>也有播放缓冲区，播放可能会滞后传输数十秒。</li>
+<li>无法快进，但可能可以暂停或倒带。</li>
+</ul>
+</li>
+<li><strong>实时交互式 (Interactive, real-time):</strong>
+<ul>
+<li>例如：IP 电话 (VoIP)、视频会议、分布式互动游戏。</li>
+<li><strong>对延迟非常敏感 (Delay sensitive):</strong> 端到端延迟应小于 150ms (好) 或 400ms (可接受)。</li>
+<li>对丢包具有一定的容忍度 (Loss tolerant)。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>网络服务需求 (Network services):</strong>
+<ul>
+<li>不同的应用需要不同的服务级别 (QoS)。</li>
+<li>现有的互联网提供的是 <strong>尽力而为 (Best-effort)</strong> 服务，不保证延迟和丢包。</li>
+</ul>
+</li>
+<li><strong>挑战:</strong>
+<ul>
+<li>尽力而为的服务模型难以满足多媒体应用对 QoS 的要求。</li>
+<li>解决方案：<mark>应用层技术</mark> (Application-level techniques) + 网络层机制 (Network-level mechanisms)。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-2-流式存储音频和视频-Streaming-Stored-Audio-and-Video">7.2 流式存储音频和视频 (Streaming Stored Audio and Video)</h3>
+<ul>
+<li><strong>流式传输 (Streaming):</strong> 客户端在下载的同时播放。</li>
+<li><strong>客户端缓冲 (Client Buffering):</strong>
+<ul>
+<li><strong>目的：</strong> 吸收网络延迟的抖动 (Jitter)，使播放更加平滑。</li>
+<li><strong>机制：</strong>
+<ul>
+<li>填充速率 (fill rate) <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span> 是可变的（受网络带宽影响）。</li>
+<li>排空速率 (drain rate) <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span></span></span></span> 是恒定的（受播放速率决定）。</li>
+<li>缓冲区在开始播放前会预存一部分数据。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>UDP vs TCP:</strong>
+<ul>
+<li><strong>UDP:</strong> 发送速率由服务器控制，不进行拥塞控制，适合对延迟敏感的应用。需要应用层处理丢包和重排序。</li>
+<li><strong>TCP:</strong> 发送速率受拥塞控制影响，波动大。提供可靠传输，但重传会增加延迟。HTTP/TCP 更容易穿透防火墙。</li>
+</ul>
+</li>
+<li><strong>适应不同客户端速率:</strong>
+<ul>
+<li>服务器存储多个不同编码速率（比特率）的视频版本（如 1.5 Mbps, 28.8 Kbps）。</li>
+<li>根据客户端的可用带宽选择合适的版本。</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-3-尽力而为服务的优化-Making-the-Best-of-Best-Effort-Service">7.3 尽力而为服务的优化 (Making the Best of Best Effort Service)</h3>
+<p>互联网提供的“尽力而为”服务不保证带宽、延迟和丢包，为了满足多媒体应用的需求，需要在<strong>应用层</strong>采取多种机制来应对网络的不确定性。</p>
+<h4 id="1-客户端缓冲-Client-Side-Buffering">1. 客户端缓冲 (Client-Side Buffering)</h4>
+<p>这是流式播放中最核心的机制，用于解决<strong>网络抖动 (Jitter)</strong> 问题。</p>
+<ul>
+<li><strong>原理：</strong>
+<ul>
+<li><strong>输入速率 (Fill Rate, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo stretchy="false">(</mo><mi>t</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">x(t)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord mathnormal">t</span><span class="mclose">)</span></span></span></span>)：</strong> 从网络接收数据的速率，由于网络拥塞等原因，是<strong>可变</strong>的。</li>
+<li><strong>输出速率 (Drain Rate, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi></mrow><annotation encoding="application/x-tex">d</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">d</span></span></span></span>)：</strong> 播放器消耗数据的速率，通常是<strong>恒定</strong>的（取决于编码比特率）。</li>
+<li><strong>缓冲池：</strong> 在客户端内存中开辟一块区域，先将数据积累到一定程度再开始播放。</li>
+</ul>
+</li>
+<li><strong>作用：</strong>
+<ul>
+<li><strong>平滑抖动：</strong> 缓冲区的存在吸收了数据包到达时间的不规律变化，保证播放器能以恒定速率读取数据。</li>
+<li><strong>补偿延迟：</strong> 初始的播放延迟（Play-out delay）为暂时滞后的数据包提供了到达的时间窗口。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-传输协议的选择-UDP-vs-TCP">2. 传输协议的选择 (UDP vs TCP)</h4>
+<p>多媒体应用需要在 UDP 和 TCP 之间根据需求做权衡。</p>
+<h5 id="UDP-用户数据报协议"><strong>UDP (用户数据报协议)</strong></h5>
+<ul>
+<li><strong>特性：</strong>
+<ul>
+<li>发送速率由服务器控制（通常等于编码速率），<strong>不进行拥塞控制</strong>，对网络拥塞“无感知”。</li>
+<li><strong>低延迟：</strong> 没有重传机制，播放延迟短（通常 2-5 秒）。</li>
+</ul>
+</li>
+<li><strong>容错：</strong> 需要应用层自己处理丢包（如通过 FEC）和乱序。</li>
+<li><strong>适用场景：</strong> 对实时性要求高、能容忍少量丢包的应用（如 VoIP、实时会议）。</li>
+</ul>
+<h5 id="TCP-传输控制协议"><strong>TCP (传输控制协议)</strong></h5>
+<ul>
+<li><strong>特性：</strong>
+<ul>
+<li><strong>发送速率波动：</strong> 受 TCP 拥塞控制机制（如慢启动、AIMD）影响，发送速率会剧烈波动（“锯齿状”）。</li>
+<li><strong>可靠传输：</strong> 保证数据不丢失，但重传机制会引入显著的<strong>延迟</strong>。</li>
+<li><strong>穿透性好：</strong> HTTP/TCP 更容易通过防火墙和 NAT（许多防火墙默认拦截 UDP）。</li>
+</ul>
+</li>
+<li><strong>适用场景：</strong> 存储流媒体（如 YouTube, Netflix），依靠较大的客户端缓冲区来平滑 TCP 的传输波动。</li>
+</ul>
+<h4 id="3-适应不同客户端速率-Rate-Adaptation">3. 适应不同客户端速率 (Rate Adaptation)</h4>
+<p>由于不同客户端的接入带宽差异巨大（如 5G vs 拨号），服务器不能以单一码率发送。</p>
+<ul>
+<li><strong>多重编码 (Multiple Encodings)：</strong>
+<ul>
+<li>服务器将同一个视频预先编码为<strong>不同比特率</strong>的多个版本（例如：1.5 Mbps, 500 Kbps, 28.8 Kbps）。</li>
+</ul>
+</li>
+<li><strong>动态选择：</strong>
+<ul>
+<li>客户端根据当前检测到的可用带宽，请求合适版本的视频片段。</li>
+<li><strong>DASH (Dynamic Adaptive Streaming over HTTP)</strong> 是目前主流的实现方式。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-自适应播放延迟-Adaptive-Playout-Delay">4. 自适应播放延迟 (Adaptive Playout Delay)</h4>
+<p>针对<strong>实时交互应用</strong>（如 IP 电话），不能使用过大的缓冲区。需要在“低延迟”和“低丢包”之间寻找动态平衡。</p>
+<h5 id="核心思想"><strong>核心思想</strong></h5>
+<ul>
+<li><strong>动态调整：</strong> 不是使用固定的播放延迟，而是根据网络状况动态估算延迟。</li>
+<li><strong>调整时机：</strong> 仅在每个<strong>语音突发 (Talk Spurt)</strong> 的开始时刻调整播放时间，在突发内部保持固定的播放间隔，通过压缩或拉长静音期来实现调整。</li>
+</ul>
+<h5 id="算法步骤"><strong>算法步骤</strong></h5>
+<ol>
+<li>
+<p><strong>估算平均网络延迟 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">d_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)：</strong><br>
+使用指数加权移动平均 (EWMA) 公式：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>d</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>u</mi><mo stretchy="false">)</mo><mo>⋅</mo><msub><mi>d</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>u</mi><mo>⋅</mo><mo stretchy="false">(</mo><msub><mi>r</mi><mi>i</mi></msub><mo>−</mo><msub><mi>t</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d_i = (1-u) \cdot d_{i-1} + u \cdot (r_i - t_i)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.9028em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">r_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 接收时间, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>t</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">t_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 发送时间</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>u</mi></mrow><annotation encoding="application/x-tex">u</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">u</span></span></span></span>: 权重系数 (如 0.01)</li>
+</ul>
+</li>
+<li>
+<p><strong>估算延迟偏差/抖动 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">v_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)：</strong></p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>v</mi><mi>i</mi></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>u</mi><mo stretchy="false">)</mo><mo>⋅</mo><msub><mi>v</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>u</mi><mo>⋅</mo><mi mathvariant="normal">∣</mi><msub><mi>r</mi><mi>i</mi></msub><mo>−</mo><msub><mi>t</mi><mi>i</mi></msub><mo>−</mo><msub><mi>d</mi><mi>i</mi></msub><mi mathvariant="normal">∣</mi></mrow><annotation encoding="application/x-tex">v_i = (1-u) \cdot v_{i-1} + u \cdot | r_i - t_i - d_i |
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">u</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7917em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4445em;"></span><span class="mord mathnormal">u</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span></span></span></span></span></p>
+</li>
+<li>
+<p><strong>计算播放时间 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">p_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)：</strong><br>
+对于语音突发的第一个包：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><msub><mi>t</mi><mi>i</mi></msub><mo>+</mo><msub><mi>d</mi><mi>i</mi></msub><mo>+</mo><mi>K</mi><mo>⋅</mo><msub><mi>v</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">p_i = t_i + d_i + K \cdot v_i
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7651em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span></p>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span>: 安全系数 (如 4)。这表示播放时间设置为“发送时间 + 平均延迟 + K倍抖动”，以覆盖绝大多数数据包的到达时间。</li>
+</ul>
+</li>
+<li>
+<p><strong>突发检测：</strong><br>
+通过比较连续包的时间戳和序列号来判断是否开始了新的语音突发（例如：时间戳跳变 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>&gt;</mo><mn>20</mn><mi>m</mi><mi>s</mi></mrow><annotation encoding="application/x-tex">&gt; 20ms</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">20</span><span class="mord mathnormal">m</span><span class="mord mathnormal">s</span></span></span></span> 且序列号连续）。</p>
+</li>
+</ol>
+<h4 id="5-丢包恢复机制-Recovery-from-Packet-Loss">5. 丢包恢复机制 (Recovery from Packet Loss)</h4>
+<p>在不使用 TCP 重传（因为太慢）的情况下，应用层可以通过增加冗余来对抗丢包。</p>
+<h5 id="A-前向纠错-FEC-Forward-Error-Correction"><strong>A. 前向纠错 (FEC - Forward Error Correction)</strong></h5>
+<ul>
+<li><strong>方案 1：异或冗余</strong>
+<ul>
+<li>每 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个原始数据块，计算生成 1 个冗余块（异或结果）。</li>
+<li>发送 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>+</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n+1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 个块。</li>
+<li><strong>能力：</strong> 可以恢复这组中任意 <strong>1 个</strong> 丢失的包。</li>
+<li><strong>代价：</strong> 增加了带宽消耗 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi mathvariant="normal">/</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">1/n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/</span><span class="mord mathnormal">n</span></span></span></span>) 和播放延迟 (需要等一组包到齐)。</li>
+</ul>
+</li>
+<li><strong>方案 2：低质量流冗余</strong>
+<ul>
+<li>在发送第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个高质量包时，附带第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 个包的<strong>低质量版本</strong>（如低码率音频）。</li>
+<li>如果第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">n-1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> 个包丢失，可以使用第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 个包中携带的低质量版本进行填补。</li>
+<li><strong>优点：</strong> 延迟较低。</li>
+</ul>
+</li>
+</ul>
+<h5 id="B-交织-Interleaving"><strong>B. 交织 (Interleaving)</strong></h5>
+<ul>
+<li><strong>原理：</strong> 发送时不按顺序发送相邻的音频单元，而是将其打散重排。
+<ul>
+<li>例如：发送顺序为 1, 5, 9… 而不是 1, 2, 3…</li>
+</ul>
+</li>
+<li><strong>作用：</strong> 如果网络发生突发性丢包（连续丢一组包），在接收端还原后，这些丢包会变成<strong>分散的</strong>单个丢失单元。</li>
+<li><strong>优势：</strong> 分散的小错误比连续的大段静音更容易被通过算法掩盖（Error Concealment）。</li>
+<li><strong>代价：</strong> 增加了播放延迟。</li>
+</ul>
+<h4 id="6-内容分发网络-CDN">6. 内容分发网络 (CDN)</h4>
+<p>解决单点服务器瓶颈和长距离传输延迟的问题。</p>
+<ul>
+<li><strong>核心策略：</strong> <strong>内容复制 (Content Replication)</strong>。</li>
+<li><strong>部署：</strong> 将内容（如视频文件）预先推送到分布在全球边缘网络（靠近用户）的数百/数千台服务器上。</li>
+<li><strong>请求路由：</strong>
+<ul>
+<li>当用户请求视频时，利用 <strong>DNS 重定向</strong> 技术。</li>
+<li>权威 DNS 服务器根据用户的 IP 地址，判断其地理位置。</li>
+<li>将请求重定向到<strong>距离用户最近</strong>（或负载最轻）的 CDN 节点。</li>
+</ul>
+</li>
+<li><strong>优势：</strong> 显著降低了网络延迟，减少了骨干网流量，提高了系统的可靠性。</li>
+</ul>
+<h3 id="7-4-实时交互应用协议-Protocols-for-Real-Time-Interactive-Applications">7.4 实时交互应用协议 (Protocols for Real-Time Interactive Applications)</h3>
+<ul>
+<li><strong>RTP (Real-Time Protocol):</strong>
+<ul>
+<li>运行在 UDP 之上。</li>
+<li>提供：<strong>载荷类型标识 (Payload Type)</strong>, <strong>序列号 (Sequence Number)</strong>, <strong>时间戳 (Timestamp)</strong>。</li>
+<li><strong>不提供</strong> QoS 保证（不保证及时交付或不丢包）。</li>
+</ul>
+</li>
+<li><strong>RTCP (RTP Control Protocol):</strong> 用于监控服务质量和传递会话信息。</li>
+<li><strong>SIP (Session Initiation Protocol):</strong> 用于建立、修改和终止多媒体会话（如 VoIP 呼叫）。</li>
+</ul>
+<h3 id="7-5-提供多种服务等级-Providing-Multiple-Classes-of-Service">7.5 提供多种服务等级 (Providing Multiple Classes of Service)</h3>
+<p>传统的互联网提供的是“尽力而为 (Best-Effort)”的服务，即“一刀切”的模型。为了满足多媒体应用的需求，网络需要演进为提供多种服务等级。</p>
+<h4 id="1-核心设计原则-Design-Principles">1. 核心设计原则 (Design Principles)</h4>
+<p>为了实现区分服务，网络架构需要遵循以下四个原则：</p>
+<ul>
+<li><strong>原则 1：标记 (Marking / Classification)</strong>
+<ul>
+<li>路由器需要能够区分不同类别的流量。</li>
+<li><strong>方法：</strong> 在网络边缘（Edge）对数据包进行标记（例如使用 IP 头部的 ToS 字段），核心路由器根据标记处理数据包。</li>
+</ul>
+</li>
+<li><strong>原则 2：隔离 (Isolation / Protection)</strong>
+<ul>
+<li>需要保护一个类别的流量不受其他类别（特别是行为不当的流）的影响。</li>
+<li>例如：通过调度机制，确保音频流不会被突发的 FTP 文件传输阻塞。</li>
+</ul>
+</li>
+<li><strong>原则 3：高效利用资源 (Efficiency)</strong>
+<ul>
+<li>虽然需要隔离，但也希望资源能被共享。</li>
+<li>例如：如果高优先级的流量没有使用其分配的带宽，应该允许低优先级的流量使用这些空闲带宽，而不是让带宽闲置。</li>
+</ul>
+</li>
+<li><strong>原则 4：呼叫接纳 (Call Admission)</strong>
+<ul>
+<li>物理链路的容量是有限的。如果流量需求超过了链路容量，必须拒绝新的连接请求（类似于电话忙音），以保证现有连接的服务质量。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-调度机制-Scheduling-Mechanisms">2. 调度机制 (Scheduling Mechanisms)</h4>
+<p>调度策略决定了链路上的下一个数据包该发送队列中的哪一个。</p>
+<h5 id="A-先入先出-FIFO"><strong>A. 先入先出 (FIFO)</strong></h5>
+<ul>
+<li><strong>机制：</strong> 按照数据包到达队列的顺序进行发送。</li>
+<li><strong>丢弃策略 (Discard Policy)：</strong> 当队列满时，如何丢弃数据包？
+<ul>
+<li><strong>尾部丢弃 (Tail Drop)：</strong> 丢弃新到达的数据包（最常用）。</li>
+<li><strong>优先级丢弃 (Priority)：</strong> 根据优先级丢弃/移除数据包。</li>
+<li><strong>随机丢弃 (Random)：</strong> 随机选择数据包丢弃（如 RED 算法）。</li>
+</ul>
+</li>
+</ul>
+<h5 id="B-优先级排队-Priority-Queuing"><strong>B. 优先级排队 (Priority Queuing)</strong></h5>
+<ul>
+<li><strong>机制：</strong> 维护多个优先级的队列（如高优先级、低优先级）。</li>
+<li><strong>规则：</strong> 只要高优先级队列中有数据包，就先发送高优先级的；只有高优先级队列为空时，才发送低优先级的数据包。</li>
+<li><strong>缺点：</strong> 可能导致低优先级流量“饥饿” (Starvation)，即永远得不到服务。</li>
+</ul>
+<h5 id="C-轮询-Round-Robin-RR"><strong>C. 轮询 (Round Robin - RR)</strong></h5>
+<ul>
+<li><strong>机制：</strong> 循环扫描各个类别的队列，如果队列非空，就发送一个数据包。</li>
+<li><strong>特点：</strong> 提供了类之间的公平性，避免了饥饿问题。</li>
+</ul>
+<h5 id="D-加权公平队列-Weighted-Fair-Queuing-WFQ"><strong>D. 加权公平队列 (Weighted Fair Queuing - WFQ)</strong></h5>
+<ul>
+<li><strong>机制：</strong> 广义的轮询。每个类被分配一个<strong>权重 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)</strong>。</li>
+<li><strong>规则：</strong> 在每个服务循环中，第 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span> 类获得的服务量与其权重 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">w_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5806em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0269em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 成正比。</li>
+<li><strong>优势：</strong> 既保证了每个类别的最小带宽保证，又允许在某类空闲时共享带宽。</li>
+</ul>
+<h4 id="3-监管机制-Policing-Mechanisms">3. 监管机制 (Policing Mechanisms)</h4>
+<p>监管的目的是强制流量源遵守其声明的流量参数（SLA），防止恶意或错误的流量占用过多资源。</p>
+<h5 id="三个常见的监管指标："><strong>三个常见的监管指标：</strong></h5>
+<ol>
+<li><strong>平均速率 (Average Rate)：</strong> 长期来看，每单位时间发送多少数据包。</li>
+<li><strong>峰值速率 (Peak Rate)：</strong> 短期内的最高发送速率。</li>
+<li><strong>突发大小 (Burst Size)：</strong> 允许连续发送的最大数据包数量（无需中间等待）。</li>
+</ol>
+<h5 id="核心实现：令牌桶-Token-Bucket"><strong>核心实现：令牌桶 (Token Bucket)</strong></h5>
+<p>这是一种限制输入流量以满足特定突发大小和平均速率的机制。</p>
+<ul>
+<li><strong>参数：</strong>
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span></span>：令牌生成速率 (tokens/sec)。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span>：桶的容量 (bucket depth)，即最大令牌数。</li>
+</ul>
+</li>
+<li><strong>工作原理：</strong>
+<ul>
+<li>令牌以速率 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi></mrow><annotation encoding="application/x-tex">r</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span></span> 填入桶中。</li>
+<li>桶满时，新令牌被丢弃（令牌数不超过 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">b</span></span></span></span>）。</li>
+<li>数据包要发送，必须从桶中消耗令牌。</li>
+<li>如果桶中令牌不足，数据包必须等待或被丢弃/标记。</li>
+</ul>
+</li>
+<li><strong>QoS 保证：</strong>
+<ul>
+<li>结合 <strong>令牌桶</strong> (限制流量) 和 <strong>WFQ</strong> (加权调度)，网络可以提供确定性的<strong>最大延迟上界</strong> (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>D</mi><mrow><mi>m</mi><mi>a</mi><mi>x</mi></mrow></msub><mo>=</mo><mi>b</mi><mi mathvariant="normal">/</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">D_{max} = b/R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ma</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">b</span><span class="mord">/</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span></span>)。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-区分服务架构-DiffServ-Architecture">4. 区分服务架构 (DiffServ Architecture)</h4>
+<p>DiffServ 是一种通过在网络边缘进行复杂处理，而在网络核心保持简单的架构，旨在解决扩展性问题。</p>
+<h5 id="架构组件："><strong>架构组件：</strong></h5>
+<ol>
+<li>
+<p><strong>边缘路由器 (Edge Router)：</strong> <strong>复杂性所在</strong></p>
+<ul>
+<li><strong>分类 (Classification)：</strong> 根据源/目 IP、端口号等识别流量。</li>
+<li><strong>标记 (Marking)：</strong> 将数据包标记为“配置内 (In-Profile)”或“配置外 (Out-Profile)”，通常修改 IP 头部的 ToS (Type of Service) 字段。</li>
+<li><strong>监管 (Policing)：</strong> 使用令牌桶等机制限制流量速率。</li>
+</ul>
+</li>
+<li>
+<p><strong>核心路由器 (Core Router)：</strong> <strong>简单高效</strong></p>
+<ul>
+<li>不维护每条流的状态（Per-flow state）。</li>
+<li>仅根据数据包的<strong>标记</strong>（类别），通过 PHB (Per-Hop Behavior) 进行相应的缓冲和调度处理。</li>
+<li>例如：优先转发标记为“高优先级”的数据包。</li>
+</ul>
+</li>
+</ol>
+<h5 id="优势："><strong>优势：</strong></h5>
+<ul>
+<li><strong>可扩展性强 (Scalability)：</strong> 核心网络不需要知道具体的业务流，只处理有限的几个服务等级，因此可以支持庞大的流量。</li>
+</ul>
+<h3 id="7-6-提供-QoS-保证-Providing-QoS-Guarantees">7.6 提供 QoS 保证 (Providing QoS Guarantees)</h3>
+<ul>
+<li><strong>集成服务 (Integrated Services / IntServ):</strong>
+<ul>
+<li><strong>理念：</strong> 为每个应用会话预留端到端资源（带宽、缓冲）。</li>
+<li><strong>呼叫接纳 (Call Admission):</strong> 网络根据资源情况决定是否接受新连接。</li>
+<li><strong>缺点：</strong> 需要在路由器中维护每个流的状态，可扩展性差。</li>
+</ul>
+</li>
+<li><strong>服务模型:</strong>
+<ul>
+<li><strong>保证服务 (Guaranteed Service):</strong> 提供确定的延迟上界。</li>
+<li><strong>受控负载服务 (Controlled Load Service):</strong> 提供类似网络未加载时的服务质量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="案例研究：无线-Mesh-网络传输视频-Wireless-Mesh-for-Video">案例研究：无线 Mesh 网络传输视频 (Wireless Mesh for Video)</h3>
+<ul>
+<li><strong>特点：</strong> 多跳、自组织、自愈合。</li>
+<li><strong>优势：</strong> 高带宽（支持多路视频）、部署简单、覆盖范围广。</li>
+<li><strong>技术：</strong>
+<ul>
+<li><strong>跨层设计 (Cross-layer design):</strong> 物理层、MAC 层、网络层、传输层协同工作。</li>
+<li><strong>多优先级传输:</strong> 将视频帧分为不同优先级（I帧 &gt; P帧 &gt; B帧），映射到不同的传输队列（AC_VO, AC_VI 等）。</li>
+<li><strong>动态数据映射:</strong> 根据网络状况动态调整数据包的映射策略。</li>
+</ul>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Network/" class="print-no-link">#Network</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Network - 05.Multimedia Networking</div>
+      <div>https://yima-gu.github.io/2026/01/14/Network/Network-05-Multimedia/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-06-Security-01/" title="Network - 06.Security-01">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Network - 06.Security-01</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-04-Datalink-Layer-02/" title="Network - 04.Data Link Layer-02">
+                        <span class="hidden-mobile">Network - 04.Data Link Layer-02</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

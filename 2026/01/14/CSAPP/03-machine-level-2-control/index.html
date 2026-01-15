@@ -1,0 +1,1152 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic &amp; Control)  真正的程序员可以用任何语言编写汇编代码。(REAL PROGRAMMERS CAN WRITE ASSEMBLY CODE IN ANY LANGUAGE.) — Larry Wall, 美国程序员 (American Programmer)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 03.Machine-Level Programming II">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-2-control/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic &amp; Control)  真正的程序员可以用任何语言编写汇编代码。(REAL PROGRAMMERS CAN WRITE ASSEMBLY CODE IN ANY LANGUAGE.) — Larry Wall, 美国程序员 (American Programmer)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T17:50:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.349Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 03.Machine-Level Programming II - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 03.Machine-Level Programming II"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 01:50" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 03.Machine-Level Programming II</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic &amp; Control)</h1>
+<blockquote>
+<p>真正的程序员可以用任何语言编写汇编代码。(REAL PROGRAMMERS CAN WRITE ASSEMBLY CODE IN ANY LANGUAGE.)</p>
+<p>— Larry Wall, 美国程序员 (American Programmer)</p>
+</blockquote>
+<div class="note note-success 核心导读：从“结构化”到“线性跳转”">
+            <p><strong>主要内容</strong>：<br>本章关注计算机如何实现逻辑控制。包括：</p><ol><li><strong>条件码 (Condition Codes)</strong>：CPU 如何通过 <code>ZF</code>, <code>SF</code> 等标志位记住上一次计算的结果。</li><li><strong>跳转指令 (Jumps)</strong>：汇编中没有 <code>if</code> 和 <code>while</code>，只有 <code>goto</code> (即 <code>jmp</code>/<code>je</code>)。</li><li><strong>翻译控制结构</strong>：详细讲解了 C 语言中的 <code>if-else</code>、<code>while</code>、<code>for</code> 和 <code>switch</code> 是如何被“降维打击”成汇编中的条件跳转和跳转表的。</li></ol><p><strong>Motivation</strong>：<br>高级语言有优雅的结构（如循环、分支），但底层硬件非常“笨”，只会按顺序执行或跳转。理解这一章，你就能明白<strong>编译器是如何“欺骗”硬件来模拟复杂逻辑的</strong>，也能理解为什么某些写法（如 switch 跳转表）会比其他写法更快。</p>
+          </div>
+<p><strong>今日主题 (Today)</strong></p>
+<ul>
+<li>控制：条件码 (Control: Condition codes)</li>
+<li>条件分支 (Conditional branches)</li>
+<li>循环 (Loops)</li>
+<li>Switch 语句 (Switch Statements)</li>
+</ul>
+<h2 id="2-1-控制流-Control-Flow">2.1 控制流 (Control Flow)</h2>
+<p>高级语言使用 <code>if/else</code> 这样的控制结构，但汇编只有跳转 (jumps)。</p>
+<p><strong>C 代码 (C Code) 示例:</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">extern</span> <span class="hljs-type">void</span> <span class="hljs-title function_">op1</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;<br><span class="hljs-keyword">extern</span> <span class="hljs-type">void</span> <span class="hljs-title function_">op2</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;<br><span class="hljs-type">void</span> <span class="hljs-title function_">decision</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> &#123;<br>  <span class="hljs-keyword">if</span> (x) &#123; <span class="hljs-comment">// (x != 0)</span><br>    op1();<br>  &#125;<br>  <span class="hljs-keyword">else</span> &#123;<br>    op2();<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>汇编 (Assembly) 中的控制流:</strong></p>
+<figure class="highlight plaintext"><figcaption><span>snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs Code">decision:<br>  subq    $8, %rsp     <br>  testl   %edi, %edi   ; 测试 x (在 %edi 中)。设置标志位。<br>  je      .L2          ; 如果相等 (if x == 0) 则跳转到 .L2<br>  call    op1          ; (then 块): 调用 op1<br>  jmp     .L1          ; 无条件跳转到 .L1 (跳过 else)<br>.L2:<br>  call    op2          ; (else 块): 调用 op2<br>.L1:<br>  addq    $8, %rsp     <br>  ret                  <br></code></pre></td></tr></table></figure>
+<ul>
+<li>这一切都是用 <strong>GOTO</strong> (跳转) 完成的！</li>
+</ul>
+<h3 id="处理器状态-Processor-State-x86-64-部分">处理器状态 (Processor State) (x86-64, 部分)</h3>
+<p>这是关于当前执行程序的信息。</p>
+<ul>
+<li><strong>寄存器 (Registers):</strong> 临时数据 (Temporary data)
+<ul>
+<li><code>%rax</code>, <code>%rbx</code>, <code>%rcx</code>, <code>%rdx</code>, <code>%rsi</code>, <code>%rdi</code>, <code>%rbp</code>, <code>%rsp</code></li>
+<li><code>%r8</code> - <code>%r15</code></li>
+</ul>
+</li>
+<li><strong>指令指针 (Instruction pointer) (<code>%rip</code>):</strong>
+<ul>
+<li>当前代码控制点的位置 (Location of current code control point)</li>
+</ul>
+</li>
+<li><strong>条件码 (Condition codes):</strong>
+<ul>
+<li><code>CF</code>, <code>ZF</code>, <code>SF</code>, <code>OF</code></li>
+<li>最近测试的状态 (Status of recent tests)</li>
+</ul>
+</li>
+</ul>
+<h3 id="条件码-Condition-Codes-隐式设置">条件码 (Condition Codes) (隐式设置)</h3>
+<p>这些是单位寄存器 (Single bit registers)，它们作为算术操作（例如 <code>addq</code>）的副作用被隐式设置。</p>
+<ul>
+<li><strong><code>CF</code> (Carry Flag):</strong> <mark>进位标志</mark> (用于无符号数)
+<ul>
+<li>如果最高有效位 (most significant bit) 产生进位（无符号溢出），则设置。</li>
+<li>在执行<strong>减法</strong>操作（如 <code>sub</code> 或 <code>cmp</code>）时，它充当的是 <strong>借位标志 (Borrow Flag)</strong>。</li>
+</ul>
+</li>
+<li><strong><code>ZF</code> (Zero Flag):</strong> <mark>零标志</mark>
+<ul>
+<li>如果结果 <code>t == 0</code>，则设置。</li>
+</ul>
+</li>
+<li><strong><code>SF</code> (Sign Flag):</strong> <mark>符号标志</mark> (用于有符号数)
+<ul>
+<li>如果结果 <code>t &lt; 0</code>（作为有符号数），则设置。</li>
+</ul>
+</li>
+<li><strong><code>OF</code> (Overflow Flag):</strong> <mark>溢出标志</mark> (用于有符号数)
+<ul>
+<li>如果发生二补数（有符号）溢出，则设置。</li>
+<li><code>(a&gt;0 &amp;&amp; b&gt;0 &amp;&amp; t&lt;0) || (a&lt;0 &amp;&amp; b&lt;0 &amp;&amp; t&gt;=0)</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>注意:</strong> <code>lea</code> (Load Effective Address) 指令<strong>不会</strong>设置条件码。</p>
+<h3 id="显式设置">显式设置</h3>
+<ul>
+<li><strong><code>cmp a, b</code></strong>
+<ul>
+<li>计算 <code>b - a</code>（就像 <code>sub</code>），但是<code>sub</code>指令会将结果（差）放在<code>b</code>中，但是<code>cmp</code>不会。</li>
+<li>根据结果设置条件码
+<ul>
+<li>在 AT&amp;T 语法（即 <code>Instruction Source, Destination</code>）中，条件跳转指令的阅读顺序通常是<strong>从右往左</strong>读，或者说是<strong>第二个操作数 与 第一个操作数 比较</strong></li>
+</ul>
+</li>
+<li>用于 <code>if (a &lt; b)</code> 这样的判断</li>
+</ul>
+</li>
+<li><strong><code>test a, b</code></strong>
+<ul>
+<li>计算 <code>b &amp; a</code>（就像 <code>and</code>），区别在于<strong>不改变</strong> <code>b</code></li>
+<li>根据结果设置条件码（主要是 <code>SF</code> 和 <code>ZF</code>）</li>
+<li><strong>最常见用途:</strong> <code>test %rX, %rX</code>，用于比较 <code>%rX</code> 和 0</li>
+</ul>
+</li>
+</ul>
+<h3 id="条件码小结">条件码小结</h3>
+<ul>
+<li><strong>构成:</strong> 四个标识 (Four flags): <code>CF</code>, <code>ZF</code>, <code>SF</code>, <code>OF</code></li>
+<li><strong>设置方法:</strong>
+<ul>
+<li>显式 (Explicit): <code>CMP</code> 与 <code>TEST</code></li>
+<li>隐式 (Implicit): 算术运算 (Arithmetic operations)</li>
+</ul>
+</li>
+<li><strong>访问方法:</strong>
+<ul>
+<li>显式 (Explicit): <code>SET</code> 指令 (SET instructions)</li>
+<li>隐式 (Implicit): 条件跳转 (Conditional jumps)、条件赋值 (Conditional moves)</li>
+</ul>
+</li>
+</ul>
+<h2 id="2-2-条件分支（Conditional-branches）">2.2 条件分支（Conditional branches）</h2>
+<h3 id="访问条件码：Jumping-jX">访问条件码：Jumping (jX)</h3>
+<p><code>jX</code> 指令根据条件码跳转到代码的不同部分。</p>
+<table>
+<thead>
+<tr>
+<th><strong>指令 (Instruction)</strong></th>
+<th><strong>条件 (Condition)</strong></th>
+<th><strong>描述 (Description)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jmp</code></td>
+<td><code>1</code></td>
+<td>无条件 (Unconditional)</td>
+</tr>
+<tr>
+<td><code>je</code></td>
+<td><code>ZF</code></td>
+<td>相等 / 零 (Equal / Zero)</td>
+</tr>
+<tr>
+<td><code>jne</code></td>
+<td><code>~ZF</code></td>
+<td>不相等 / 非零 (Not Equal / Not Zero)</td>
+</tr>
+<tr>
+<td><code>js</code></td>
+<td><code>SF</code></td>
+<td>负数 (Negative)</td>
+</tr>
+<tr>
+<td><code>jns</code></td>
+<td><code>~SF</code></td>
+<td>非负数 (Nonnegative)</td>
+</tr>
+<tr>
+<td><code>jg</code></td>
+<td><code>~(SF^OF) &amp; ~ZF</code></td>
+<td>大于 (Greater) (有符号)</td>
+</tr>
+<tr>
+<td><code>jge</code></td>
+<td><code>~(SF^OF)</code></td>
+<td>大于或等于 (Greater or Equal) (有符号)</td>
+</tr>
+<tr>
+<td><code>jl</code></td>
+<td><code>(SF^OF)</code></td>
+<td>小于 (Less) (有符号)</td>
+</tr>
+<tr>
+<td><code>jle</code></td>
+<td><code>(SF^OF) | ZF</code></td>
+<td>小于或等于 (Less or Equal) (有符号)</td>
+</tr>
+<tr>
+<td><code>ja</code></td>
+<td><code>~CF &amp; ~ZF</code></td>
+<td>高于 (Above) (无符号)</td>
+</tr>
+<tr>
+<td><code>jb</code></td>
+<td><code>CF</code></td>
+<td>低于 (Below) (无符号)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="访问条件码：Setting-setX">访问条件码：Setting (setX)</h3>
+<p><code>setX</code> 指令根据条件码的组合将目标的低位<strong>字节</strong> (low-order byte) 设置为 0 或 1。</p>
+<ul>
+<li>它<strong>不会改变寄存器中剩余的 7 个字节</strong>。</li>
+<li><code>setX</code> 的参数总是一个<strong>低位字节寄存器</strong>（如 <code>%al</code>, <code>%r8b</code> 等）。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th><strong>指令 (Instruction)</strong></th>
+<th><strong>条件 (Condition)</strong></th>
+<th><strong>描述 (Description)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sete</code></td>
+<td><code>ZF</code></td>
+<td>相等 / 零 (Equal / Zero)</td>
+</tr>
+<tr>
+<td><code>setne</code></td>
+<td><code>~ZF</code></td>
+<td>不相等 / 非零 (Not Equal / Not Zero)</td>
+</tr>
+<tr>
+<td><code>sets</code></td>
+<td><code>SF</code></td>
+<td>负数 (Negative)</td>
+</tr>
+<tr>
+<td><code>setns</code></td>
+<td><code>~SF</code></td>
+<td>非负数 (Nonnegative)</td>
+</tr>
+<tr>
+<td><code>setg</code></td>
+<td><code>~(SF^OF) &amp; ~ZF</code></td>
+<td>大于 (Greater) (有符号)</td>
+</tr>
+<tr>
+<td><code>setge</code></td>
+<td><code>~(SF^OF)</code></td>
+<td>大于或等于 (Greater or Equal) (有符号)</td>
+</tr>
+<tr>
+<td><code>setl</code></td>
+<td><code>(SF^OF)</code></td>
+<td>小于 (Less) (有符号)</td>
+</tr>
+<tr>
+<td><code>setle</code></td>
+<td><code>(SF^OF) | ZF</code></td>
+<td>小于或等于 (Less or Equal) (有符号)</td>
+</tr>
+<tr>
+<td><code>seta</code></td>
+<td><code>~CF &amp; ~ZF</code></td>
+<td>高于 (Above) (无符号)</td>
+</tr>
+<tr>
+<td><code>setb</code></td>
+<td><code>CF</code></td>
+<td>低于 (Below) (无符号)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="setX-指令示例"><code>setX</code> 指令示例</h4>
+<p><code>movzbl</code> (Move Zero-Extend Byte to Long) 通常在 <code>setX</code> 之后使用，以将 32 位寄存器的高位清零。</p>
+<p><strong>C 代码 (C Code):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> <span class="hljs-title function_">gt</span> <span class="hljs-params">(<span class="hljs-type">long</span> x, <span class="hljs-type">long</span> y)</span><br>&#123;<br>  <span class="hljs-keyword">return</span> x &gt; y;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>汇编 (Assembly Code):</strong></p>
+<figure class="highlight plaintext"><figcaption><span>snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs Code">; %rdi = x, %rsi = y<br>  cmpq    %rsi, %rdi  ; 比较 x:y<br>  setg    %al         ; 如果 &gt; (Greater) 则设置 %al<br>  movzbl  %al, %eax   ; 将 %al 零扩展到 %eax (清零 %rax 的其余部分)<br>  ret<br></code></pre></td></tr></table></figure>
+<ul>
+<li><code>movzbl %al, %eax</code> 将 <code>%al</code> 中的 1 字节结果移动到 4 字节的 <code>%eax</code>，并将高 3 字节填充为 0。这也将 64 位 <code>%rax</code>寄存器的高 4 字节清零。</li>
+<li>在 x86-64 架构中，<strong>任何向 32 位寄存器（如 <code>%eax</code>）写入的操作，都会自动将高 32 位（即 <code>%rax</code> 的高半部分）全部清零。</strong></li>
+</ul>
+<h3 id="条件分支示例-Conditional-Branch-Example">条件分支示例 (Conditional Branch Example)</h3>
+<p><strong>C 代码 (C Code):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> <span class="hljs-title function_">absdiff</span><span class="hljs-params">(<span class="hljs-type">long</span> x, <span class="hljs-type">long</span> y)</span><br>&#123;<br>  <span class="hljs-type">long</span> result;<br>  <span class="hljs-keyword">if</span> (x &gt; y)<br>    result = x - y;<br>  <span class="hljs-keyword">else</span><br>    result = y - x;<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>汇编 (Assembly) (使用分支):</strong></p>
+<figure class="highlight plaintext"><figcaption><span>snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs Code">; %rdi = x, %rsi = y, %rax = 返回值 (Return value)<br>absdiff:<br>  cmpq    %rsi, %rdi  ; 比较 x:y<br>  jle     .L4         ; 如果 x &lt;= y, 跳转到 .L4<br>  movq    %rdi, %rax  ; result = x<br>  subq    %rsi, %rax  ; result = x - y<br>  ret                 <br>.L4:<br>  ; x &lt;= y<br>  movq    %rsi, %rax  ; result = y<br>  subq    %rdi, %rax  ; result = y - x<br>  ret                 <br></code></pre></td></tr></table></figure>
+<h4 id="用-Goto-代码表达-Expressing-with-Goto-Code">用 Goto 代码表达 (Expressing with Goto Code)</h4>
+<p>C 语言允许 <code>goto</code> 语句。编译器实质上是将 <code>if-else</code> 结构翻译成基于 <code>goto</code> 的版本。</p>
+<p><strong><code>goto</code> 版本 (编译器视角):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> result;<br><span class="hljs-type">int</span> ntest = (x &lt;= y);<br><span class="hljs-keyword">if</span> (ntest) <span class="hljs-keyword">goto</span> Else;<br>result = x - y;<br><span class="hljs-keyword">goto</span> Done;<br><br>Else:<br>  result = y - x;<br>Done:<br>  <span class="hljs-keyword">return</span> result;<br></code></pre></td></tr></table></figure>
+<h3 id="结构化编程-Structured-Programming">结构化编程 (Structured Programming)</h3>
+<ul>
+<li>1968年，Edsger Dijkstra 写了“Go To Statement Considered Harmful”（Go To 语句被认为有害）的里程碑式论文。</li>
+<li>他认为 <code>goto</code> 语句会导致“面条式代码” (spaghetti code)，使程序难以理解。</li>
+<li>新语言引入了用于受控分支 (controlled branching) 的结构：
+<ul>
+<li><code>if / else-if / else</code> 和 <code>switch</code> 语句</li>
+<li><code>while</code> 和 <code>for</code> 循环</li>
+</ul>
+</li>
+</ul>
+<h4 id="通用条件表达式翻译-使用分支">通用条件表达式翻译 (使用分支)</h4>
+<p>C 代码 (C Code) (三元运算符):<code>val = Test ? Then_Expr : Else_Expr;</code><br>
+<strong>Goto 版本 (Goto Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C">ntest = !Test;<br><span class="hljs-keyword">if</span> (ntest) <span class="hljs-keyword">goto</span> Else;<br>val = Then_Expr;<br><span class="hljs-keyword">goto</span> Done;<br>Else:<br>val = Else_Expr;<br>Done:<br></code></pre></td></tr></table></figure>
+<p>这为 <code>then</code> 和 <code>else</code> 表达式创建了单独的代码区域，并执行适当的一个。</p>
+<h3 id="使用条件移动-Using-Conditional-Moves">使用条件移动 (Using Conditional Moves)</h3>
+<ul>
+<li><strong>条件移动指令 (Conditional Move Instructions)</strong> (<code>cmovX</code>) 提供了分支 (branching) 的替代方案。</li>
+<li>指令支持：<code>if (Test) Dest = Src</code>。</li>
+<li><strong>为何使用它们?</strong>
+<ul>
+<li>分支 (Branches) 对现代处理器的指令流水线 (pipelines) 具有非常大的干扰性。</li>
+<li>条件移动不需要控制转移 (control transfer)。</li>
+</ul>
+</li>
+</ul>
+<h4 id="条件移动-Conditional-Move-示例">条件移动 (Conditional Move) 示例</h4>
+<p><strong>C 代码 (C Code):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> <span class="hljs-title function_">absdiff</span><span class="hljs-params">(<span class="hljs-type">long</span> x, <span class="hljs-type">long</span> y)</span><br>&#123;<br>  <span class="hljs-type">long</span> result;<br>  <span class="hljs-keyword">if</span> (x &gt; y)<br>    result = x - y;<br>  <span class="hljs-keyword">else</span><br>    result = y - x;<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>汇编 (Assembly) (使用 <code>cmov</code>):</strong></p>
+<figure class="highlight plaintext"><figcaption><span>snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs code">; %rdi = x, %rsi = y<br>absdiff:<br>  movq    %rdi, %rax  ; rax = x<br>  subq    %rsi, %rax  ; rax = x - y (result)<br>  movq    %rsi, %rdx  ; rdx = y<br>  subq    %rdi, %rdx  ; rdx = y - x (eval)<br>  cmpq    %rsi, %rdi  ; 比较 x:y<br>  cmovle  %rdx, %rax  ; if (x &lt;= y) result = eval<br>  ret<br></code></pre></td></tr></table></figure>
+<ul>
+<li>此代码计算了 <code>x-y</code> 和 <code>y-x</code> <em>两者</em>。</li>
+<li><code>cmovle</code> (Conditional Move if Less or Equal) 根据 <code>cmpq</code> 的标志位选择正确的结果，而<strong>无需跳转</strong>。</li>
+<li>在不使用 jump 语句时候，<strong>处理器运行速度更快</strong>。</li>
+</ul>
+<h4 id="条件移动的不适用情况-Bad-Cases-for-Conditional-Move">条件移动的不适用情况 (Bad Cases for Conditional Move)</h4>
+<p>条件移动会计算<strong>两个</strong>表达式，因此在以下情况下表现不佳：</p>
+<ol>
+<li><strong>昂贵的计算 (Expensive Computations):</strong>
+<ul>
+<li><code>val = Test(x) ? Hard1(x) : Hard2(x);</code></li>
+<li><code>Hard1(x)</code> 和 <code>Hard2(x)</code> 都会被计算。</li>
+</ul>
+</li>
+<li><strong>有风险的计算 (Risky Computations) (不安全 Unsafe):</strong>
+<ul>
+<li><code>val = p ? *p : 0;</code></li>
+<li>这会尝试解引用 (dereference) <code>p</code>，即使 <code>p</code> 是 <code>NULL</code>，导致错误。</li>
+</ul>
+</li>
+<li><strong>有副作用的计算 (Computations with side effects) (非法 Illegal):</strong>
+<ul>
+<li><code>val = x &gt; 0 ? x *= 7 : x += 3;</code></li>
+<li>代码必须没有副作用。</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-3循环-Loops">2.3循环 (Loops)</h2>
+<h3 id="“Do-While”-循环示例">“Do-While” 循环示例</h3>
+<p>此函数计算 <code>x</code> 中 ‘1’ 的数量 (popcount)。</p>
+<p><strong>C 代码 (C Code):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> <span class="hljs-title function_">pcount_do</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> x)</span> &#123;<br>  <span class="hljs-type">long</span> result = <span class="hljs-number">0</span>;<br>  <span class="hljs-keyword">do</span> &#123;<br>    result += x &amp; <span class="hljs-number">0x1</span>;<br>    x &gt;&gt;= <span class="hljs-number">1</span>;<br>  &#125; <span class="hljs-keyword">while</span> (x);<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>Goto 版本 (Goto Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> <span class="hljs-title function_">pcount_goto</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> x)</span> &#123;<br>  <span class="hljs-type">long</span> result = <span class="hljs-number">0</span>;<br>loop:<br>  result += x &amp; <span class="hljs-number">0x1</span>;<br>  x &gt;&gt;= <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">if</span> (x) <span class="hljs-keyword">goto</span> loop;<br>  <span class="hljs-keyword">return</span> result;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="“Do-While”-循环编译">“Do-While” 循环编译</h3>
+<p><strong>汇编 (Assembly) (针对 <code>pcount_goto</code>):</strong></p>
+<figure class="highlight plaintext"><figcaption><span>snippet</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs Code">; %rdi = x, %rax = result<br>  movl    $0, %eax        ; result = 0<br>.L2:                      ; loop:<br>  movq    %rdi, %rdx      <br>  andl    $1, %edx        ; t = x &amp; 0x1<br>  addq    %rdx, %rax      ; result += t<br>  shrq    %rdi            ; x &gt;&gt;= 1<br>  jne     .L2             ; if (x != 0) goto loop<br>  rep; ret<br></code></pre></td></tr></table></figure>
+<h3 id="通用-“Do-While”-翻译">通用 “Do-While” 翻译</h3>
+<p><strong>C 代码 (C Code):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">do</span><br>  Body<br><span class="hljs-title function_">while</span> <span class="hljs-params">(Test)</span>;<br></code></pre></td></tr></table></figure>
+<p><strong>Goto 版本 (Goto Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs C">loop:<br>  Body<br>  <span class="hljs-title function_">if</span> <span class="hljs-params">(Test)</span><br>    <span class="hljs-keyword">goto</span> loop<br></code></pre></td></tr></table></figure>
+<h3 id="通用-“While”-翻译-1-Jump-to-middle">通用 “While” 翻译 #1 (Jump-to-middle)</h3>
+<ul>
+<li>“跳转到中间” (Jump-to-middle) 翻译</li>
+<li>与 <code>-Og</code> 编译选项一起使用</li>
+</ul>
+<p><strong>While 版本 (While version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">while</span> (Test)<br>  Body<br></code></pre></td></tr></table></figure>
+<p><strong>Goto 版本 (Goto Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C">  <span class="hljs-keyword">goto</span> test;<br>loop:<br>  Body<br>test:<br>  <span class="hljs-keyword">if</span> (Test)<br>    <span class="hljs-keyword">goto</span> loop;<br>done:<br></code></pre></td></tr></table></figure>
+<h3 id="通用-“While”-翻译-2-Do-while-conversion">通用 “While” 翻译 #2 (Do-while conversion)</h3>
+<ul>
+<li>“Do-while” 转换</li>
+<li>与 <code>-O1</code> 编译选项一起使用</li>
+</ul>
+<p><strong>While 版本 (While version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">while</span> (Test)<br>  Body<br></code></pre></td></tr></table></figure>
+<p><strong>Do-While 版本 (Do-While Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">if</span> (!Test)<br>  <span class="hljs-keyword">goto</span> done;<br><span class="hljs-keyword">do</span><br>  Body<br><span class="hljs-title function_">while</span> <span class="hljs-params">(Test)</span>;<br>done:<br></code></pre></td></tr></table></figure>
+<h3 id="“For”-循环-For-Loop">“For” 循环 (For Loop)</h3>
+<p><code>for</code> 循环通过将其转换为 <code>do-while</code> 形式来进行翻译。</p>
+<p><strong>For 版本 (For version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-keyword">for</span> (Init; Test; Update)<br>  Body<br></code></pre></td></tr></table></figure>
+<p><strong>Do-While 版本 (Do-While Version):</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C">Init;<br><span class="hljs-keyword">if</span> (!Test)<br>  <span class="hljs-keyword">goto</span> done;<br><span class="hljs-keyword">do</span> &#123;<br>  Body<br>  Update<br>&#125; <span class="hljs-keyword">while</span>(Test);<br>done:<br></code></pre></td></tr></table></figure>
+<h2 id="总结-Summarizing">总结 (Summarizing)</h2>
+<p>编译器生成代码序列以实现复杂的 C 控制结构。</p>
+<table>
+<thead>
+<tr>
+<th><strong>C 控制 (C Control)</strong></th>
+<th><strong>汇编控制 (Assembler Control)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>if-then-else</code></td>
+<td>条件跳转 (Conditional jump) 或 条件移动 (Conditional move)</td>
+</tr>
+<tr>
+<td><code>do-while</code></td>
+<td>条件跳转 (Conditional jump)</td>
+</tr>
+<tr>
+<td><code>while</code>, <code>for</code></td>
+<td>条件跳转 (Conditional jump) (转换为 <code>do-while</code> 或 <code>jump-to-middle</code>)</td>
+</tr>
+<tr>
+<td><code>switch</code></td>
+<td>间接跳转 (Indirect jump) (通过跳转表 (jump tables))</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>稀疏的 <code>switch</code> 语句可能使用决策树 (decision trees) (if-elseif-else)。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 03.Machine-Level Programming II</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-2-control/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/03-machine-level-3-procedures/" title="CSAPP - 03.Machine-Level Programming III">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 03.Machine-Level Programming III</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/03-machine-level-1-basics/" title="CSAPP - 03.Machine-Level Programming I">
+                        <span class="hidden-mobile">CSAPP - 03.Machine-Level Programming I</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

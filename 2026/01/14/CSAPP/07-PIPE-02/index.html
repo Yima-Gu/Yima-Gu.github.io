@@ -1,0 +1,1179 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)              主要内容：上一节我们构建了 PIPE-（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。本章的目标是将 PIPE- 升级为最终的 PIPE 处理器，核心手段是：数据转发 (Data Forwarding)：解决大部分数据冒险，不需要暂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 07.PIPE-02">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/07-PIPE-02/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)              主要内容：上一节我们构建了 PIPE-（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。本章的目标是将 PIPE- 升级为最终的 PIPE 处理器，核心手段是：数据转发 (Data Forwarding)：解决大部分数据冒险，不需要暂">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:25:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.350Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 07.PIPE-02 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 07.PIPE-02"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:25" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 07.PIPE-02</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)</h1>
+<div class="note note-success 核心导读：打造高效的流水线 (Building an Efficient Pipeline)">
+            <p><strong>主要内容</strong>：<br>上一节我们构建了 <strong>PIPE-</strong>（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。<br>本章的目标是将 <strong>PIPE-</strong> 升级为最终的 <strong>PIPE</strong> 处理器，核心手段是：</p><ol><li><strong>数据转发 (Data Forwarding)</strong>：解决大部分数据冒险，不需要暂停，极大提升吞吐量。</li><li><strong>加载/使用冒险处理 (Load/Use Handling)</strong>：处理转发也无法解决的特殊数据冒险（必须暂停 1 周期）。</li><li><strong>控制冒险处理 (Control Hazard Handling)</strong>：高效处理分支预测错误和 <code>ret</code> 指令。</li><li><strong>异常与组合逻辑</strong>：处理多种冒险同时发生时的优先级问题。</li></ol><p><strong>Motivation</strong>：<br>如果流水线充满了“气泡”（空指令），那它就失去了意义。通过硬件层面的优化（转发），我们可以让指令像接力赛一样紧密衔接，让 CPI（每指令周期数）无限接近于 1.0，从而获得极致的性能。</p>
+          </div>
+<h2 id="1-复习与现状-Review-Status">1. 复习与现状 (Review &amp; Status)</h2>
+<h3 id="1-1-处理器演进路线">1.1 处理器演进路线</h3>
+<ol>
+<li><strong>SEQ</strong>：顺序执行，简单但太慢。</li>
+<li><strong>SEQ+</strong>：调整 PC 更新阶段，为流水线做准备。</li>
+<li><strong>PIPE-</strong>：
+<ul>
+<li><strong>特点</strong>：插入了流水线寄存器 (F, D, E, M, W)。</li>
+<li><strong>问题</strong>：无法自动处理 <strong>数据冒险 (Data Hazards)</strong> 和 <strong>控制冒险 (Control Hazards)</strong>。</li>
+<li><strong>临时方案</strong>：依赖编译器插入 <code>nop</code> 指令（软件气泡），导致代码体积膨胀且性能低下。</li>
+</ul>
+</li>
+<li><strong>PIPE</strong>：
+<ul>
+<li><strong>目标</strong>：完整的、高效的流水线处理器。</li>
+<li><strong>手段</strong>：引入 <strong>数据转发 (Data Forwarding)</strong> 和高级控制逻辑。</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-2-PIPE-的困境">1.2 PIPE- 的困境</h3>
+<ul>
+<li><strong>数据冒险</strong>：如果指令 A 写寄存器 <code>%rax</code>，紧接着指令 B 读 <code>%rax</code>。在 PIPE- 中，B 必须等 A 写回（Write-back）后才能读，中间需要插入 3 个气泡。</li>
+<li><strong>控制冒险</strong>：分支预测错误或 <code>ret</code> 指令导致取指错误，需要清除流水线。</li>
+</ul>
+<h2 id="数据冒险的解决方案：气泡指令（Bubble）">数据冒险的解决方案：气泡指令（Bubble）</h2>
+<div class="note note-info">
+            <p><strong>定义</strong>：<br>“Bubble” 并不是程序员在汇编代码中写的一条真实指令，而是<strong>处理器硬件自动产生</strong>的一种特殊状态。它在功能上完全等同于 <strong><code>nop</code> (No Operation)</strong> 指令。</p><p><strong>本质</strong>：<br>当流水线控制逻辑向某个阶段（如 Execute 阶段）注入 Bubble 时，该阶段的流水线寄存器会被重置为默认状态（通常对应 <code>nop</code>）。这会导致该阶段在当前时钟周期内：</p><ul><li><strong>不执行</strong>任何有效操作。</li><li><strong>不改变</strong>任何程序状态（不写寄存器、不写内存、不改条件码）。</li><li>像一个“空气泡”一样流向下游阶段。</li></ul><p><strong>为什么要用它？（解决冒险）</strong><br>它是处理流水线冒险 (Hazards) 的关键机制，就像在紧凑的传送带上故意留出一个“空位”：</p><ol><li><strong>抵消错误 (Squashing)</strong>：当<strong>分支预测错误</strong>时，之前错误取入流水线的指令必须被“杀掉”，方法就是把它们变成 Bubble。</li><li><strong>制造延迟 (Stalling)</strong>：当发生<strong>加载/使用冒险 (Load/Use Hazard)</strong> 时，需要在执行阶段插入 Bubble，从而推迟后续指令的执行，给内存读取留出时间。</li></ol>
+          </div>
+<p>气泡（Bubble）本质上是一个空操作（NOP）指令。通过在流水线中插入气泡，可以暂停流水线的某些阶段，从而解决冒险问题。</p>
+<p>对于上图，处理器自动检测前面指令在<code>W</code>（写回）阶段与当前指令的<code>F</code>（访存）阶段是否有冲突。如果是，插入bubble指令。</p>
+<p>为了实现“暂停”和“插入空指令”，硬件设计者修改了流水线寄存器（F, D, E, M, W），让它们支持三种操作模式：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">模式 (Mode)</th>
+<th style="text-align:left">行为描述 (Behavior)</th>
+<th style="text-align:left">作用 (Function)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Normal (正常)</strong></td>
+<td style="text-align:left"><code>Output = Input</code></td>
+<td style="text-align:left">正常传递信号，流水线流畅运行。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Stall (暂停)</strong></td>
+<td style="text-align:left"><code>Output = Old Output</code></td>
+<td style="text-align:left"><strong>“卡住”</strong>：寄存器保持上一周期的值不变，忽略输入。这会让当前阶段的指令“停”在原地。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Bubble (气泡)</strong></td>
+<td style="text-align:left"><code>Output = NOP</code></td>
+<td style="text-align:left"><strong>“喷出气泡”</strong>：寄存器的输出被强制重置为 <code>nop</code> 指令的状态。这相当于在流水线中凭空变出一条空指令。</td>
+</tr>
+</tbody>
+</table>
+<p>当译码阶段（Decode）的指令需要读取寄存器，而前面的指令（处于 Execute, Memory, Write-back 阶段）还没有把结果写回去时，就发生了数据冒险。</p>
+<p><strong>处理流程：</strong></p>
+<ol>
+<li>
+<p><strong>检测冒险 (Detection)</strong>：</p>
+<ul>
+<li>检查 <strong>Decode 阶段</strong>指令的源寄存器 (<code>d_srcA</code>, <code>d_srcB</code>)。</li>
+<li>检查 <strong>Execute / Memory / Write-back 阶段</strong>指令的目的寄存器 (<code>e_dstE</code>, <code>M_dstE</code>, <code>W_dstE</code> 等)。</li>
+<li>如果有重叠（<strong>Read-After-Write</strong>），说明数据还没准备好。</li>
+</ul>
+</li>
+<li>
+<p><strong>控制动作 (Action)</strong>：</p>
+<ul>
+<li><strong>对于 Decode 阶段的指令（依赖者）</strong>：
+<ul>
+<li>对 <strong>D 寄存器</strong> 发送 <strong>Stall</strong> 信号 -&gt; 让这条指令留在译码阶段，下一周期继续尝试读取。</li>
+<li>对 <strong>F 寄存器</strong> 发送 <strong>Stall</strong> 信号 -&gt; 让取指阶段也停下，防止取入新指令覆盖当前指令。</li>
+</ul>
+</li>
+<li><strong>对于 Execute 阶段（空隙）</strong>：
+<ul>
+<li>对 <strong>E 寄存器</strong> 发送 <strong>Bubble</strong> 信号 -&gt; 因为 D 阶段没送来新指令（被暂停了），E 阶段必须执行一个“空操作” (<code>nop</code>) 来填补时间空隙。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>效果</strong>：</p>
+<ul>
+<li>就像在两条指令之间动态插入了 <code>nop</code> 指令。</li>
+<li>这种状态会持续（多个周期），直到前面的指令通过 <strong>Write-back</strong> 阶段，数据真正写入寄存器文件。此时冒险消除，流水线恢复 <strong>Normal</strong> 状态。</li>
+</ul>
+</li>
+</ol>
+<p>为了实现这一逻辑，引入了一个名为 <strong>Pipeline Control Logic (流水线控制逻辑)</strong> 的组合逻辑块。</p>
+<ul>
+<li><strong>输入</strong>：所有阶段的寄存器 ID、状态码、指令代码。</li>
+<li><strong>输出</strong>：控制 5 个流水线寄存器的 <code>stall</code> 和 <code>bubble</code> 信号（例如 <code>F_stall</code>, <code>D_stall</code>, <code>E_bubble</code> 等）。</li>
+</ul>
+<p><strong>检测逻辑示例 (简化版)</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">bool</span> data_hazard =<br>    (d_srcA != RNONE &amp;&amp; d_srcA in &#123; e_dstE, M_dstE, M_dstM, W_dstE, W_dstM &#125;) ||<br>    (d_srcB != RNONE &amp;&amp; d_srcB in &#123; ... &#125;);<br><br><span class="hljs-keyword">if</span> (data_hazard) &#123;<br>    F_stall = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 暂停取指</span><br>    D_stall = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 暂停译码</span><br>    E_bubble = <span class="hljs-number">1</span>; <span class="hljs-comment">// 执行阶段插入气泡</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>优点</strong>：
+<ul>
+<li><strong>简单</strong>：硬件逻辑相对容易实现。</li>
+<li><strong>正确</strong>：能够保证程序逻辑的绝对正确性，不会产生数据竞争。</li>
+</ul>
+</li>
+<li><strong>缺点</strong>：
+<ul>
+<li><strong>性能极差 (Poor Performance)</strong>：
+<ul>
+<li>每次遇到数据依赖，流水线都要停顿 2-3 个周期。</li>
+<li>由于数据依赖在程序中非常常见，这会导致 <strong>CPI (每指令周期数)</strong> 大幅上升，吞吐量暴跌。</li>
+<li>这使得流水线处理器退化回了 SEQ 处理器的效率，甚至更差（因为有寄存器延迟）。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>下一步</strong>：为了解决这个问题，我们需要引入 <strong>数据转发 (Data Forwarding)</strong>，让数据不需要等待写回，直接在流水线内部“传递”，从而消除这些不必要的 Bubble。</p>
+</blockquote>
+<h2 id="2-数据冒险的解决方案：数据转发-Data-Forwarding">2. 数据冒险的解决方案：数据转发 (Data Forwarding)</h2>
+<p>这是本章最核心的概念。</p>
+<h3 id="2-1-什么是数据转发？">2.1 什么是数据转发？</h3>
+<ul>
+<li><strong>朴素思想 (Naive Pipeline)</strong>：指令必须等到 <strong>写回 (Write-back)</strong> 阶段结束，数据真正写入寄存器文件后，后续指令才能读取。</li>
+<li><strong>观察 (Observation)</strong>：其实数据在 <strong>执行 (Execute)</strong> 或 <strong>访存 (Memory)</strong> 阶段就已经计算出来了！</li>
+<li><strong>转发 (Forwarding)</strong>：
+<ul>
+<li><strong>原理</strong>：不等待数据写回寄存器文件，而是直接将<strong>流水线寄存器</strong>（E, M, W 阶段）中的中间结果，“抄近道”发送给 <strong>译码 (Decode)</strong> 阶段。</li>
+<li><strong>效果</strong>：消除了大部分数据冒险带来的暂停，流水线可以满负荷运行。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-转发源与目的-Forwarding-Sources-Destinations">2.2 转发源与目的 (Forwarding Sources &amp; Destinations)</h3>
+<ul>
+<li>
+<p><strong>源 (Sources) - 数据从哪里来？</strong></p>
+<ol>
+<li><strong>ALU 输出 (e_valE)</strong>：在 Execute 阶段刚算出来的结果。</li>
+<li><strong>内存输出 (m_valM)</strong>：在 Memory 阶段刚读出来的结果。</li>
+<li><strong>M 阶段的 ALU 结果 (M_valE)</strong>：上条指令算出来，正在过 Memory 阶段的值。</li>
+<li><strong>W 阶段的写入值 (W_valM, W_valE)</strong>：即将写入寄存器文件，但还没写进去的值。</li>
+</ol>
+</li>
+<li>
+<p><strong>目的 (Destinations) - 数据到哪里去？</strong></p>
+<ul>
+<li><strong>Decode 阶段</strong>：<code>valA</code> 和 <code>valB</code> 的选择逻辑（即 <code>d_valA</code> 和 <code>d_valB</code>）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-转发优先级-Forwarding-Priority">2.3 转发优先级 (Forwarding Priority)</h3>
+<p>当流水线中有多条指令同时写同一个寄存器时（例如：连续三条指令都修改 <code>%rax</code>），应该转发哪一个？</p>
+<p><strong>这段 HCL 代码的作用就是：</strong> 决定 <code>valA</code> 到底是从寄存器堆里读旧值，还是从流水线前面的阶段“窃取”（Forward）最新的值。</p>
+<ul>
+<li><strong>原则</strong>：选择 <strong>“最新” (Earliest Pipeline Stage)</strong> 的数据。</li>
+<li><strong>逻辑顺序</strong>：
+<ol>
+<li><strong>E 阶段 (Execute)</strong>：最年轻的指令，数据最新鲜。</li>
+<li><strong>M 阶段 (Memory)</strong>。</li>
+<li><strong>W 阶段 (Write Back)</strong>：最老的指令。</li>
+</ol>
+</li>
+<li><strong>实现 (HCL)</strong>：在 <code>Case</code> 表达式中，先检查 E 阶段，再检查 M 阶段，最后检查 W 阶段。匹配即停止。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs C"># HCL 示例：选择操作数 A (d_valA)<br><span class="hljs-type">int</span> d_valA = [<br>    # <span class="hljs-number">1.</span> 转发自 ALU 输出 (最优先)<br>    D_icode in &#123; ICALL, IJXX &#125; : D_valP; <br>    d_srcA == e_dstE : e_valE;<br><br>    # <span class="hljs-number">2.</span> 转发自 内存阶段<br>    d_srcA == M_dstM : m_valM;<br>    d_srcA == M_dstE : M_valE;<br><br>    # <span class="hljs-number">3.</span> 转发自 写回阶段<br>    d_srcA == W_dstM : W_valM;<br>    d_srcA == W_dstE : W_valE;<br><br>    # <span class="hljs-number">4.</span> 没有冲突，读寄存器文件<br>    <span class="hljs-number">1</span> : d_rvalA;<br>];<br></code></pre></td></tr></table></figure>
+<hr>
+<h2 id="3-加载-使用冒险-Load-Use-Hazard">3. 加载/使用冒险 (Load/Use Hazard)</h2>
+<h3 id="3-1-转发的局限性">3.1 转发的局限性</h3>
+<p>有一种情况是转发也救不了的：<strong>加载/使用冒险</strong>。</p>
+<ul>
+<li><strong>场景</strong>：
+<ol>
+<li><code>mrmovq (%rcx), %rax</code> (从内存读数据到 <code>%rax</code>)</li>
+<li><code>addq %rax, %rbx</code> (下一条指令立马用 <code>%rax</code>)</li>
+</ol>
+</li>
+<li><strong>原因</strong>：
+<ul>
+<li>指令 1 在 <strong>Memory</strong> 阶段结束时（周期 8）才能拿到数据。</li>
+<li>指令 2 需要在 <strong>Execute</strong> 阶段开始时（周期 8）使用数据。</li>
+<li><strong>时序冲突</strong>：数据还没读出来，ALU 就要用了。这是一个“时光倒流”的需求，硬件做不到。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-解决方案：暂停-转发">3.2 解决方案：暂停 + 转发</h3>
+<ul>
+<li><strong>策略</strong>：必须暂停 <strong>1 个时钟周期</strong>。</li>
+<li><strong>具体操作</strong>：
+<ol>
+<li><strong>Stall (暂停)</strong>：保持 Fetch 和 Decode 阶段的指令不变（F 和 D 寄存器不更新）。PC不更新。</li>
+<li><strong>Bubble (气泡)</strong>：向 Execute 阶段插入一个气泡（<code>nop</code>）。</li>
+</ol>
+</li>
+<li><strong>结果</strong>：指令 2 晚一步进入 E 阶段，此时指令 1 已经拿到了内存数据，可以通过转发机制（从 W 阶段转发到 E 阶段前）解决问题。</li>
+</ul>
+<h3 id="3-3-检测逻辑-Detection-Logic">3.3 检测逻辑 (Detection Logic)</h3>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">bool</span> load_use_hazard = <br>    (E_icode in &#123; IMRMOVQ, IPOPQ &#125;) &amp;&amp;  # 上一条指令是读内存<br>    (E_dstM in &#123; d_srcA, d_srcB &#125;);     # 且 目标寄存器 == 当前指令的源寄存器<br></code></pre></td></tr></table></figure>
+<p><code>ret</code>指令也会访问内存，但是写入的是<code>PC</code>（硬件寄存器）而不是寄存器文件，所以不会出现加载/使用冒险。</p>
+<p>在PIPE处理器中，一般的数据冲突并不会增加时钟周期，只有<mark>加载/使用冒险</mark>会增加1个时钟周期。</p>
+<p><code>pop</code>指令在写回阶段时候，要写两个寄存器，<code>R[%rsp] &lt;- valE</code>和<code>R[%rA] &lt;- valM</code>，在这里将栈顶元素值和新的栈地址“都写入”<code>%rsp</code>寄存器。事实上，写入哪个依赖于下面的顺序：</p>
+<ol>
+<li>HCL 逻辑开始判断第一行：<code>d_srcA</code> (<code>%rsp</code>) 是否等于 <code>M_dstE</code> (<code>%rsp</code>)？</li>
+<li><strong>答案是 YES！</strong> 因为 <code>popq</code> 指令确实会更新栈指针（<code>dstE</code> 设为了 <code>%rsp</code>）。</li>
+<li><strong>匹配命中，立即停止</strong>。</li>
+<li><strong>输出结果</strong>：选择 <code>M_valE</code>。</li>
+</ol>
+<h2 id="4-控制冒险的解决方案-Handling-Control-Hazards">4. 控制冒险的解决方案 (Handling Control Hazards)</h2>
+<p>控制冒险主要来自 <strong>分支预测错误</strong> 和 <strong>返回指令 (ret)</strong>。</p>
+<h3 id="4-1-分支预测错误-Branch-Misprediction">4.1 分支预测错误 (Branch Misprediction)</h3>
+<p>在流水线中，处理器为了保持高速运转，遇到条件跳转指令（如 <code>je</code>, <code>jne</code>）时，不能等到算出结果再决定下一条指令取哪里的。它必须<strong>猜测</strong>（通常 CS:APP 的 Y86 设计默认采用“<strong>预测跳转 (Always Taken)</strong>”策略，或者简单的静态预测）。</p>
+<ul>
+<li>
+<p><strong>Fetch 阶段</strong>：看到了 <code>je target</code>，直接假设条件成立，开始取 <code>target</code> 处的指令。</p>
+</li>
+<li>
+<p><strong>Decode 阶段</strong>：继续处理 <code>target</code> 处的指令。</p>
+</li>
+<li>
+<p><strong>Execute 阶段</strong>：<strong>真相大白时刻</strong>。ALU 终于算出了条件码（CC），我们知道了条件到底成不成立。</p>
+</li>
+<li>
+<p><strong>现状</strong>：我们默认预测条件跳转 (<code>jXX</code>) 是 <strong>Taken (跳转)</strong> 的。</p>
+</li>
+<li>
+<p><strong>问题</strong>：如果实际不应该跳转 (Not Taken)，流水线已经错误地取入了目标地址的<mark>两条</mark>指令。</p>
+</li>
+<li>
+<p><strong>解决</strong>：<strong>Cancel (取消/冲刷)</strong>。</p>
+<ul>
+<li>当 <code>jXX</code> 到达 Execute 阶段时，ALU 算出条件不满足。</li>
+<li><strong>注入气泡 (Inject Bubbles)</strong>：在下一个周期，将<mark>Decode 和 Execute 阶段</mark>的指令替换为气泡。</li>
+<li><strong>修正 PC</strong>：Fetch 阶段重新从正确地址 (<code>valP</code>) 取指。</li>
+</ul>
+</li>
+<li>
+<p><strong>代价</strong>：浪费 <strong>2 个</strong> 时钟周期。</p>
+</li>
+</ul>
+<p><code>Trigger: E_icode = IJXX &amp; !e_Cnd</code></p>
+<p>这个公式的意思是：<strong>“如果在 Execute 阶段发现这是一条跳转指令，并且条件竟然不成立！”</strong></p>
+<p>我们逐项拆解：</p>
+<ul>
+<li>
+<p><strong><code>E_icode = IJXX</code></strong>:</p>
+<ul>
+<li>表示当前在 Execute 阶段执行的指令是<strong>条件跳转指令</strong>（Jump if XX，例如 <code>je</code>, <code>jg</code>, <code>jl</code> 等）。</li>
+<li>注：<code>jmp</code> 是无条件跳转，不需要判断条件，所以不算在这里。</li>
+</ul>
+</li>
+<li>
+<p><strong><code>!e_Cnd</code></strong>:</p>
+<ul>
+<li><code>e_Cnd</code> 是图中蓝色小方块输出的信号 (Condition Holds)。它根据 ALU 刚刚算出的标志位（CC）判断跳转条件是否为真。</li>
+<li><code>!e_Cnd</code> 表示<strong>条件为假 (False)</strong>。</li>
+<li><strong>关键隐含前提</strong>：因为我们的处理器（Y86-64 Pipeline）默认策略通常是<strong>预测跳转 (Predicted Taken)</strong>。</li>
+<li>如果我们<strong>预测它会跳</strong>（已经去取目标地址的指令了），结果现在发现<strong>条件不成立（不该跳）</strong>，这就说明我们<strong>预测错了吗 (Mispredicted)</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>ALU &amp; CC (Condition Codes)</strong>:</p>
+<ul>
+<li>ALU 执行计算（比如 <code>subq %rax, %rbx</code>），产生 Zero Flag (ZF), Sign Flag (SF) 等。</li>
+<li>这些标志位保存在 CC 寄存器中。</li>
+</ul>
+</li>
+<li>
+<p><strong>e_Cnd 逻辑块</strong>:</p>
+<ul>
+<li>它读取当前的跳转类型（比如 <code>je</code> 需要 ZF=1）和当前的 CC 值。</li>
+<li>如果匹配，输出 1 (<code>e_Cnd</code> is true)；否则输出 0。</li>
+</ul>
+</li>
+</ul>
+<p>虽然这张图只讲了“检测”，但检测到之后的动作才是关键，这通常被称为<strong>流水线清洗 (Pipeline Flushing)</strong>：</p>
+<ol>
+<li>废除指令：<br>
+因为预测错了，所以目前紧跟在跳转指令后面的两条指令（分别在 Fetch 和 Decode 阶段）都是错误的指令（原本不该执行的）。<br>
+处理器必须向 D 和 E 流水线寄存器中插入气泡 (Bubble)，或者把它们变为 nop，从而“杀掉”这两条错误指令。</li>
+<li>修正 PC：<br>
+处理器必须把 PC 重新指向正确的地址（即跳转指令的下一条指令，也就是“不跳转”的路径）。</li>
+</ol>
+<h3 id="4-2-返回指令-Ret-Instruction">4.2 返回指令 (Ret Instruction)</h3>
+<ul>
+<li><strong>现状</strong>：<code>ret</code> 的返回地址在栈里，必须等到 <strong>Memory</strong> 阶段才能拿到。</li>
+<li><strong>解决</strong>：<strong>Stall until complete (一直暂停)</strong>。
+<ul>
+<li>当译码阶段发现 <code>ret</code> 指令时。</li>
+<li>对 Fetch 阶段进行 <strong>Stall (暂停)</strong>，只要 <code>ret</code> 还在 D, E, M 阶段。</li>
+<li>对 Decode 阶段进行 <strong>Bubble (气泡)</strong>，防止错误指令进入。</li>
+<li>直到 <code>ret</code> 到达 Write-back 阶段，拿到了 <code>valM</code> (返回地址)，并将 PC 设置为该地址。</li>
+</ul>
+</li>
+<li><strong>代价</strong>：浪费 <strong>3 个</strong> 时钟周期。</li>
+</ul>
+<p>分三次每次插一个<code>bubble</code></p>
+<hr>
+<h2 id="5-流水线控制逻辑总结-Pipeline-Control-Logic">5. 流水线控制逻辑总结 (Pipeline Control Logic)</h2>
+<p>我们需要一个集中的逻辑块来控制所有流水线寄存器的状态（Normal, Stall, Bubble）。</p>
+<h3 id="5-1-特殊情况组合-Control-Combinations">5.1 特殊情况组合 (Control Combinations)</h3>
+<p>有些罕见情况会同时触发多种控制逻辑，需要设定优先级。</p>
+<ul>
+<li>
+<p><strong>组合 A (Mispredict + Ret)</strong>：</p>
+<ul>
+<li>分支预测错误，且跳转目标刚好是 <code>ret</code>。</li>
+<li>处理：按 <strong>分支预测错误</strong> 处理。</li>
+</ul>
+</li>
+<li>
+<p><strong>组合 B (Load/Use + Ret)</strong>：</p>
+<ul>
+<li>加载/使用冒险，且下一条是 <code>ret</code>。</li>
+<li>处理：<strong>Load/Use 优先级更高</strong>。因为如果不暂停让数据读出来，<code>ret</code> 根本不知道回哪去。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-最终控制表-Pipeline-Control-Actions">5.2 最终控制表 (Pipeline Control Actions)</h3>
+<table>
+<thead>
+<tr>
+<th><strong>条件 (Condition)</strong></th>
+<th><strong>F Reg</strong></th>
+<th><strong>D Reg</strong></th>
+<th><strong>E Reg</strong></th>
+<th><strong>M Reg</strong></th>
+<th><strong>W Reg</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>正常 (Normal)</strong></td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><strong>加载/使用冒险 (Load/Use)</strong></td>
+<td><strong>Stall</strong></td>
+<td><strong>Stall</strong></td>
+<td><strong>Bubble</strong></td>
+<td>Normal</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><strong>分支预测错误 (Mispredict)</strong></td>
+<td>Normal</td>
+<td><strong>Bubble</strong></td>
+<td><strong>Bubble</strong></td>
+<td>Normal</td>
+<td>Normal</td>
+</tr>
+<tr>
+<td><strong>Ret 指令处理</strong></td>
+<td><strong>Stall</strong></td>
+<td><strong>Bubble</strong></td>
+<td>Normal</td>
+<td>Normal</td>
+<td>Normal</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-性能分析-Performance-Analysis">6. 性能分析 (Performance Analysis)</h2>
+<h3 id="6-1-CPI-Cycles-Per-Instruction">6.1 CPI (Cycles Per Instruction)</h3>
+<p>衡量流水线效率的核心指标。</p>
+<ul>
+<li><strong>理想 CPI</strong>：1.0 (每个周期完成一条指令)。</li>
+<li><strong>实际 CPI</strong>：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.0</mn><mo>+</mo><mtext>惩罚 (Penalties)</mtext></mrow><annotation encoding="application/x-tex">1.0 + \text{惩罚 (Penalties)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1.0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord cjk_fallback">惩罚</span><span class="mord"> (Penalties)</span></span></span></span></span>。
+<ul>
+<li>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mi>P</mi><mi>I</mi><mo>=</mo><mfrac><msub><mi>C</mi><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow></msub><msub><mi>I</mi><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow></msub></mfrac><mo>=</mo><mn>1.0</mn><mo>+</mo><mfrac><msub><mi>B</mi><mrow><mi>b</mi><mi>u</mi><mi>b</mi><mi>b</mi><mi>l</mi><mi>e</mi><mi>s</mi></mrow></msub><msub><mi>I</mi><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">CPI = \frac{C_{total}}{I_{total}} = 1.0 + \frac{B_{bubbles}}{I_{total}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">CP</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1963em;vertical-align:-0.836em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.836em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1.0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.1963em;vertical-align:-0.836em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0785em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0502em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">bb</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">es</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.836em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-惩罚项-Penalties">6.2 惩罚项 (Penalties)</h3>
+<ol>
+<li><strong>LP (Load Penalty)</strong>: 加载/使用冒险导致的气泡 (1个)。</li>
+<li><strong>MP (Misprediction Penalty)</strong>: 分支预测错误导致的气泡 (2个)。</li>
+<li><strong>RP (Return Penalty)</strong>: <code>ret</code> 指令导致的气泡 (3个)。</li>
+</ol>
+<p>典型性能计算：</p>
+<p>假设：Load占25% (其中20%发生冲突), 分支占20% (40%预测错), Ret占2%。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mi>P</mi><mi>I</mi><mo>=</mo><mn>1.0</mn><mo>+</mo><mo stretchy="false">(</mo><mn>0.25</mn><mo>×</mo><mn>0.2</mn><mo>×</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mo stretchy="false">(</mo><mn>0.2</mn><mo>×</mo><mn>0.4</mn><mo>×</mo><mn>2</mn><mo stretchy="false">)</mo><mo>+</mo><mo stretchy="false">(</mo><mn>0.02</mn><mo>×</mo><mn>3</mn><mo stretchy="false">)</mo><mo>=</mo><mn>1.27</mn></mrow><annotation encoding="application/x-tex">CPI = 1.0 + (0.25 \times 0.2 \times 1) + (0.2 \times 0.4 \times 2) + (0.02 \times 3) = 1.27
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">CP</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1.0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0.25</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0.2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0.4</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">2</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0.02</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1.27</span></span></span></span></span></p>
+<ul>
+<li>结论：虽然有暂停和预测错误，CPI 1.27 依然远好于非流水线的 CPI (如 &gt; 5.0)。</li>
+</ul>
+<hr>
+<h2 id="7-现代处理器展望-Modern-CPU-Design">7. 现代处理器展望 (Modern CPU Design)</h2>
+<p>课件最后简要提及了真实世界的高性能 CPU（如 Intel Haswell）是如何设计的：</p>
+<ol>
+<li><strong>超深流水线</strong>：不止 5 级，可能有 15-20 级，以提高主频。</li>
+<li><strong>多发射 (Multiple Issue)</strong>：每个周期取指、译码、执行多条指令 (Superscalar)。</li>
+<li><strong>乱序执行 (Out-of-Order Execution)</strong>：
+<ul>
+<li>指令不一定按顺序执行。</li>
+<li>有一个指令池，谁的数据准备好了谁先跑。</li>
+<li><strong>退役单元 (Retirement Unit)</strong>：确保指令按程序顺序写回结果（保证正确性）。</li>
+</ul>
+</li>
+<li><strong>分支预测 (Branch Prediction)</strong>：
+<ul>
+<li>使用 <strong>BTB (Branch Target Buffer)</strong> 和复杂的历史记录表。</li>
+<li>预测准确率极高 (&gt;95%)，极大减少了 MP 惩罚。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong>总结</strong>：从 SEQ 到 PIPE 是计算机体系结构的一次飞跃。通过<strong>转发</strong>解决了数据等待，通过<strong>预测</strong>解决了控制等待，虽然引入了复杂性，但获得了巨大的性能回报。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 07.PIPE-02</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/07-PIPE-02/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/08-MEM-01/" title="CSAPP - 08.MEM-01">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 08.MEM-01</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/07-PIPE-01/" title="CSAPP - 07.PIPE-01">
+                        <span class="hidden-mobile">CSAPP - 07.PIPE-01</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,1037 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)              主要内容： 本章正式进入硬件实现（微架构）层面。我们将跨越数字电路基础，最终设计出一个完整的 CPU。数字电路基础：组合逻辑（ALU、MUX）与时序逻辑（寄存器、时钟、锁存器）的区别与协作。HCL (Hardware Control Language)：学习一种简单的硬件描述语言">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 06. SEQ">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/06-SEQ/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)              主要内容： 本章正式进入硬件实现（微架构）层面。我们将跨越数字电路基础，最终设计出一个完整的 CPU。数字电路基础：组合逻辑（ALU、MUX）与时序逻辑（寄存器、时钟、锁存器）的区别与协作。HCL (Hardware Control Language)：学习一种简单的硬件描述语言">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:15:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.350Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 06. SEQ - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 06. SEQ"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:15" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 06. SEQ</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)</h1>
+<div class="note note-success 核心导读：从逻辑门到处理器">
+            <p><strong>主要内容</strong>： 本章正式进入硬件实现（微架构）层面。我们将跨越数字电路基础，最终设计出一个完整的 CPU。</p><ol><li><strong>数字电路基础</strong>：组合逻辑（ALU、MUX）与时序逻辑（寄存器、时钟、锁存器）的区别与协作。</li><li><strong>HCL (Hardware Control Language)</strong>：学习一种简单的硬件描述语言来表达控制逻辑。</li><li><strong>SEQ (顺序) 处理器</strong>：这是我们设计的第一个 CPU。它将指令执行分解为 6 个统一阶段（取指、译码、执行、访存、写回、更新），并在<strong>一个时钟周期</strong>内按顺序完成所有操作。</li><li>本节内容为：<strong>如何用 HCL 这种语言，来定义 SEQ 处理器的控制逻辑</strong></li></ol><p><strong>Motivation</strong>： 这一章打破了软件和硬件的界限。你将看到抽象的指令（如 <code>addq</code>）是如何通过导线、逻辑门和时钟信号变成物理上的电信号操作的。这是理解<strong>计算机是如何真正“跑”起来</strong>的关键一步，也是后续学习流水线设计的基础。</p>
+          </div>
+<h2 id="1-逻辑设计基础-Logic-Design-Basics">1. 逻辑设计基础 (Logic Design Basics)</h2>
+<h3 id="1-1-硬件基本需求">1.1 硬件基本需求</h3>
+<ul>
+<li><strong>通信 (Communication)</strong>: 将值从一个地方传输到另一个地方。</li>
+<li><strong>计算 (Computation)</strong>: 对值进行处理。</li>
+<li><strong>存储 (Storage)</strong>: 保存这些值。</li>
+</ul>
+<h3 id="1-2-电路分类">1.2 电路分类</h3>
+<ul>
+<li><strong>组合电路 (Combinational Logic)</strong>:
+<ul>
+<li>不存储任何信息。</li>
+<li>输出仅取决于当前的输入（经过一定的延迟）。</li>
+<li><strong>无环网络 (Acyclic Network)</strong>: 网络中不能有回路。</li>
+<li>例子: ALU (算术逻辑单元)、MUX (多路复用器)。</li>
+</ul>
+</li>
+<li><strong>时序电路 (Sequential Circuits)</strong>:
+<ul>
+<li>存储状态位。</li>
+<li><strong>寄存器 (Registers)</strong>: 存储单个字，仅在时钟上升沿加载。</li>
+<li><strong>随机访问存储器 (Random-Access Memories)</strong>: 存储多个字 (如寄存器文件、指令内存、数据内存)。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-硬件控制语言-HCL-Hardware-Control-Language">1.3 硬件控制语言 (HCL - Hardware Control Language)</h3>
+<p>HCL 是一种简单的语言，用于描述处理器的控制逻辑。</p>
+<ul>
+<li><strong>数据类型</strong>: <code>bool</code> (布尔值), <code>int</code> (字)。<br>
+* <strong>操作</strong>: <br>
+* 布尔运算: <code>&amp;&amp;</code> (AND), <code>||</code> (OR), <code>!</code> (NOT)。 <br>
+* 字比较: <code> ==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>。<br>
+ * <strong>集合成员 (Set Membership)</strong>: <code>A in &#123; B, C, D &#125;</code>。 <br>
+* <strong>多路复用 (MUX) 描述</strong>: 使用 Case 表达式。  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">[ test1 : val1; test2 : val2; <span class="hljs-number">1</span> : default_val; ] <span class="hljs-comment">// 按顺序评估，返回第一个成功测试对应的值 </span><br></code></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="2-SEQ-处理器概述-SEQ-Processor-Overview">2. SEQ 处理器概述 (SEQ Processor Overview)</h2>
+<p><strong>SEQ (Sequential)</strong> 处理器的核心设计思想是：<strong>在一个时钟周期内，顺序地完成一条指令的所有执行步骤</strong>。</p>
+<h3 id="2-1-设计策略：复用-Reuse">2.1 设计策略：复用 (Reuse)</h3>
+<ul>
+<li>将每条不同指令所需的计算步骤映射到一个统一的<strong>通用框架</strong>中。</li>
+<li>共享硬件单元（如 ALU、内存），通过控制逻辑来决定每条指令具体使用哪些功能。</li>
+</ul>
+<h3 id="2-2-六大阶段-The-6-Stages">2.2 六大阶段 (The 6 Stages)</h3>
+<p>所有 Y86-64 指令的执行都被组织成以下 6 个阶段：</p>
+<ol>
+<li><strong>取指 (Fetch)</strong>: 从指令内存读取指令字节，计算下一条指令地址 (<code>valP</code>)。</li>
+<li><strong>译码 (Decode)</strong>: 从寄存器文件读取操作数 (<code>valA</code>, <code>valB</code>)。</li>
+<li><strong>执行 (Execute)</strong>: ALU 执行计算 (<code>valE</code>)，设置条件码 (CC)。</li>
+<li><strong>访存 (Memory)</strong>: 读写数据内存 (<code>valM</code>)。</li>
+<li><strong>写回 (Write Back)</strong>: 将结果写回寄存器文件。</li>
+<li><strong>更新 PC (PC Update)</strong>: 更新程序计数器，指向下一条指令。</li>
+</ol>
+<h2 id="3-SEQ-硬件实现详解-Hardware-Implementation">3. SEQ 硬件实现详解 (Hardware Implementation)</h2>
+<p>在 SEQ 处理器的硬件设计图中，不同的连线样式代表了不同宽度的数据流：</p>
+<p><strong>1. 粗实线 (Thick Lines)</strong></p>
+<ul>
+<li><strong>含义</strong>: 表示 <strong>64位 (64-bit)</strong> 的字数据 (Word values)。</li>
+<li><strong>用途</strong>: 用于传输主要的程序数据和地址。</li>
+<li><strong>示例</strong>:
+<ul>
+<li>程序计数器的值 (<code>PC</code>)</li>
+<li>寄存器中的数据 (<code>valA</code>, <code>valB</code>)</li>
+<li>ALU 计算结果 (<code>valE</code>)</li>
+<li>从内存读取的数据 (<code>valM</code>)</li>
+<li>内存地址</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. 细实线 (Thin Lines)</strong></p>
+<ul>
+<li><strong>含义</strong>: 表示 <strong>4-8位 (4-8 bit)</strong> 的较小数值。</li>
+<li><strong>用途</strong>: 通常用于传输索引、ID 或指令的组成部分。</li>
+<li><strong>示例</strong>:
+<ul>
+<li>寄存器 ID (Register IDs): 如 <code>srcA</code>, <code>srcB</code>, <code>dstE</code>, <code>dstM</code> (4-bit)。</li>
+<li>指令代码 (<code>icode</code>) 和功能代码 (<code>ifun</code>) (4-bit)。</li>
+<li>指令中的寄存器指示字节 (<code>rA</code>, <code>rB</code>)。</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 虚线 (Dotted Lines)</strong></p>
+<ul>
+<li><strong>含义</strong>: 表示 <strong>1位 (1-bit)</strong> 的数值。</li>
+<li><strong>用途</strong>: 用于传输布尔值 (Boolean) 或控制信号 (Control Signals)。</li>
+<li><strong>示例</strong>:
+<ul>
+<li>条件标志 (<code>Cnd</code>): 决定跳转是否发生。</li>
+<li>指令有效性信号 (<code>instr_valid</code>)。</li>
+<li>内存错误信号 (<code>imem_error</code>, <code>dmem_error</code>)。</li>
+<li>时钟信号 (<code>Clock</code>)。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info 硬件图例解码 (Reading the Diagram)">
+            <p>课件中硬件架构图的视觉语言非常关键，它是看懂数据通路的基础：</p><p><strong>1. 硬件单元 (方框颜色)</strong></p><ul><li><strong>蓝色方框</strong>: 预先设计好的<strong>硬件黑盒</strong>（如内存、ALU、寄存器文件）。我们只管使用它们的功能，不关心内部如何实现。</li><li><strong>灰色方框</strong>: <strong>控制逻辑 (Control Logic)</strong>。这是本章的核心，通常用 <strong>HCL</strong> 语言描述。它们像开关一样，决定了数据在电线中如何流动。</li><li><strong>白色椭圆</strong>: 信号标签，用于标注线路上流动的是什么值。</li></ul><p><strong>2. 数据流连线 (线条样式)</strong></p><ul><li><strong>粗实线</strong>: 传输 <strong>64位</strong> 字数据 (Word)，例如寄存器里的值 (<code>%rax</code>)、内存读出的数据 (<code>valM</code>)。</li><li><strong>细实线</strong>: 传输 <strong>4-8位</strong> 数据，例如寄存器 ID (<code>srcA</code>, <code>rA</code>)、指令功能码 (<code>ifun</code>)。</li><li><strong>虚线</strong>: 传输 <strong>1位</strong> 布尔信号 (Bit)，例如条件码跳转信号 (<code>Cnd</code>)、时钟信号、或者控制逻辑的输出（如 <code>mem_read</code>）。</li></ul>
+          </div>
+<div class="note note-info SEQ 数据通路核心信号 (Key Signals)">
+            <p><strong>1. 取指阶段 (Fetch) 产生的信号</strong></p><ul><li><strong><code>valP</code> (Next PC)</strong>:<ul><li><strong>含义</strong>: 下一条指令的地址 (<code>PC</code> + 当前指令长度)。</li><li><strong>作用</strong>: 用于顺序更新 PC，或作为 <code>call</code> 指令压栈的<strong>返回地址</strong>。</li></ul></li><li><strong><code>valC</code> (Constant)</strong>:<ul><li><strong>含义</strong>: 指令中嵌入的 <strong>8 字节常数</strong>。</li><li><strong>作用</strong>: 用作立即数 (<code>irmovq</code>)、内存地址偏移量 (<code>rmmovq</code>) 或跳转目标地址。</li></ul></li></ul><p><strong>2. 译码阶段 (Decode) 读出的信号</strong></p><ul><li><strong><code>valA</code></strong>:<ul><li><strong>含义</strong>: 寄存器 A 的值。通常读取 <code>rA</code>，但在 <code>popq</code>/<code>ret</code> 中读取 <strong><code>%rsp</code></strong>。</li></ul></li><li><strong><code>valB</code></strong>:<ul><li><strong>含义</strong>: 寄存器 B 的值。通常读取 <code>rB</code>，但在栈操作 (<code>push</code>/<code>pop</code>/<code>call</code>/<code>ret</code>) 中读取 <strong><code>%rsp</code></strong>。</li></ul></li></ul><p><strong>3. 计算与访存阶段 (Execute &amp; Memory) 产生的信号</strong></p><ul><li><strong><code>valE</code> (ALU Result)</strong>:<ul><li><strong>含义</strong>: <strong>ALU 计算结果</strong>。</li><li><strong>作用</strong>: 可能是算术运算结果、计算出的<strong>有效内存地址</strong>、或增减后的<strong>新栈指针</strong>。</li></ul></li><li><strong><code>valM</code> (Memory Value)</strong>:<ul><li><strong>含义</strong>: <strong>从数据内存读出的值</strong>。</li><li><strong>作用</strong>: 用于 <code>mrmovq</code> 写回寄存器，或 <code>pop</code>/<code>ret</code> 恢复数据。</li></ul></li></ul>
+          </div>
+<h3 id="3-1-取指阶段-Fetch-Stage">3.1 取指阶段 (Fetch Stage)</h3>
+<p><strong>阶段目标</strong>：从内存中读出当前指令，弄清楚它是谁，有多长，下一条指令在哪里 (<code>valP</code>)。</p>
+<ul>
+<li><strong>硬件单元</strong>:
+<ul>
+<li><strong>PC</strong>: 提供当前地址。</li>
+<li><strong>指令内存 (Instruction Memory)</strong>: 一次性读出 10 个字节（最长指令长度）。</li>
+<li><strong>Split (分割单元)</strong>: 把第 1 个字节切成 <code>icode</code> (指令代码) 和 <code>ifun</code> (功能代码) 。</li>
+<li><strong>Align (对齐单元)</strong>: 把剩下的字节整理好，提取出寄存器指示符 <code>rA</code>, <code>rB</code> 和常数 <code>valC</code> 。</li>
+</ul>
+</li>
+<li><strong>控制逻辑 (HCL)</strong>:
+<ul>
+<li><strong>Instr Valid</strong>: 检查 <code>icode</code> 是否合法。</li>
+<li><strong>Need regids</strong>: 判断指令是否包含寄存器字节 (如 <code>IRRMOVQ</code>, <code>IOPQ</code> 等)。</li>
+<li><strong>Need valC</strong>: 判断指令是否包含常数 (如 <code>IIRMOVQ</code>, <code>IRMMOVQ</code>)。</li>
+<li><strong>PC Increment</strong>: 计算 <code>valP = PC + 1 + r + 8i</code> (其中 r 为寄存器字节长, i 为常数字节长)。<code>i</code>和 <code>r</code>都是<code>bool</code>量</li>
+</ul>
+</li>
+</ul>
+<div class="note note-primary **典型指令行为**">
+            <p><strong>核心逻辑</strong>：读指令，定长度，算下个 PC (<code>valP</code>)。</p><ul><li><strong><code>OPq rA, rB</code> (整数运算)</strong>:<ul><li><code>icode:ifun</code> ← <code>M1[PC]</code></li><li><code>rA:rB</code> ← <code>M1[PC+1]</code></li><li><code>valP</code> ← <code>PC + 2</code></li></ul></li><li><strong><code>irmovq V, rB</code> (立即数传送)</strong>:<ul><li>读出 <code>rA:rB</code> 和 <code>valC</code> (8字节常数)。</li><li><code>valP</code> ← <code>PC + 10</code> (1 + 1 + 8)。</li></ul></li><li><strong><code>popq rA</code> (出栈)</strong>:<ul><li><code>icode:ifun</code> ← <code>M1[PC]</code></li><li><code>rA:rB</code> ← <code>M1[PC+1]</code></li><li><code>valP</code> ← <code>PC + 2</code></li></ul></li></ul>
+          </div>
+<h3 id="3-2-译码阶段-Decode-Stage">3.2 译码阶段 (Decode Stage)</h3>
+<p><strong>阶段目标</strong>：从寄存器文件 (Register File) 中读取所需的操作数 (<code>valA</code>, <code>valB</code>)。</p>
+<ul>
+<li><strong>硬件动作</strong>：
+<ul>
+<li>寄存器文件有两个读端口 (A 和 B)，可以同时读出两个值 。</li>
+</ul>
+</li>
+<li><strong>HCL 控制逻辑 (重点)</strong>：
+<ul>
+<li><strong><code>srcA</code> (读端口 A 地址)</strong>：通常读指令里的 <code>rA</code>。<strong>特例</strong>：如果是 <code>popq</code> 或 <code>ret</code> 指令，它们需要弹栈，所以必须读栈指针 <code>%rsp</code> 。</li>
+<li><strong><code>srcB</code> (读端口 B 地址)</strong>：通常读 <code>rB</code>。<strong>特例</strong>：<code>pushq</code>, <code>popq</code>, <code>call</code>, <code>ret</code> 都要操作栈，所以要读 <code>%rsp</code> 。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-primary **典型指令行为追踪**">
+            <p><strong>核心逻辑</strong>：确定读端口 <code>srcA</code> 和 <code>srcB</code> 的地址，读出 <code>valA</code> 和 <code>valB</code>。</p><ul><li><strong><code>OPq rA, rB</code></strong>:<ul><li><code>srcA</code> = <code>rA</code> (读操作数A) → 得到 <code>valA</code></li><li><code>srcB</code> = <code>rB</code> (读操作数B) → 得到 <code>valB</code></li></ul></li><li><strong><code>pushq rA</code></strong>:<ul><li><code>srcA</code> = <code>rA</code> (读要压栈的值) → 得到 <code>valA</code></li><li><code>srcB</code> = <code>%rsp</code> (读栈指针) → 得到 <code>valB</code></li></ul></li><li><strong><code>popq rA</code> (重点考点)</strong>:<ul><li><code>srcA</code> = <code>%rsp</code> (读栈指针，用于后续<strong>内存读取地址</strong>) → 得到 <code>valA</code></li><li><code>srcB</code> = <code>%rsp</code> (读栈指针，用于后续<strong>ALU加法</strong>) → 得到 <code>valB</code></li><li><em>注：这里同时从两个端口读取 <code>%rsp</code> 的旧值。</em></li></ul></li></ul>
+          </div>
+<h3 id="3-3-执行阶段-Execute-Stage">3.3 执行阶段 (Execute Stage)</h3>
+<p><strong>阶段目标</strong>：让 ALU (算术逻辑单元) 进行计算，得到结果 <code>valE</code>。</p>
+<ul>
+<li><strong>硬件单元</strong>:
+<ul>
+<li><strong>ALU</strong>: 执行算术/逻辑运算，生成 <code>valE</code>。</li>
+<li><strong>CC</strong>: 条件码寄存器 (ZF, SF, OF)。</li>
+<li><strong>cond</strong>: 根据 CC 和 <code>ifun</code> 计算条件标志 <code>Cnd</code> (用于跳转或条件传送)。</li>
+</ul>
+</li>
+<li><strong>控制逻辑 (HCL)</strong>:
+<ul>
+<li><strong>aluA</strong>: 选择 ALU 输入 A。
+<ul>
+<li><code>valA</code>: 用于算术运算。</li>
+<li><code>valC</code>: 用于地址计算 (如 <code>rmmovq</code>, <code>mrmovq</code>)。</li>
+<li><code>-8</code> / <code>+8</code>: 用于栈指针调整 (<code>call</code>, <code>push</code>, <code>ret</code>, <code>pop</code>)。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong><code>aluB</code> (输入 B)</strong>：通常选 <code>valB</code>。</li>
+</ul>
+<ul>
+<li><strong>alufun</strong>: 选择 ALU 功能 (加、减、与、异或)。</li>
+<li><strong>Set CC</strong>: 决定这次计算要不要更新条件码（只有算术指令更新，跳转指令不更新）</li>
+</ul>
+</li>
+</ul>
+<div class="note note-primary **典型指令行为追踪**">
+            <p><strong>核心逻辑</strong>：ALU 计算 <code>valE</code>，可能更新 CC。</p><ul><li><strong><code>OPq rA, rB</code></strong>:<ul><li><code>valE</code> ← <code>valB</code> OP <code>valA</code></li><li><strong>更新 CC</strong> (ZF, SF, OF)</li></ul></li><li><strong><code>rmmovq rA, D(rB)</code> (写内存)</strong>:<ul><li><code>valE</code> ← <code>valB</code> + <code>valC</code> (计算有效地址：基址+偏移)</li><li><strong>不更新 CC</strong></li></ul></li><li><strong><code>popq rA</code></strong>:<ul><li><code>valE</code> ← <code>valB</code> + 8 (栈指针 +8)</li></ul></li><li><strong><code>call Dest</code></strong>:<ul><li><code>valE</code> ← <code>valB</code> - 8 (栈指针 -8)</li></ul></li></ul>
+          </div>
+<h3 id="3-4-访存阶段-Memory-Stage">3.4 访存阶段 (Memory Stage)</h3>
+<p><strong>阶段目标</strong>：如果指令需要，就去读写数据内存（注意不是指令内存）。</p>
+<ul>
+<li><strong>硬件单元</strong>: <strong>数据内存 (Data Memory)</strong>，读出一个字 (<code>valM</code>) 或写入一个字。</li>
+<li><strong>控制逻辑 (HCL)</strong>:
+<ul>
+<li><strong>Mem. addr</strong>: 选择内存地址。通常是 <code>valE</code> (计算出的有效地址) 或 <code>valA</code> (如 <code>popq</code>/<code>ret</code> 的栈顶地址)。</li>
+<li><strong>Mem. read/write</strong>: 控制读写信号。</li>
+<li><strong>Stat</strong>: 生成指令状态 (AOK, HLT, ADR, INS)。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info">
+            <p>处理器不仅计算数据，还要时刻监控自身的健康状态。<code>Stat</code> 寄存器由 HCL 逻辑直接生成，用于告诉操作系统当前发生了什么：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> Stat = [<br>    imem_error || dmem_error : SADR;  <span class="hljs-comment">// 内存地址异常 (如访问越界)</span><br>    !instr_valid             : SINS;  <span class="hljs-comment">// 非法指令异常 (遇到不能识别的编码)</span><br>    icode == IHALT           : SHLT;  <span class="hljs-comment">// 遇到 halt 指令，正常停机</span><br>    <span class="hljs-number">1</span>                        : SAOK;  <span class="hljs-comment">// 一切正常 (Default)</span><br>];<br></code></pre></td></tr></table></figure>
+          </div>
+<p><code>call</code>指令将返回地址压栈，<code>valP</code>的值是之前计算的下一条指令的地址<code>PC + 1 + r + 8i</code>，<code>valE</code>是<code>%rsp - 8</code>，新的栈顶地址。</p>
+<div class="note note-primary **典型指令行为追踪**">
+            <p><strong>核心逻辑</strong>：读 (<code>valM</code>) 或 写 内存。</p><ul><li><strong><code>rmmovq rA, D(rB)</code></strong>:<ul><li>写内存：<code>M[valE]</code> ← <code>valA</code> (将寄存器值写入地址)。</li></ul></li><li><strong><code>mrmovq D(rB), rA</code></strong>:<ul><li>读内存：<code>valM</code> ← <code>M[valE]</code> (从地址读出数据)。</li></ul></li><li><strong><code>popq rA</code></strong>:<ul><li>读内存：<code>valM</code> ← <code>M[valA]</code> (注意：使用<strong>旧栈指针</strong> <code>valA</code> 读栈顶数据)。</li></ul></li><li><strong><code>call Dest</code></strong>:<ul><li>写内存：<code>M[valE]</code> ← <code>valP</code> (将<strong>返回地址</strong> <code>valP</code> 压入<strong>新栈顶</strong> <code>valE</code>)。</li></ul></li></ul>
+          </div>
+<h3 id="3-5-写回阶段-Write-Back">3.5 写回阶段 (Write Back)</h3>
+<p><strong>阶段目标</strong>：把计算结果 (<code>valE</code>) 或内存读出的结果 (<code>valM</code>) 写回到寄存器文件。</p>
+<ul>
+<li><strong>写端口 (Write Ports)</strong>: E 和 M，地址为 <code>dstE</code>（<strong>ALU 计算结果</strong> (<code>valE</code>) 的目标寄存器 ID）, <code>dstM</code>（<strong>内存读取结果</strong> (<code>valM</code>) 的目标寄存器 ID）。</li>
+<li><strong>控制逻辑 (HCL)</strong>:
+<ul>
+<li><strong><code>dstE</code></strong>: 决定写端口 E 的目标寄存器 (通常写入 ALU 的计算结果)，通常写回 <code>rB</code>。
+<ul>
+<li>条件传送 (<code>cmovXX</code>)：如果条件不满足 (<code>!Cnd</code>)，则设为 <code>RNONE</code> (不写入)。</li>
+<li><code>pushq</code>, <code>popq</code>, <code>call</code>, <code>ret</code>：更新 <code>%rsp</code>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong><code>dstM</code> (写端口 M 地址)</strong>：通常写回 <code>rA</code> (比如 <code>popq rA</code> 读出的值要给 <code>rA</code>) 。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info">
+            <p>这是 SEQ 处理器设计中的一个关键点，主要是为了支持 <strong><code>popq</code> (出栈)</strong> 这种复杂指令：</p><ul><li><strong><code>popq rA</code> 指令</strong>在一个周期内需要同时修改两个寄存器：</li></ul><ol><li><strong>栈指针 <code>%rsp</code></strong> 需要更新（加 8）：这个值由 ALU 计算得出 (<code>valE</code>)，写入 <strong><code>dstE</code></strong> (<code>%rsp</code>) 。</li><li><strong>目标寄存器 <code>rA</code></strong> 需要存入弹出的数据：这个值由内存读出 (<code>valM</code>)，写入 <strong><code>dstM</code></strong> (<code>rA</code>) 。</li></ol><p>如果没有两个写端口，<code>popq</code> 指令就无法在一个时钟周期内完成。</p>
+          </div>
+<div class="note note-primary **典型指令行为追踪**">
+            <p><strong>核心逻辑</strong>：设置端口 <code>dstE</code> (ALU结果) 和 <code>dstM</code> (内存结果) 的写入目标寄存器。</p><ul><li><strong><code>OPq rA, rB</code></strong>:<ul><li><code>dstE</code> = <code>rB</code> (写回计算结果)。</li></ul></li><li><strong><code>popq rA</code> (双写操作)</strong>:<ul><li><code>dstE</code> = <code>%rsp</code> (更新栈指针)。</li><li><code>dstM</code> = <code>rA</code> (写入弹出的数据)。</li></ul></li><li><strong><code>call Dest</code> / <code>ret</code> / <code>pushq</code></strong>:<ul><li><code>dstE</code> = <code>%rsp</code> (更新栈指针)。</li></ul></li><li><strong><code>cmovXX</code> (条件传送)</strong>:<ul><li>如果条件 <code>Cnd</code> 成立：<code>dstE</code> = <code>rB</code>。</li><li>如果不成立：<code>dstE</code> = <code>RNONE</code> (什么都不写)。</li></ul></li></ul>
+          </div>
+<h3 id="3-6-更新-PC-阶段-PC-Update-Stage">3.6 更新 PC 阶段 (PC Update Stage)</h3>
+<ul>
+<li><strong>控制逻辑 (HCL)</strong> (<code>new_pc</code>):
+<ul>
+<li><code>call</code>: 设置为目标地址 <code>valC</code>。</li>
+<li><code>jXX</code> (条件跳转): 如果跳转 (<code>Cnd</code> 为真) 设为 <code>valC</code>，否则设为 <code>valP</code>。</li>
+<li><code>ret</code>: 设置为返回地址 <code>valM</code>。</li>
+<li>其他: 默认设为 <code>valP</code> (下一条指令)。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-primary **典型指令行为追踪**">
+            <p><strong>核心逻辑</strong>：决定下一条指令地址 <code>PC</code>。</p><ul><li><strong>顺序执行 (<code>OPq</code>, <code>push</code>, <code>pop</code> 等)</strong>:<ul><li><code>PC</code> ← <code>valP</code></li></ul></li><li><strong><code>call Dest</code></strong>:<ul><li><code>PC</code> ← <code>valC</code> (跳转到目标函数地址)。</li></ul></li><li><strong><code>ret</code></strong>:<ul><li><code>PC</code> ← <code>valM</code> (跳转到从栈里弹出的返回地址)。</li></ul></li><li><strong><code>jxx Dest</code> (条件跳转)</strong>:<ul><li><code>PC</code> ← <code>Cnd ? valC : valP</code> (条件成立跳 <code>valC</code>，否则继续 <code>valP</code>)。</li></ul></li></ul>
+          </div>
+<div class="note note-info SEQ 控制信号总览 (Control Signals Overview)">
+            <p>处理器“思考”的过程，本质上就是生成这些控制信号的过程。</p><table><thead><tr><th style="text-align:left">阶段</th><th style="text-align:left">信号名</th><th style="text-align:left">逻辑描述 (HCL 核心思想)</th><th style="text-align:left">关键特例 / 考点</th></tr></thead><tbody><tr><td style="text-align:left"><strong>取指</strong></td><td style="text-align:left"><code>need_regids</code></td><td style="text-align:left">指令包含寄存器字节吗？</td><td style="text-align:left"><code>addq</code>, <code>pushq</code> 需要; <code>jmp</code>, <code>call</code> 不需要。</td></tr><tr><td style="text-align:left"><strong>取指</strong></td><td style="text-align:left"><code>need_valC</code></td><td style="text-align:left">指令包含常数(立即数/地址)吗？</td><td style="text-align:left"><code>irmovq</code>, <code>rmmovq</code> 需要; <code>addq</code> 不需要。</td></tr><tr><td style="text-align:left"><strong>译码</strong></td><td style="text-align:left"><code>srcA</code></td><td style="text-align:left">端口 A 读哪个寄存器？</td><td style="text-align:left">通常读 <code>rA</code>; <strong><code>popq</code>, <code>ret</code> 必须读 <code>%rsp</code></strong>。</td></tr><tr><td style="text-align:left"><strong>译码</strong></td><td style="text-align:left"><code>srcB</code></td><td style="text-align:left">端口 B 读哪个寄存器？</td><td style="text-align:left">通常读 <code>rB</code>; <code>pushq</code>, <code>popq</code>, <code>call</code>, <code>ret</code> 读 <code>%rsp</code>。</td></tr><tr><td style="text-align:left"><strong>执行</strong></td><td style="text-align:left"><code>aluA</code></td><td style="text-align:left">ALU 输入 A 选谁？</td><td style="text-align:left">通常是 <code>valA</code>; 内存指令选 <code>valC</code>; 栈指令选 <code>8</code> 或 <code>-8</code>。</td></tr><tr><td style="text-align:left"><strong>执行</strong></td><td style="text-align:left"><code>aluB</code></td><td style="text-align:left">ALU 输入 B 选谁？</td><td style="text-align:left">通常是 <code>valB</code>; <code>rmmovq</code> 等地址计算选 <code>valB</code>。</td></tr><tr><td style="text-align:left"><strong>访存</strong></td><td style="text-align:left"><code>mem_read</code></td><td style="text-align:left">是否读内存？</td><td style="text-align:left"><code>mrmovq</code>, <code>popq</code>, <code>ret</code> 为真。</td></tr><tr><td style="text-align:left"><strong>访存</strong></td><td style="text-align:left"><code>mem_write</code></td><td style="text-align:left">是否写内存？</td><td style="text-align:left"><code>rmmovq</code>, <code>pushq</code>, <code>call</code> 为真。</td></tr><tr><td style="text-align:left"><strong>更新</strong></td><td style="text-align:left"><code>new_pc</code></td><td style="text-align:left">下一条指令地址在哪？</td><td style="text-align:left"><code>call</code> 去 <code>valC</code>; <code>ret</code> 去 <code>valM</code>; 否则默认 <code>valP</code>。</td></tr></tbody></table>
+          </div>
+<h2 id="4-SEQ-时序与评价-Timing-Evaluation">4. SEQ 时序与评价 (Timing &amp; Evaluation)</h2>
+<h3 id="4-1-SEQ-工作流程详解-Timing-Workflow">4.1 SEQ 工作流程详解 (Timing &amp; Workflow)</h3>
+<p>SEQ 处理器采用<strong>单周期设计</strong>，即在一个时钟周期内完整执行一条指令的全部 6 个阶段。</p>
+<h4 id="1-时钟上升沿-The-Rising-Edge-状态更新的瞬间">1. 时钟上升沿 (The Rising Edge): 状态更新的瞬间</h4>
+<ul>
+<li><strong>动作</strong>: 时钟信号从低变高。这是周期的开始，也是上一条指令的结束。</li>
+<li><strong>对象</strong>: 所有的<strong>状态元件</strong> (State Elements) 在这一瞬间同时打开“大门”，锁存输入线上的新值。
+<ul>
+<li><strong>PC</strong>: 更新为 <code>newPC</code> (指向当前指令)。</li>
+<li><strong>寄存器文件</strong>: 写入上一条指令计算出的 <code>valE</code> 或 <code>valM</code> (如果需要写)。</li>
+<li><strong>CC</strong>: 更新条件码。</li>
+<li><strong>数据内存</strong>: 写入数据 (如果是 <code>rmmovq</code> 或 <code>pushq</code> 等写指令)。</li>
+</ul>
+</li>
+<li><strong>物理意义</strong>: 计算机的“状态”在这一刻发生改变。</li>
+</ul>
+<h4 id="2-高-低电平期间-The-Interval-信号的漫长传播">2. 高&amp;低电平期间 (The Interval): 信号的漫长传播</h4>
+<ul>
+<li><strong>动作</strong>: 信号通过<strong>组合逻辑</strong> (Combinational Logic) 进行传播和计算。</li>
+<li><strong>流程</strong>:
+<ul>
+<li><strong>无阻碍流动</strong>: 信号从刚刚更新的 PC/寄存器出发，像多米诺骨牌一样依次流过：<code>指令内存</code> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>译码逻辑</code> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>ALU</code> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> <code>数据内存</code>。</li>
+<li><strong>产生中间信号</strong>: 在这个过程中，<code>valP</code>, <code>valA</code>, <code>valB</code>, <code>valE</code>, <code>valM</code> 等信号依次生成。</li>
+<li><strong>信号驻留</strong>: 计算完成后（例如 ALU 2ns 就算完了，周期有 10ns），<code>valE</code> 等信号会<strong>稳定地维持在导线上</strong>，作为电压（电平）“顶”在寄存器或内存的输入端门口，等待下一次开门。</li>
+</ul>
+</li>
+<li><strong>关键</strong>: 此时状态元件（寄存器/PC）的值<strong>不会改变</strong>，它们只负责稳定输出旧值，驱动组合逻辑工作。</li>
+</ul>
+<h4 id="3-下一个时钟上升沿-Next-Rising-Edge-锁存结果">3. 下一个时钟上升沿 (Next Rising Edge): 锁存结果</h4>
+<ul>
+<li><strong>动作</strong>: 当前周期结束，下一个周期开始。</li>
+<li><strong>结果</strong>: 刚才在导线上排队等候的稳定信号 (<code>valE</code>, <code>valM</code>, <code>newPC</code>) 被瞬间写入状态元件。</li>
+</ul>
+<h3 id="4-2-局限性-Limitations">4.2 局限性 (Limitations)</h3>
+<ul>
+<li><strong>速度太慢 (Too slow)</strong>: 时钟周期必须足够长，以容纳<strong>最慢</strong>的那条指令在所有阶段的信号传播延迟 (例如 <code>ret</code> 或 <code>mrmovq</code> 需要经过所有阶段)。</li>
+<li><strong>硬件利用率低</strong>: 在周期的某一时刻，只有一小部分硬件在有效工作。</li>
+</ul>
+<div class="note note-danger SEQ 的致命弱点：为什么我们需要流水线？">
+            <p><strong>1. 单周期时序的束缚 (Single-Cycle Timing)</strong></p><ul><li>SEQ 处理器必须在<strong>一个时钟周期</strong>内完成一条指令的所有 6 个阶段。</li><li>运作流程：<code>时钟上升沿(更新状态)</code> -&gt; <code>组合逻辑漫长的传播(取指...更新PC)</code> -&gt; <code>下个上升沿(锁存结果)</code>。</li><li>这意味着时钟频率不能太高，必须等待电信号跑完全程。</li></ul><p><strong>2. 性能瓶颈 (The Performance Bottleneck)</strong></p><ul><li><strong>木桶效应</strong>：时钟周期的时间长度，取决于<strong>最慢</strong>的那条指令（通常是 <code>mrmovq</code> 或 <code>ret</code>，因为它们既要运算又要访存）。这导致简单的指令（如 <code>addq</code>）也被迫等待这么久。</li><li><strong>硬件浪费</strong>：在周期的任意时刻，只有一小部分硬件在工作。例如在取指阶段，昂贵的 ALU 和数据内存是闲置的。</li></ul><p><strong>结论</strong>：SEQ 虽然逻辑清晰、设计简单，但<strong>吞吐量 (Throughput)</strong> 太低。为了让硬件并行工作，我们需要引入 <strong>流水线 (Pipelining)</strong> 技术。</p>
+          </div>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 06. SEQ</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/06-SEQ/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/07-PIPE-01/" title="CSAPP - 07.PIPE-01">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 07.PIPE-01</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/05-Logic/" title="CSAPP - 05.Logic">
+                        <span class="hidden-mobile">CSAPP - 05.Logic</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

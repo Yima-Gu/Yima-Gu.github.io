@@ -1,0 +1,1137 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Chapter 8: Network Security (Part 2) 1. Network Security Attack Events (网络安全攻击事件案例) 1.1 Stuxnet (&quot;震网&quot;病毒)  性质: 世界上首个网络“超级破坏性武器”，专门攻击工业控制系统 (DCS, SCADA, PLC) 的蠕虫病毒。 目标: 2010年攻击伊朗核设施（Natanz 铀浓缩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Network - 06.Security-02">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/Network/Network-06-Security-02/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Chapter 8: Network Security (Part 2) 1. Network Security Attack Events (网络安全攻击事件案例) 1.1 Stuxnet (&quot;震网&quot;病毒)  性质: 世界上首个网络“超级破坏性武器”，专门攻击工业控制系统 (DCS, SCADA, PLC) 的蠕虫病毒。 目标: 2010年攻击伊朗核设施（Natanz 铀浓缩">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T19:40:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.359Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="Network">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Network - 06.Security-02 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Network - 06.Security-02"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 03:40" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Network - 06.Security-02</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>Chapter 8: Network Security (Part 2)</h1>
+<h2 id="1-Network-Security-Attack-Events-网络安全攻击事件案例">1. Network Security Attack Events (网络安全攻击事件案例)</h2>
+<h3 id="1-1-Stuxnet-震网-病毒">1.1 Stuxnet (&quot;震网&quot;病毒)</h3>
+<ul>
+<li><strong>性质</strong>: 世界上首个网络“超级破坏性武器”，专门攻击工业控制系统 (DCS, SCADA, PLC) 的蠕虫病毒。</li>
+<li><strong>目标</strong>: 2010年攻击伊朗核设施（Natanz 铀浓缩工厂）。</li>
+<li><strong>后果</strong>:
+<ul>
+<li>摧毁了 984 台铀浓缩离心机 (Centrifuges)。</li>
+<li>感染了 20 多万台计算机。</li>
+<li>导致 1000 台机器物理退化，伊朗核计划倒退两年。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-BlackEnergy-乌克兰电网攻击">1.2 BlackEnergy (乌克兰电网攻击)</h3>
+<ul>
+<li><strong>性质</strong>: 具有信息战水准的网络攻击事件，主要通过木马病毒和 DDoS 插件。</li>
+<li><strong>过程</strong>:
+<ul>
+<li>最初感染 <code>.exe</code> 文件 -&gt; 释放代码 -&gt; 创建解密驱动 -&gt; 感染 <code>svchost.exe</code> -&gt; 注入 DLL -&gt; 下载 DDoS 插件。</li>
+</ul>
+</li>
+<li><strong>后果</strong>:
+<ul>
+<li>2015年乌克兰电网遭到 BlackEnergy 病毒的 DDoS 攻击。</li>
+<li>导致 23 万人断电，断电时间长达 6 小时。</li>
+<li>这是首个成功攻击电网的恶意程序。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-Colonial-Pipeline-Attack-Darkside-黑客团体">1.3 Colonial Pipeline Attack (Darkside 黑客团体)</h3>
+<ul>
+<li><strong>性质</strong>: 针对美国能源基础设施最具破坏性的网络攻击（Ransomware/勒索软件）。</li>
+<li><strong>事件</strong>: 2021年，Darkside 黑客团体勒索科洛尼尔管道公司 (Colonial Pipeline)。</li>
+<li><strong>后果</strong>:
+<ul>
+<li>美国 18 个州因输油管停用陷入紧急状态（Gas Outages）。</li>
+<li>公司最终支付 440 万美元赎金。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-Securing-TCP-Connections-SSL-TLS">2. Securing TCP Connections: SSL/TLS</h2>
+<h3 id="2-1-概述与历史">2.1 概述与历史</h3>
+<ul>
+<li><strong>SSL (Secure Sockets Layer)</strong> / <strong>TLS (Transport Layer Security)</strong> 是广泛部署的安全协议。</li>
+<li><strong>支持</strong>: 几乎所有的浏览器和 Web 服务器 (HTTPS)。HTTP与HTTPS的核心区别在于是否使用 <strong>SSL/TLS</strong> 协议进行加密和安全保护。</li>
+<li><strong>目标</strong>: 主要是为 Web 电子商务交易设计（加密信用卡号等），提供机密性 (Confidentiality)、完整性 (Integrity) 和认证 (Authentication)。</li>
+<li><strong>位置</strong>: 位于<mark>应用层 (Application) 和传输层 (TCP) </mark>之间。SSL 为应用程序提供 API（通常是 C 或 Java SSL 库）。</li>
+<li><strong>历史演变</strong>:
+<ul>
+<li>1993: Netscape 设计 SSL 1.0 (未发布)。</li>
+<li>1995: SSL 2.0 发布 (有严重漏洞)。</li>
+<li>1996: SSL 3.0 问世，大规模应用。</li>
+<li>1999: ISOC 发布 TLS 1.0 (SSL 的升级版)。</li>
+<li>2006/2008/2011: TLS 1.1, 1.2 及其修订版。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-Toy-SSL-一个简单的安全通道模型">2.2 Toy SSL: 一个简单的安全通道模型</h3>
+<p>为了理解 SSL，课件首先构建了一个简化的模型 (“Toy SSL”)，包含四个阶段：</p>
+<ol>
+<li><strong>Handshake (握手)</strong>: Alice 和 Bob 使用证书<em>certificate</em>和私钥<em>private key</em>进行身份认证，并交换共享密钥 (Shared Secret)。
+<ol>
+<li><strong>打招呼与亮身份</strong>：
+<ul>
+<li>Alice 先发一个“Hello”打招呼 。</li>
+<li>Bob 回复他的<strong>证书 (Certificate)</strong> 。证书就像身份证，里面包含了 Bob 的<strong>公钥 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mi>B</mi><mo>+</mo></msubsup></mrow><annotation encoding="application/x-tex">K_B^+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.105em;vertical-align:-0.2935em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8115em;"><span style="top:-2.4065em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.1031em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">+</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2935em;"><span></span></span></span></span></span></span></span></span></span>​)</strong>。Alice 通过验证证书，就能确定对方真的是 Bob，而不是冒充者 。</li>
+</ul>
+</li>
+<li><strong>交换秘密 (Master Secret)</strong>：
+<ul>
+<li>Alice 生成一个随机的数，称为<strong>主密钥 (Master Secret, MS)</strong> 。</li>
+<li>为了不让别人偷看，Alice 使用 Bob 的公钥加密这个 MS，生成加密后的主密钥 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mi>M</mi><mi>S</mi></mrow><annotation encoding="application/x-tex">EMS</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">EMS</span></span></span></span>)，发送给 Bob 。</li>
+<li><strong>原理</strong>：只有拥有私钥 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mi>B</mi><mo>−</mo></msubsup></mrow><annotation encoding="application/x-tex">K_B^-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.105em;vertical-align:-0.2935em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8115em;"><span style="top:-2.4065em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.1031em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">−</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2935em;"><span></span></span></span></span></span></span></span></span></span>) 的 Bob 才能解开这个包裹拿到 MS。这样，双方就安全地共享了一个秘密 。</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>Key Derivation (密钥派生)</strong>:
+<ul>
+<li>虽然双方都有了主密钥 (MS)，但直接用这一把钥匙做所有事情（加密、校验、发数据、收数据）是不安全的。如果这把钥匙泄露，所有安全防线都会崩塌。</li>
+<li><strong>原则</strong>：密码学中有一个重要原则，不同的操作应该使用不同的密钥 。</li>
+<li>使用 Key Derivation Function (KDF) 从 Master Secret 派生出 4 个密钥：
+<ul>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>c</mi></msub><mo separator="true">,</mo><msub><mi>K</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">K_c, K_s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 客户端/服务端加密密钥 (Encryption Keys)。</li>
+<li><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>M</mi><mi>c</mi></msub><mo separator="true">,</mo><msub><mi>M</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">M_c, M_s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">c</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.109em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>: 客户端/服务端 MAC 密钥 (MAC Keys)。</li>
+</ul>
+</li>
+<li><strong>意义</strong>：将加密和完整性校验分开，也将发送和接收的方向分开，大大提高了安全性</li>
+</ul>
+</li>
+<li><strong>Data Transfer (数据传输)</strong>:
+<ul>
+<li>TCP 协议传输的是字节流，但为了安全校验，我们需要把数据切成块。数据流被分割成一系列的 <strong>Records (记录)</strong>。每个 Record 包含 MAC 用于完整性检查。</li>
+</ul>
+<ul>
+<li><strong>Sequence Numbers (序列号)</strong>: 为了防止重放攻击 (Replay) 或重新排序，MAC 计算中包含序列号：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>A</mi><mi>C</mi><mo>=</mo><mi>M</mi><mi>A</mi><mi>C</mi><mo stretchy="false">(</mo><mi>M</mi><mi>x</mi><mo separator="true">,</mo><mi>s</mi><mi>e</mi><mi>q</mi><mi>u</mi><mi>e</mi><mi>n</mi><mi>c</mi><mi>e</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>a</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">MAC = MAC(Mx, sequence || data)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">se</span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mord mathnormal">u</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">ce</span><span class="mord">∣∣</span><span class="mord mathnormal">d</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mclose">)</span></span></span></span>。注意：序列号不直接在网络上传输，而是隐含的。</li>
+</ul>
+</li>
+<li><strong>Connection Closure (连接关闭)</strong>:
+<ul>
+<li>普通的 TCP 连接断开（FIN 报文）是不加密的，这给攻击者留下了可乘之机。</li>
+</ul>
+<ul>
+<li>防止截断攻击 (Truncation Attack，即攻击者伪造 TCP FIN)。</li>
+<li>使用 Record Types (记录类型): Type 0 表示数据，Type 1 表示关闭连接。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-3-Real-SSL-真实的-SSL-协议">2.3 Real SSL (真实的 SSL 协议)</h3>
+<h4 id="SSL-Cipher-Suite-密码套件">SSL Cipher Suite (密码套件)</h4>
+<p>客户端和服务端必须协商决定使用哪组加密算法：</p>
+<ul>
+<li><strong>Public-key algorithm</strong>: 公钥算法 (如 RSA)。</li>
+<li><strong>Symmetric encryption algorithm</strong>: 对称加密算法 (如 DES, 3DES, RC2, RC4)。</li>
+<li><strong>MAC algorithm</strong>: 消息认证码算法。</li>
+</ul>
+<h4 id="SSL-Handshake-Protocol-握手协议步骤">SSL Handshake Protocol (握手协议步骤)</h4>
+<ol>
+<li><strong>Client Hello</strong>: 发送支持的算法列表 + Client Nonce (随机数)。</li>
+<li><strong>Server Hello</strong>: 选择算法 + 发送 Server Certificate + Server Nonce。</li>
+<li><strong>Client Key Exchange</strong>: 验证证书，提取公钥，生成 <code>Pre_Master_Secret</code>，用服务器公钥加密后发送。</li>
+<li><strong>Key Generation</strong>: 双方利用 <code>Nonces</code> 和 <code>Pre_Master_Secret</code> 独立计算出 Master Secret，进而生成加密密钥和 MAC 密钥。</li>
+<li><strong>Finished Messages</strong>:
+<ul>
+<li>Client 发送所有握手消息的 MAC。</li>
+<li>Server 发送所有握手消息的 MAC。</li>
+<li><em>目的</em>: 防止中间人攻击 (Man-in-the-middle) 篡改握手过程（如删除强加密算法）。</li>
+<li><strong>结果</strong>： 由于双方计算 MAC 的输入数据不一致，计算出的 MAC 值自然不同。Server 会发现 Client 发来的 MAC 与自己算的不匹配，从而意识到握手过程被篡改，立即断开连接 。</li>
+</ul>
+</li>
+</ol>
+<p><em>注意</em>: 握手中使用 <strong>Nonces</strong> (随机数) 是为了防止重放攻击 (Replay Attack)。即使攻击者重放昨天的加密记录，由于 Nonce 改变，密钥也会改变，解密将失败。</p>
+<h4 id="SSL-Record-Protocol-记录协议">SSL Record Protocol (记录协议)</h4>
+<ul>
+<li>结构: Header (Content type, Version, Length) + Data + MAC。</li>
+<li>数据和 MAC 会被加密 (Symmetric algorithm)。</li>
+<li>Fragment (分片) 大小通常为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>14</mn></msup></mrow><annotation encoding="application/x-tex">2^{14}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">14</span></span></span></span></span></span></span></span></span></span></span></span> bytes (~16KB)。</li>
+</ul>
+<hr>
+<h3 id="3-Network-Layer-Security-IPsec">3. Network Layer Security: IPsec</h3>
+<p>IPsec (IP Security) 是一套协议簇，旨在为网络层（IP层）通信提供安全性。由于所有互联网通信（如 TCP、UDP、ICMP）最终都要封装在 IP 数据包中传输，因此保护了 IP 层就相当于为整个网络提供了 <strong>“全面覆盖 (Blanket Coverage)”</strong> 的安全保护。</p>
+<h4 id="3-1-概述与-VPN-Virtual-Private-Networks">3.1 概述与 VPN (Virtual Private Networks)</h4>
+<ul>
+<li>
+<p><strong>设计目标</strong>：</p>
+<ul>
+<li>IPsec 的核心在于确保 IP 数据报 (Datagrams) 的<strong>机密性 (Confidentiality)</strong>、<strong>完整性 (Integrity)</strong> 和 <strong>源认证 (Origin Authentication)</strong>。</li>
+<li>它可以加密数据报的 Payload（载荷），这意味着上层的 Web 浏览、E-mail、文件传输等都会自动被加密，应用程序无需修改即可受益。</li>
+</ul>
+</li>
+<li>
+<p><strong>VPN (虚拟专用网络) 的工作机制</strong>:</p>
+<ul>
+<li><strong>背景</strong>: 许多机构（如公司总部与分支机构）需要安全的私有网络通信。传统的做法是租用昂贵的物理专线。</li>
+<li><strong>VPN 方案</strong>: 利用公共的、不安全的 Internet 来传输私有数据。</li>
+<li><strong>“隧道”概念</strong>: 当位于分公司的员工发送数据给总部时，分公司的网关路由器会将数据加密，并通过 Internet 发送给总部的网关路由器。</li>
+<li><strong>过程</strong>:
+<ol>
+<li><strong>加密</strong>: 数据离开内部网络进入公共 Internet 前，被网关加密。</li>
+<li><strong>传输</strong>: 加密后的数据像普通 IP 包一样在 Internet 上路由（虽然黑客可以截获，但无法解密）。</li>
+<li><strong>解密</strong>: 到达目的地网关后，数据被解密并转发给内部的主机。</li>
+</ol>
+</li>
+<li><strong>优势</strong>: 成本极低（使用现有的 Internet 接入），灵活性高（员工在酒店、家中也能通过 VPN 软件接入）。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-IPsec-的两种运行模式-Modes">3.2 IPsec 的两种运行模式 (Modes)</h4>
+<p>IPsec 可以在两种不同的模式下运行，区别主要在于<strong>IPsec 头部插入的位置</strong>以及<strong>保护的范围</strong>。</p>
+<p><strong>1. Transport Mode (传输模式)</strong></p>
+<ul>
+<li><strong>保护范围</strong>: 仅保护数据包的 <strong>Payload (载荷)</strong>，即上层协议数据（如 TCP 段、UDP 段、ICMP 消息）。<strong>原 IP 头部不被加密</strong>。</li>
+<li><strong>报文结构</strong>:
+<ul>
+<li><code>[原 IP 头部] + [IPsec 头部] + [加密的 Payload]</code></li>
+</ul>
+</li>
+<li><strong>应用场景</strong>:
+<ul>
+<li>主要用于<strong>端系统到端系统 (End-to-End)</strong> 的通信。</li>
+<li>例如：两台服务器之间直接进行加密通信。</li>
+<li>缺点：路由器仍能看到源和目的 IP，流量分析攻击可能依然有效。</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. Tunnel Mode (隧道模式) —— 最常用</strong></p>
+<ul>
+<li><strong>保护范围</strong>: 保护<strong>整个原 IP 数据包</strong>（包括原 IP 头部和载荷）。</li>
+<li><strong>报文结构</strong>:
+<ul>
+<li>IPsec 将原来的整个 IP 包当作“数据”，对其加密，然后封装在一个<strong>新的 IP 数据包</strong>中。</li>
+<li><code>[新 IP 头部] + [IPsec 头部] + [加密的原 IP 头部 + 原 Payload]</code></li>
+</ul>
+</li>
+<li><strong>应用场景</strong>:
+<ul>
+<li>主要用于<strong>网关到网关 (Gateway-to-Gateway)</strong> 或 <strong>主机到网关</strong> 的通信（即 VPN）。</li>
+<li><strong>优势</strong>: 真正的源 IP 和目的 IP 被隐藏在加密载荷中，外部网络（Internet）只能看到新 IP 头部（通常是两个网关的地址），从而隐藏了内部网络拓扑结构。端系统（如公司内部电脑）不需要安装 IPsec 软件，由网关透明处理。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-3-IPsec-的两个核心协议">3.3 IPsec 的两个核心协议</h4>
+<p>IPsec 定义了两个协议来提供不同的安全服务，它们可以单独使用，也可以组合使用。</p>
+<p><strong>1. AH (Authentication Header) - 认证头部协议</strong></p>
+<ul>
+<li><strong>提供的服务</strong>:
+<ul>
+<li><strong>源认证 (Source Authentication)</strong>: 确认发送者身份。</li>
+<li><strong>数据完整性 (Data Integrity)</strong>: 确保数据在传输中未被篡改。</li>
+<li><strong>防重放攻击 (Anti-Replay)</strong>。</li>
+</ul>
+</li>
+<li><strong>局限性</strong>: AH <strong>不提供机密性 (Confidentiality)</strong>。也就是说，AH 不会对数据进行加密，数据依然是明文传输的，只是你无法篡改它。</li>
+<li><strong>现状</strong>: 由于缺乏加密功能，现代安全需求中 AH 使用较少。</li>
+</ul>
+<p><strong>2. ESP (Encapsulation Security Payload) - 封装安全载荷协议</strong></p>
+<ul>
+<li><strong>提供的服务</strong>:
+<ul>
+<li>包含 AH 的所有功能（源认证、数据完整性、防重放）。</li>
+<li><strong>关键特性</strong>: 提供<strong>机密性 (Confidentiality)</strong>，即数据加密。</li>
+</ul>
+</li>
+<li><strong>地位</strong>: ESP 是目前应用最广泛的协议。</li>
+</ul>
+<h4 id="总结：最佳实践组合">总结：最佳实践组合</h4>
+<p><strong>Tunnel Mode with ESP (隧道模式 + ESP)</strong> 是构建 VPN 的标准配置：</p>
+<ul>
+<li><strong>ESP</strong> 保证了数据既不会被篡改，也不会被窃听。</li>
+<li><strong>Tunnel Mode</strong> 允许在两个安全网关之间建立虚拟通道，隐藏了内部网络的 IP 结构，非常适合跨越公共 Internet 连接两个私有网络。</li>
+</ul>
+<hr>
+<h2 id="4-Operational-Security-Firewalls-and-IDS">4. Operational Security: Firewalls and IDS</h2>
+<h3 id="4-1-Firewalls-防火墙">4.1 Firewalls (防火墙)</h3>
+<p>防火墙是网络安全的第一道防线，它将组织内部的“可信网络”与外部公共的“不可信 Internet”进行隔离。</p>
+<ul>
+<li><strong>核心功能</strong>: 通过允许某些分组通过并阻止其他分组，来控制进出网络的流量。</li>
+<li><strong>主要防御目标 (Why Firewalls?)</strong>:
+<ol>
+<li><strong>拒绝服务攻击 (DoS)</strong>: 防止攻击者通过建立大量伪造的 TCP 连接（如 SYN flooding）耗尽服务器资源，导致正常用户无法访问。</li>
+<li><strong>非法访问与篡改</strong>: 防止攻击者修改或窃取内部敏感数据（例如，攻击者替换 CIA 主页）。</li>
+<li><strong>访问控制</strong>: 仅允许经过身份认证的用户或主机访问内部网络。</li>
+</ol>
+</li>
+</ul>
+<h4 id="三种防火墙类型详解">三种防火墙类型详解</h4>
+<p><strong>1. Stateless Packet Filtering (无状态包过滤)</strong></p>
+<p>这是最基础的防火墙形式，通常集成在路由器中。</p>
+<ul>
+<li><strong>工作机制</strong>: 路由器独立处理每一个到达的数据包 (Packet-by-packet)，不保留任何历史记录或上下文信息。</li>
+<li><strong>决策依据</strong>: 仅根据 IP/TCP/UDP 头部字段进行判断:
+<ul>
+<li>源 IP 地址 / 目的 IP 地址。</li>
+<li>源端口号 / 目的端口号。</li>
+<li>协议类型 (TCP, UDP, ICMP)。</li>
+<li>TCP 标志位 (SYN, ACK 等)。</li>
+</ul>
+</li>
+<li><strong>访问控制列表 (ACL)</strong>: 管理员配置一组规则表，防火墙<strong>自上而下</strong>匹配。一旦匹配成功，即执行对应动作 (Allow/Deny)。
+<ul>
+<li><em>策略示例</em>:
+<ul>
+<li><strong>禁止外部 Web 访问</strong>: 丢弃所有目的端口为 80 的出站数据包。</li>
+<li><strong>仅允许特定连接</strong>: 丢弃所有进来的 TCP SYN 包（阻止外部发起连接），但允许特定 Web 服务器除外。</li>
+<li><strong>防 Smurf 攻击</strong>: 丢弃所有发往广播地址的 ICMP 包。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>2. Stateful Packet Filtering (有状态包过滤)</strong></p>
+<p>无状态过滤有时过于“粗暴”且不智能（例如，它无法区分一个 ACK 包是回应现有连接的，还是攻击者伪造的）。有状态过滤解决了这个问题。</p>
+<ul>
+<li><strong>工作机制</strong>: 防火墙维护一张 <strong>连接状态表 (Connection State Table)</strong>，跟踪每个 TCP 连接的生命周期。
+<ul>
+<li>跟踪连接建立 (SYN) 和 拆除 (FIN)。</li>
+<li>设定超时机制，自动清理非活动连接。</li>
+</ul>
+</li>
+<li><strong>决策逻辑</strong>:
+<ul>
+<li>不仅检查头部字段，还检查该数据包是否属于当前已存在的合法连接。</li>
+<li><strong>示例</strong>: 如果一个进来的数据包标志位是 ACK（声称是响应），但状态表中没有对应的连接记录，防火墙会判定其“毫无意义 (make no sense)”并丢弃。</li>
+</ul>
+</li>
+<li><strong>优势</strong>: 比无状态过滤更安全，能过滤掉伪造的后续数据包。</li>
+</ul>
+<p><strong>3. Application Gateways (应用网关)</strong></p>
+<p>上述两种过滤只看网络层和传输层头部，应用网关则深入到<strong>应用层</strong>。</p>
+<ul>
+<li><strong>工作机制</strong>: 针对特定的应用（如 Telnet, FTP, HTTP）设置专门的代理服务器。</li>
+<li><strong>流程示例 (Telnet)</strong>:
+<ol>
+<li>内部用户不能直接 Telnet 到外部主机，路由器会拦截并阻断。</li>
+<li>用户必须先 Telnet 到应用网关。</li>
+<li>网关进行用户身份认证。</li>
+<li>认证通过后，<strong>网关</strong>代理用户与外部主机建立连接，并在两个连接之间转发数据。</li>
+</ol>
+</li>
+<li><strong>优势</strong>: 可以深入检查应用层数据内容，实现基于用户身份的精细控制。</li>
+</ul>
+<hr>
+<h4 id="防火墙的局限性-Limitations">防火墙的局限性 (Limitations)</h4>
+<p>尽管防火墙很有用，但并非万能：</p>
+<ol>
+<li><strong>IP Spoofing (IP 欺骗)</strong>: 路由器只能看 IP 头部，无法验证该 IP 是否真的来自声称的源头，攻击者可以伪造源 IP。</li>
+<li><strong>可用性与复杂性</strong>: 如果要支持多种应用，需要为每个应用部署特定的网关（或复杂的代理配置）。</li>
+<li><strong>客户端配置</strong>: 客户端软件（如浏览器）通常需要手动配置代理地址才能使用网关。</li>
+<li><strong>UDP 处理困难</strong>: 由于 UDP 无连接，防火墙很难判断状态，往往采取“全部允许”或“全部拒绝”的策略，缺乏灵活性。</li>
+<li><strong>内部威胁</strong>: 防火墙防外不防内，无法阻止内部员工的恶意攻击或误操作。</li>
+<li><strong>加密流量</strong>: 如果攻击流量被封装在加密隧道（如 SSL 或 VPN）中，防火墙无法检查内容。</li>
+</ol>
+<hr>
+<h3 id="4-2-Intrusion-Detection-Systems-IDS-入侵检测系统">4.2 Intrusion Detection Systems (IDS, 入侵检测系统)</h3>
+<p>防火墙通常只检查头部 (Packet Filtering)，而 IDS 则进行更深度的分析，用于检测已穿透防火墙的攻击或内部威胁。</p>
+<ul>
+<li>
+<p><strong>核心技术</strong>:</p>
+<ol>
+<li><strong>Deep Packet Inspection (DPI, 深度包检测)</strong>:
+<ul>
+<li>IDS 不仅看头部，还深入检查数据包的<strong>载荷内容 (Contents)</strong>。</li>
+<li><strong>特征匹配</strong>: 将包内的字符串与已知的病毒特征库、攻击代码数据库进行比对。</li>
+</ul>
+</li>
+<li><strong>Correlation (关联分析)</strong>:
+<ul>
+<li>不只看单个包，而是分析<strong>多个数据包</strong>或<strong>多个会话</strong>之间的关联。</li>
+<li><strong>应用场景</strong>:
+<ul>
+<li><strong>Port Scanning (端口扫描)</strong>: 检测某个源 IP 是否在短时间内尝试连接大量不同的端口。</li>
+<li><strong>Network Mapping (网络测绘)</strong>: 检测探测网络拓扑的行为。</li>
+<li><strong>DoS Attack</strong>: 检测流量异常峰值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>部署架构</strong>:</p>
+<ul>
+<li><strong>Sensors (传感器)</strong>: 分布在网络的不同关键节点。
+<ul>
+<li>例如：防火墙外部、防火墙内部、<strong>DMZ (非军事化区)</strong> 区域（放置 Web/FTP/DNS 服务器的地方）。</li>
+</ul>
+</li>
+<li>多点部署允许 IDS 对比不同位置的流量，从而精确定位攻击源和受影响范围。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="5-思考题：智慧家庭安全协议设计-Thinking-Exercise">5. 思考题：智慧家庭安全协议设计 (Thinking Exercise)</h2>
+<p>假设为智慧家庭设计通信协议，涉及：IoT 设备 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><msub><mi>D</mi><mn>1</mn></msub><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi>I</mi><msub><mi>D</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">ID_1...ID_n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">...</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)、网关 (<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><msub><mi>D</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">ID_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>)、数据云、APP。</p>
+<p><strong>需求</strong>: 数据安全、保密性、身份认证、抗重放攻击、轻量级。</p>
+<h3 id="设计思路参考">设计思路参考</h3>
+<ol>
+<li>
+<p><strong>密钥分配</strong>:</p>
+<ul>
+<li>每个设备配置唯一密钥 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">k_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。</li>
+<li>网关 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><msub><mi>D</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">ID_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 存储所有设备的密钥 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">k_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。</li>
+<li>网关拥有自己的密钥 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">k_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，存储在云端。</li>
+</ul>
+</li>
+<li>
+<p><strong>设备到网关的认证 (Lightweight)</strong>:</p>
+<ul>
+<li>数据格式: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>D</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><msub><mi>E</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo stretchy="false">(</mo><mi>I</mi><mi>D</mi><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi>D</mi><mi>a</mi><mi>t</mi><mi>a</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">ID || E_{ki}(ID || Data)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord">∣∣</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ki</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord">∣∣</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mclose">)</span></span></span></span></li>
+<li>网关收到后，根据明文 ID 查找 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>k</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">k_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0315em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 进行解密。</li>
+<li>比对解密出的 ID 与明文 ID 是否一致（认证 + 完整性）。</li>
+</ul>
+</li>
+<li>
+<p><strong>网关到云端的数据上传</strong>:</p>
+<ul>
+<li>汇聚数据: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mi>A</mi><mi>T</mi><mi>A</mi><mo>=</mo><mo stretchy="false">(</mo><mi>I</mi><msub><mi>D</mi><mn>1</mn></msub><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi>D</mi><mi>a</mi><mi>t</mi><msub><mi>a</mi><mn>1</mn></msub><mo stretchy="false">)</mo><mo>+</mo><mo stretchy="false">(</mo><mi>I</mi><msub><mi>D</mi><mn>2</mn></msub><mi mathvariant="normal">∣</mi><mi mathvariant="normal">∣</mi><mi>D</mi><mi>a</mi><mi>t</mi><msub><mi>a</mi><mn>2</mn></msub><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">DATA = (ID_1 || Data_1) + (ID_2 || Data_2)...</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣∣</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣∣</span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord">...</span></span></span></span></li>
+<li>使用 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>E</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub></mrow><annotation encoding="application/x-tex">E_{k0}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0576em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mtight">0</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span> 加密传输。</li>
+<li>引入 Timestamp 或 Nonce 防止重放。</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Network/" class="print-no-link">#Network</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Network - 06.Security-02</div>
+      <div>https://yima-gu.github.io/2026/01/14/Network/Network-06-Security-02/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-06-Security-01/" title="Network - 06.Security-01">
+                        <span class="hidden-mobile">Network - 06.Security-01</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

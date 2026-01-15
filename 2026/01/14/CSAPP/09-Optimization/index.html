@@ -1,0 +1,1215 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Program Optimization (程序性能优化) 1. 性能现状 (Performance Realities)  常数因子至关重要 (Constant factors matter)：在渐进复杂度 (Asymptotic Complexity) 之外，同样的算法逻辑，代码写法的不同可能导致 10:1 的性能差异。 多层级优化 (Optimize at multiple levels)：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 09.Optimization">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/09-Optimization/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Program Optimization (程序性能优化) 1. 性能现状 (Performance Realities)  常数因子至关重要 (Constant factors matter)：在渐进复杂度 (Asymptotic Complexity) 之外，同样的算法逻辑，代码写法的不同可能导致 10:1 的性能差异。 多层级优化 (Optimize at multiple levels)：">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:40:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.351Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 09.Optimization - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 09.Optimization"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:40" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 09.Optimization</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>Program Optimization (程序性能优化)</h1>
+<h2 id="1-性能现状-Performance-Realities">1. 性能现状 (Performance Realities)</h2>
+<ul>
+<li><strong>常数因子至关重要 (Constant factors matter)</strong>：在渐进复杂度 (Asymptotic Complexity) 之外，同样的算法逻辑，代码写法的不同可能导致 10:1 的性能差异。</li>
+<li><strong>多层级优化 (Optimize at multiple levels)</strong>：必须在多个层面进行优化：
+<ul>
+<li>算法 (Algorithm)</li>
+<li>数据表示 (Data representations)</li>
+<li>过程 (Procedures)</li>
+<li>循环 (Loops)</li>
+</ul>
+</li>
+<li><strong>系统认知 (Understand System)</strong>：必须理解程序是如何编译和执行的，如何测量性能瓶颈，以便在不破坏代码模块化 (Modularity) 和通用性 (Generality) 的前提下提升性能。</li>
+</ul>
+<h2 id="2-优化编译器-Optimizing-Compilers">2. 优化编译器 (Optimizing Compilers)</h2>
+<h3 id="2-1-编译器的能力-Capabilities">2.1 编译器的能力 (Capabilities)</h3>
+<ul>
+<li><strong>寄存器分配 (Register Allocation)</strong>：这是最关键的优化之一。CPU 访问寄存器的速度远快于内存。编译器会分析哪些变量使用最频繁，并将它们放入有限的寄存器中，而不是放在栈（内存）上 。</li>
+<li><strong>代码选择与调度 (Code Selection and Ordering)</strong>：编译器会选择最适合当前 CPU 的指令序列，并重新排列指令顺序（Scheduling），以便让 CPU 的流水线更顺畅地运行，掩盖指令延迟 。</li>
+<li><strong>死代码消除 (Dead Code Elimination)</strong>：如果一段代码计算的结果从未被使用，或者一段代码永远无法被执行（例如 <code>if (0) {...}</code>），编译器会直接将其删除，减少代码体积和执行时间 。</li>
+<li><strong>消除微小低效 (Eliminating minor inefficiencies)</strong>：比如去除多余的跳转指令等 。</li>
+</ul>
+<h3 id="2-2-编译器的局限性-Limitations">2.2 编译器的局限性 (Limitations)</h3>
+<p>虽然编译器很聪明，但它必须遵守一个<strong>基本约束 (Fundamental Constraint)</strong>：<strong>绝对不能改变程序的行为</strong> 。这意味着：</p>
+<ol>
+<li><strong>保守策略 (Conservative Strategy)</strong>：
+<ul>
+<li>编译器无法像程序员那样了解代码的“意图”。如果编译器无法确定一个优化是否安全（例如，它不确定两个指针是否指向同一块内存，即<strong>内存别名 Memory Aliasing</strong>），它就必须假设最坏的情况，从而放弃优化 。</li>
+<li><strong>例子</strong>：如果你的代码中有两个指针参数，编译器不敢轻易把其中一个的值缓存在寄存器里太久，因为它担心通过另一个指针的写入可能会修改这个值。</li>
+</ul>
+</li>
+<li><strong>分析范围受限</strong>：
+<ul>
+<li>大多数优化分析仅限于<strong>过程 (Procedure/Function) 内部</strong>。编译器通常看不到函数调用的内部细节（除非内联），因此它必须假设函数调用会有<strong>副作用 (Side-effects)</strong>，比如修改全局变量 。</li>
+<li><strong>全程序分析 (Whole-program analysis)</strong> 虽然存在，但对于大型程序来说，编译时间开销过大，通常不作为默认选项 。</li>
+</ul>
+</li>
+<li><strong>静态信息局限</strong>：
+<ul>
+<li>编译器只能看到代码的静态结构，无法知道运行时变量的具体值（例如 <code>n</code> 到底是大是小）。因此它很难针对特定的运行时情况做极致优化 。</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-通用优化方法-Generally-Useful-Optimizations">3. 通用优化方法 (Generally Useful Optimizations)</h2>
+<p>无论使用何种处理器或编译器，程序员都应尝试的优化手段。</p>
+<h3 id="3-1-代码移动-Code-Motion-预计算-Precomputation">3.1 代码移动 (Code Motion) / 预计算 (Precomputation)</h3>
+<ul>
+<li>
+<p><strong>原理</strong>：减少计算执行的频率。</p>
+</li>
+<li>
+<p><strong>场景</strong>：将计算结果不会改变的代码从循环内部移到循环外部。</p>
+</li>
+<li>
+<p><strong>案例 1：矩阵行访问</strong></p>
+<ul>
+<li><strong>未优化</strong>：在 <code>for (j=0; j&lt;n; j++)</code> 循环内部写 <code>a[n*i + j]</code>。这里 <code>n*i</code> 在每次 <code>j</code> 循环中都要算一次，但其实 <code>i</code> 和 <code>n</code> 在内层循环里没变。</li>
+<li><strong>优化后</strong>：在循环前定义 <code>long ni = n*i;</code>，循环内直接用 <code>a[ni + j]</code>。这减少了 <code>n</code> 次乘法运算 。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>案例 2：过程调用 (<code>strlen</code>) —— 经典反面教材</strong>
+<ul>
+<li><strong>问题代码</strong>：<code>for (i=0; i &lt; strlen(s); i++) { ... }</code></li>
+<li><strong>性能陷阱</strong>：<code>strlen</code> 需要遍历整个字符串来确定长度，复杂度是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>。把它放在循环终止条件里，意味着每次迭代都要执行一次。总复杂度变成了 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><msup><mi>N</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0641em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span> 。</li>
+<li><strong>优化后</strong>：</li>
+</ul>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">int</span> len = <span class="hljs-built_in">strlen</span>(s);<br><span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i &lt; len; i++) &#123; ... &#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>效果</strong>：将复杂度降回 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>。这是一种极大的性能提升，且编译器往往因为担心 <code>strlen</code> 有副作用（虽然标准库函数通常没问题，但编译器视其为黑盒）而不敢自动优化。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-强度削减-Reduction-in-Strength">3.2 强度削减 (Reduction in Strength)</h3>
+<ul>
+<li><strong>原理</strong>：用代价更低 (Simpler/Costly less) 的操作替代高代价操作。</li>
+<li><strong>示例</strong>：
+<ul>
+<li><strong>移位代替乘除</strong>：例如用 <code>x &lt;&lt; 4</code> 代替 <code>16 * x</code>。</li>
+<li><strong>累加代替乘法</strong>：在循环中用 <code>ni += n</code> 代替 <code>ni = n * i</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-公共子表达式共享-Share-Common-Subexpressions">3.3 公共子表达式共享 (Share Common Subexpressions)</h3>
+<ul>
+<li><strong>核心思想</strong>：不要让 CPU 重复计算已经算过的东西 。</li>
+<li><strong>案例：图像处理/矩阵邻居求和</strong>
+<ul>
+<li>假设你要访问像素 <code>(i, j)</code> 的上下左右四个邻居：
+<ul>
+<li>上：<code>(i-1)*n + j</code></li>
+<li>下：<code>(i+1)*n + j</code></li>
+<li>左：<code>i*n + j - 1</code></li>
+<li>右：<code>i*n + j + 1</code></li>
+</ul>
+</li>
+<li><strong>未优化</strong>：代码中直接写上述公式，导致进行了 3 次乘法：<code>i*n</code>, <code>(i-1)*n</code>, <code>(i+1)*n</code> 。</li>
+<li><strong>优化后</strong>  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">long</span> inj = i * n + j; <span class="hljs-comment">// 算出中心点索引，只做一次乘法</span><br>up    = val[inj - n];<br>down  = val[inj + n];<br>left  = val[inj - <span class="hljs-number">1</span>];<br>right = val[inj + <span class="hljs-number">1</span>];<br></code></pre></td></tr></table></figure>
+</li>
+<li>这样只需要 1 次乘法和几次简单的加减法，大大减少了计算量 。</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-优化障碍-Optimization-Blockers">4. 优化障碍 (Optimization Blockers)</h2>
+<h3 id="4-1-过程调用-Procedure-Calls">4.1 过程调用 (Procedure Calls)</h3>
+<ul>
+<li><strong>问题</strong>：编译器通常将函数调用视为<strong>黑盒 (Black Box)</strong>。
+<ul>
+<li>函数可能有<strong>副作用 (Side Effects)</strong>（如修改全局状态），阻止了代码移动。</li>
+<li>编译器难以确定函数返回值在参数不变时是否恒定。</li>
+</ul>
+</li>
+<li><strong>解决方案</strong>：
+<ul>
+<li><strong>内联函数 (Inline functions)</strong>：减少调用开销，允许跨过程优化。</li>
+<li><strong>手动代码移动</strong>：显式地将函数调用（如 <code>strlen</code>）移出循环。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">lower</span><span class="hljs-params">(<span class="hljs-type">char</span> *s)</span> <br>&#123; <br>	<span class="hljs-type">int</span> i; <br>	<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">strlen</span>(s); i++) <br>		<span class="hljs-keyword">if</span> (s[i] &gt;= <span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; s[i] &lt;= <span class="hljs-string">&#x27;Z&#x27;</span>) <br>			s[i] -= (<span class="hljs-string">&#x27;A&#x27;</span> - <span class="hljs-string">&#x27;a&#x27;</span>); <br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="4-2-内存别名-Memory-Aliasing">4.2 内存别名 (Memory Aliasing)</h3>
+<ul>
+<li><strong>定义</strong>：两个不同的内存引用指向同一个物理位置 (Two different memory references specify single location)。</li>
+<li><strong>影响</strong>：编译器<strong>必须假设任何内存写入都可能影响后续的读取</strong>，因此不敢将内存值缓存在寄存器中，导致频繁的内存读写。</li>
+<li><strong>解决方案</strong>：
+<ul>
+<li>引入<strong>局部变量 (Local Variables/Accumulators)</strong>：在循环中使用局部变量累加结果，循环结束后再一次性写入内存。这告诉编译器不需要检查别名。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">sum_rows1</span><span class="hljs-params">(<span class="hljs-type">double</span> *a, <span class="hljs-type">double</span> *b, <span class="hljs-type">long</span> n)</span> &#123;<br>    <span class="hljs-type">long</span> i, j;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;n; i++) &#123;<br>        b[i] = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (j=<span class="hljs-number">0</span>; j&lt;n; j++)<br>            b[i] += a[i*n+j]; <span class="hljs-comment">// ⚠️ 关键点：每次循环都直接读写内存 b[i]</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">sum_rows2</span><span class="hljs-params">(<span class="hljs-type">double</span> *a, <span class="hljs-type">double</span> *b, <span class="hljs-type">long</span> n)</span> &#123;<br>    <span class="hljs-type">long</span> i, j;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;n; i++) &#123;<br>        <span class="hljs-type">double</span> val = <span class="hljs-number">0</span>; <span class="hljs-comment">// ✅ 引入局部变量</span><br>        <span class="hljs-keyword">for</span> (j=<span class="hljs-number">0</span>; j&lt;n; j++)<br>            val += a[i*n+j]; <span class="hljs-comment">// 在寄存器中累加</span><br>        b[i] = val; <span class="hljs-comment">// ✅ 循环结束后只写一次内存</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>但是编译器不回自动进行上面的优化，因为有可能<code>b</code>数组使用的是<code>a</code>中的内存。</p>
+<blockquote>
+<p>编译器总是偏于保守；因此，为了改进代码，程序员必须经常帮助编译器显式地完成代码的优化。</p>
+</blockquote>
+<h2 id="5-利用指令级并行-Exploiting-Instruction-Level-Parallelism-ILP">5. 利用指令级并行 (Exploiting Instruction-Level Parallelism, ILP)</h2>
+<h3 id="5-1-现代-CPU-架构-Modern-CPU-Design">5.1 现代 CPU 架构 (Modern CPU Design)</h3>
+<h4 id="1-超标量-Superscalar">1. 超标量 (Superscalar)</h4>
+<ul>
+<li><strong>定义</strong>：超标量处理器可以在<strong>一个时钟周期内发射并执行多条指令</strong>。</li>
+<li><strong>机制</strong>：CPU 从顺序的指令流中读取指令，但通过硬件动态地将它们分发到多个独立的执行单元上并行处理。</li>
+<li><strong>对比</strong>：传统的标量处理器一个周期只能执行一条指令，而现代超标量处理器（自 Pentium Pro 起）可以同时处理 3-4 条甚至更多。</li>
+</ul>
+<h4 id="2-乱序执行-Out-of-Order-Execution">2. 乱序执行 (Out-of-Order Execution)</h4>
+<ul>
+<li><strong>原理</strong>：指令的执行顺序不需要严格遵守程序代码的编写顺序。</li>
+<li><strong>流程</strong>：
+<ol>
+<li>只要操作数准备好了，指令就可以立即执行，而不必等待前面的慢速指令（如缓存未命中）。</li>
+<li>虽然执行是乱序的，但为了保证程序逻辑正确，<strong>提交（Retirement/Write-back）必须是按顺序的</strong>。</li>
+</ol>
+</li>
+<li><strong>优势</strong>：极大地掩盖了长延迟操作（如内存读取）的开销，防止 CPU 流水线因为单条指令的阻塞而停滞。</li>
+</ul>
+<p>现代 CPU 主要分为两个核心部分：<strong>指令控制单元 (Instruction Control Unit, ICU)</strong> 和 <strong>执行单元 (Execution Unit, EU)</strong>。</p>
+<h4 id="3-指令控制单元-ICU">3. 指令控制单元 (ICU)</h4>
+<p>负责从内存中读取指令，并将其转化为微操作，准备交给执行单元。</p>
+<ul>
+<li><strong>取指控制 (Fetch Control)</strong>：包含分支预测逻辑，决定下一步从哪里读取指令。</li>
+<li><strong>指令译码 (Instruction Decode)</strong>：将复杂的 x86 指令翻译成简单的微指令 (Micro-ops)。</li>
+<li><strong>退役单元 (Retirement Unit)</strong>：
+<ul>
+<li>记录正在执行的指令状态。</li>
+<li>控制寄存器文件的更新。</li>
+<li><strong>关键作用</strong>：确保指令虽然是乱序执行的，但结果是<strong>按顺序提交</strong>到寄存器和内存的。如果预测错误（如分支预测失败），它负责回滚状态并刷新流水线。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-执行单元-EU">4. 执行单元 (EU)</h4>
+<p>负责实际的运算操作。它接收来自 ICU 的微指令，并在操作数就绪时将其分发给具体的功能单元。</p>
+<ul>
+<li><strong>功能单元 (Functional Units)</strong>：现代 CPU 拥有多个冗余的执行端口，可以并行工作。例如：
+<ul>
+<li><strong>Integer ALU</strong>：处理整数加减、逻辑运算。</li>
+<li><strong>Integer Mult/Div</strong>：专门处理整数乘除。</li>
+<li><strong>FP Add</strong>：浮点加法器。</li>
+<li><strong>FP Mult/Div</strong>：浮点乘除法器。</li>
+<li><strong>Load/Store Units</strong>：专门负责内存读写的单元（通常有独立的地址计算逻辑）。</li>
+</ul>
+</li>
+<li><strong>并行能力</strong>：在同一个周期内，CPU 可能同时在做一个浮点乘法、两个整数加法和一个内存读取。</li>
+</ul>
+<h4 id="5-延迟与吞吐量-Latency-vs-Throughput">5.  延迟与吞吐量 (Latency vs. Throughput)</h4>
+<p>这是理解性能界限的关键。</p>
+<ul>
+<li><strong>延迟 (Latency)</strong>：完成一条指令所需的总时间（周期数）。
+<ul>
+<li>例如：浮点乘法可能需要 4-5 个周期，整数除法可能需要 10-20 个周期。</li>
+</ul>
+</li>
+<li><strong>吞吐量 (Throughput)</strong> / <strong>发射时间 (Issue Time)</strong>：连续发射两条相同类型指令之间的最小间隔。
+<ul>
+<li><strong>流水线化 (Pipelining)</strong>：得益于功能单元的流水线设计，即使浮点乘法需要 5 个周期才能算完，CPU 依然可以<strong>每个周期发射一条新的浮点乘法指令</strong>（Issue Time = 1）。</li>
+<li>这意味着如果没有任何依赖，系统的理论吞吐量非常高。</li>
+</ul>
+</li>
+</ul>
+<p><strong>分支预测 (Branch Prediction)</strong></p>
+<ul>
+<li>为了保持流水线满载，CPU 必须在知道分支结果之前就“猜测”下一条指令在哪里。</li>
+<li><strong>投机执行 (Speculative Execution)</strong>：CPU 会执行猜测路径上的指令。如果猜对了，性能极大提升；如果猜错了，必须丢弃所有投机计算的结果（这也是性能开销的主要来源之一）。</li>
+</ul>
+<p>可以把现代 CPU 想象成一个 <strong>“并行小王子”</strong>，它拥有强大的并行处理能力，但需要程序员的配合才能释放潜力。</p>
+<ul>
+<li><strong>硬件能力</strong>：
+<ul>
+<li>算术运算单元通常是完全流水线化的（吞吐量为 1）。</li>
+<li>有多个算术单元（如 2 个加法器，1 个乘法器）。</li>
+<li>可以并行执行加载和存储。</li>
+</ul>
+</li>
+<li><strong>程序员的任务</strong>：
+<ul>
+<li><strong>打破数据依赖</strong>：如果不打破顺序依赖（如 <code>x = x + ...</code>），CPU 只能被迫串行工作，无法利用多余的功能单元。</li>
+<li><strong>利用代码并行性</strong>：通过<strong>循环展开</strong>和<strong>多路累积 (Separate Accumulators)</strong>，人为地创造出多条独立的数据流，让 CPU 的多个功能单元同时忙碌起来。</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-高级优化技术-Advanced-Techniques">6. 高级优化技术 (Advanced Techniques)</h2>
+<p><em>目标：利用 ILP (指令级并行)，打破延迟界限，逼近吞吐量界限。</em></p>
+<h3 id="6-1-性能指标-CPE-Cycles-Per-Element">6.1 性能指标 CPE (Cycles Per Element)</h3>
+<ul>
+<li>
+<p><strong>CPE (Cycles Per Element)</strong>：</p>
+<ul>
+<li><strong>定义</strong>：处理向量中<strong>每个元素</strong>所需的平均时钟周期数。它是衡量循环微观效率的核心指标。</li>
+<li><strong>计算视角</strong>：
+<ul>
+<li><strong>实验测量</strong>：在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi><mi>y</mi><mi>c</mi><mi>l</mi><mi>e</mi><mi>s</mi><mo>=</mo><mi>C</mi><mi>P</mi><mi>E</mi><mo>×</mo><mi>n</mi><mo>+</mo><mi>O</mi><mi>v</mi><mi>e</mi><mi>r</mi><mi>h</mi><mi>e</mi><mi>a</mi><mi>d</mi></mrow><annotation encoding="application/x-tex">Cycles = CPE \times n + Overhead</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal">yc</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">es</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">CPE</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">h</span><span class="mord mathnormal">e</span><span class="mord mathnormal">a</span><span class="mord mathnormal">d</span></span></span></span> 公式中，CPE 对应测量直线的<strong>斜率 (Slope)</strong>。</li>
+<li><strong>理论分析</strong>：通过分析循环体内的<strong>关键路径</strong>和<strong>硬件资源</strong>来估算性能下限。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>延迟界限 (Latency Bound)</strong>：</p>
+<ul>
+<li><strong>定义</strong>：由于指令执行需要时间，且数据之间存在<strong>顺序依赖 (Sequential Dependency)</strong>，导致 CPU 必须等待上一条指令结果生成才能开始下一条。</li>
+<li><strong>理论公式</strong>：<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>理论 CPE</mtext><mo>=</mo><mfrac><mtext>关键路径上的总延迟 (Total Latency)</mtext><mtext>每次迭代处理的元素数 (Unrolling Factor)</mtext></mfrac></mrow><annotation encoding="application/x-tex">\text{理论 CPE} = \frac{\text{关键路径上的总延迟 (Total Latency)}}{\text{每次迭代处理的元素数 (Unrolling Factor)}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">理论</span><span class="mord"> CPE</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">每次迭代处理的元素数</span><span class="mord"> (Unrolling Factor)</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">关键路径上的总延迟</span><span class="mord"> (Total Latency)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+</li>
+<li><strong>意义</strong>：这是<strong>串行代码</strong>的性能瓶颈。如果不打破依赖链（如 <code>x = x * d[i]</code>），无论硬件多么强大，性能都会被锁死在延迟界限上。</li>
+<li><em>例子</em>：浮点乘法延迟为 5 周期。若存在 <code>r = r * ...</code> 的强依赖，即使循环展开 2 次，CPE 依然是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>10</mn><mi mathvariant="normal">/</mi><mn>2</mn><mo>=</mo><mn>5.0</mn></mrow><annotation encoding="application/x-tex">10/2 = 5.0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">10/2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5.0</span></span></span></span>。</li>
+<li><em>突破手段</em>：<strong>重新结合变换 (Reassociation)</strong>，利用结合律改变计算顺序（如 <code>r = r * (x * y)</code>），缩短关键路径。</li>
+</ul>
+</li>
+<li>
+<p><strong>吞吐量界限 (Throughput Bound)</strong>：</p>
+<ul>
+<li><strong>定义</strong>：由 CPU 硬件的物理特性（功能单元数量、发射宽度、流水线能力）决定的理论最大处理速度。</li>
+<li><strong>理论公式</strong>：<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>理论 CPE</mtext><mo>=</mo><mfrac><mn>1</mn><mtext>功能单元的总吞吐能力</mtext></mfrac></mrow><annotation encoding="application/x-tex">\text{理论 CPE} = \frac{1}{\text{功能单元的总吞吐能力}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord cjk_fallback">理论</span><span class="mord"> CPE</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord cjk_fallback">功能单元的总吞吐能力</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+</li>
+<li><strong>意义</strong>：这是程序性能的<strong>物理极限</strong>。当代码中没有数据依赖阻塞时，性能将受限于“CPU 算得有多快”。</li>
+<li><em>例子</em>：如果 CPU 有 2 个乘法器，且每个都能每周期输出 1 个结果（流水线化），那么乘法的极限 CPE 为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1.0</mn><mi mathvariant="normal">/</mi><mn>2</mn><mo>=</mo><mn>0.5</mn></mrow><annotation encoding="application/x-tex">1.0 / 2 = 0.5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1.0/2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.5</span></span></span></span>。</li>
+<li><em>逼近手段</em>：<strong>分离累积变量 (Separate Accumulators)</strong>，创建多路完全独立的计算链（如 <code>x0</code>, <code>x1</code>…），填满 CPU 的所有流水线级数。</li>
+</ul>
+</li>
+</ul>
+<h3 id="6-2-循环展开-Loop-Unrolling">6.2 循环展开 (Loop Unrolling)</h3>
+<ul>
+<li><strong>原理</strong>：增加每次迭代处理的元素数量，减少循环开销（分支预测、索引更新）。</li>
+</ul>
+<ul>
+<li><strong>对整数运算有效</strong>：课件数据显示，对于整数加法和乘法，CPE 确实降低了。这是因为现代 CPU 甚至可以重组简单的整数运算，而且减少了循环辅助指令的干扰 。</li>
+<li><strong>对浮点运算无效 (瓶颈所在)</strong>：对于浮点乘法，CPE 依然卡在 <strong>延迟界限</strong> 上（例如 3.0 或 5.0）。
+<ul>
+<li><strong>原因</strong>：<strong>顺序依赖 (Sequential Dependency)</strong>。</li>
+<li>虽然你写在一行里，但编译器默认是从左到右计算：<code>x = (x OP d[i]) OP d[i+1]</code>。</li>
+<li>第二次 OP 必须等第一次 OP 算出 <code>x</code> 的新值后才能开始。这导致 CPU 的流水线必须空转等待（Stall），无法并行 。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">// 2x Unrolling</span><br><span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; limit; i+=<span class="hljs-number">2</span>) &#123;<br>    x = (x OP d[i]) OP d[i+<span class="hljs-number">1</span>]; <br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs text">r_old (上一轮)<br>   |<br>   v<br>[ Mul 1 ] &lt;--- d[i]       (时刻 T+0 开始)<br>   |<br>   v (中间结果)<br>[ Mul 2 ] &lt;--- d[i+1]     (时刻 T+5 开始，必须等 Mul 1)<br>   |<br>   v<br>r_new (这一轮结果)        (时刻 T+10 完成)<br>   |<br>   v<br>(下一轮...)<br></code></pre></td></tr></table></figure>
+<h3 id="6-3-重新结合变换-Reassociation">6.3 重新结合变换 (Reassociation)</h3>
+<p><strong>原理</strong>： 利用数学上的结合律，改变计算的顺序，<strong>打破对累积变量 <code>x</code> 的依赖链</strong>。</p>
+<ul>
+<li><strong>变换前</strong>：<code>x = (x OP d[i]) OP d[i+1]</code> （必须串行）</li>
+<li><strong>变换后</strong>：<code>x = x OP (d[i] OP d[i+1])</code> （括号内的可以并行） 。</li>
+</ul>
+<p><strong>为什么能提速？</strong></p>
+<ul>
+<li><code>d[i] OP d[i+1]</code> 这部分计算<strong>不依赖</strong>当前的 <code>x</code>。</li>
+<li>当 CPU 正在计算上一轮的 <code>x</code> 更新时，另一个空闲的功能单元可以同时计算 <code>d[i] OP d[i+1]</code> 。</li>
+<li><strong>效果</strong>：这使得关键路径（Critical Path）上的操作减少了，性能可以接近 <strong>2 倍</strong> 提升，突破了延迟界限 。</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs text">时间轴 (Time)<br>  |<br>  |     [ 计算 v0 = d[0]*d[1] ]      [ 计算 v2 = d[2]*d[3] ] ... (支线任务，并行狂奔)<br>  |              |                            |<br>  |              | (5周期后准备好)            | (5周期后准备好)<br>  |              v                            v<br>  |  r_init ---&gt;[ Mul ]---------------------&gt;[ Mul ]---------------------&gt; r_final<br>  |              (主线)                       (主线)<br>  |            耗时 5 周期                  耗时 5 周期<br>  v<br></code></pre></td></tr></table></figure>
+<p><strong>注意</strong>：对于浮点数，<code>(a+b)+c</code> 和 <code>a+(b+c)</code> 结果可能因精度舍入而略有不同，但在大多数高性能计算中通常是可以接受的 。</p>
+<h3 id="6-4-分离累积变量-Separate-Accumulators">6.4 分离累积变量 (Separate Accumulators)</h3>
+<ul>
+<li><strong>原理</strong>：使用多个独立的局部变量并行累积结果，彻底打破顺序依赖。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">x0 = x0 OP d[i];<br>x1 = x1 OP d[i+<span class="hljs-number">1</span>];<br>...<br>*dest = x0 OP x1;<br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>效果</strong>：
+<ul>
+<li><strong>打破依赖</strong>：计算 <code>x0</code> 不需要等 <code>x1</code>，计算 <code>x1</code> 也不需要等 <code>x0</code>。它们是完全独立的<strong>两条指令流</strong> 。</li>
+<li><strong>填满流水线</strong>：如果一个乘法延迟是 5 个周期，通过展开成 5 个或更多独立的累积变量（<code>x0</code>…<code>x4</code>），我们可以让 CPU 在等待 <code>x0</code> 结果出来的间隙，依次发射 <code>x1</code> 到 <code>x4</code> 的计算指令。</li>
+<li><strong>逼近吞吐量界限</strong>：当累积变量足够多（K足够大），所有的功能单元都被喂饱了，CPE 将不再受延迟限制，而是受限于硬件有多少个计算单元（吞吐量界限） 。</li>
+</ul>
+</li>
+</ul>
+<h2 id="7-向量指令-Vector-Instructions">7. 向量指令 (Vector Instructions)</h2>
+<ul>
+<li><strong>原理</strong>：前面的优化虽然并行了，但还是一条指令算一个数（SISD）。<strong>SIMD (Single Instruction Multiple Data)</strong> 允许一条指令同时算多个数（例如一条 <code>addpd</code> 指令同时算 2 个 double 加法） 。</li>
+<li><strong>SSE / AVX</strong>：这是 Intel CPU 提供的具体指令集。</li>
+<li><strong>效果</strong>：通过使用 SIMD，可以进一步将性能提升到超越标量吞吐量界限的水平 。例如，如果标量最优 CPE 是 1.0，向量指令可能达到 0.25（一次处理 4 个）。</li>
+</ul>
+<h2 id="8-Combine-函数优化">8. Combine 函数优化</h2>
+<p>优化的目标是针对一个向量归约函数（Vector Reduction，即计算向量元素的和或积），通过一系列手段降低 <strong>CPE (Cycles Per Element，每元素周期数)</strong>。</p>
+<ul>
+<li><strong>数据结构</strong>：定义了一个 <code>vec</code> 结构体，包含数组长度 <code>len</code> 和数据指针 <code>data</code> 。</li>
+<li><strong>计算任务</strong>：函数 <code>combine</code>，遍历向量的所有元素，计算它们的<strong>和 (Sum)</strong> 或 <strong>积 (Product)</strong> 。
+<ul>
+<li>数据类型包括：<code>Integer</code> (整数) 和 <code>Double FP</code> (双精度浮点数)。</li>
+<li>运算操作包括：<code>Add</code> (+) 和 <code>Mult</code> (*) 。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-起点：低效的原始代码-Combine1">1. 起点：低效的原始代码 (Combine1)</h3>
+<p>这是未经优化的原始版本，虽然逻辑正确，但包含两个严重的性能杀手。</p>
+<h4 id="代码分析">代码分析</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">combine1</span><span class="hljs-params">(vec_ptr v, <span class="hljs-type">data_t</span> *dest)</span> &#123;<br>    <span class="hljs-type">long</span> <span class="hljs-type">int</span> i;<br>    *dest = IDENT; <span class="hljs-comment">// 初始化</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; vec_length(v); i++) &#123; <span class="hljs-comment">// ⚠️ 问题1：循环条件中调用函数</span><br>        <span class="hljs-type">data_t</span> val;<br>        get_vec_element(v, i, &amp;val);      <span class="hljs-comment">// ⚠️ 问题2：边界检查开销</span><br>        *dest = *dest OP val;             <span class="hljs-comment">// ⚠️ 问题3：每次迭代读写内存</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="性能瓶颈">性能瓶颈</h4>
+<ul>
+<li><strong>重复的函数调用</strong>：<code>vec_length(v)</code> 在每次循环迭代中都被调用，复杂度 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mo stretchy="false">(</mo><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">O(N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mclose">)</span></span></span></span>。</li>
+<li><strong>内存别名隐患</strong>：每次迭代都更新 <code>*dest</code>。编译器因担心内存别名，被迫<strong>每次都进行读写内存</strong>。</li>
+<li><strong>CPE</strong>：Integer Add: <strong>29.0</strong>。</li>
+</ul>
+<h3 id="2-第一阶段：基础优化-Combine4">2. 第一阶段：基础优化 (Combine4)</h3>
+<p>这是程序员应该养成的基本编码习惯，消除明显开销。</p>
+<h4 id="优化手段">优化手段</h4>
+<ol>
+<li><strong>代码移动 (Code Motion)</strong>：将 <code>vec_length(v)</code> 移出循环。</li>
+<li><strong>消除内存别名</strong>：引入局部变量 <code>t</code> (Accumulator) 在寄存器中累加，循环结束后再一次性写入 <code>*dest</code>。</li>
+<li><strong>直接数组访问</strong>：使用 <code>get_vec_start</code> 获取数组起始地址，直接通过 <code>d[i]</code> 访问。</li>
+</ol>
+<h4 id="代码演变">代码演变</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">combine4</span><span class="hljs-params">(vec_ptr v, <span class="hljs-type">data_t</span> *dest)</span> &#123;<br>    <span class="hljs-type">int</span> length = vec_length(v);    <span class="hljs-comment">// ✅ 移出循环</span><br>    <span class="hljs-type">data_t</span> *d = get_vec_start(v);<br>    <span class="hljs-type">data_t</span> t = IDENT;              <span class="hljs-comment">// ✅ 使用局部变量</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; length; i++)<br>        t = t OP d[i];             <span class="hljs-comment">// ✅ 寄存器内操作</span><br>    *dest = t;                     <span class="hljs-comment">// ✅ 最终写回内存</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="性能提升">性能提升</h4>
+<ul>
+<li><strong>效果</strong>：消除了循环开销和内存读写。</li>
+<li><strong>CPE</strong>：Integer Add: <strong>2.0</strong>。</li>
+<li><strong>新瓶颈</strong>：撞上了 <strong>延迟界限 (Latency Bound)</strong>。<code>t = t OP d[i]</code> 存在顺序依赖，必须等上一次运算完成。</li>
+</ul>
+<h3 id="3-第二阶段：循环展开-Loop-Unrolling">3. 第二阶段：循环展开 (Loop Unrolling)</h3>
+<p>尝试通过减少循环迭代次数来降低开销。</p>
+<h4 id="优化手段-2">优化手段</h4>
+<ul>
+<li><strong>2x1 循环展开</strong>：每次迭代处理 2 个元素。</li>
+<li><strong>逻辑</strong>：<code>x = (x OP d[i]) OP d[i+1]</code>。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">unroll2a_combine</span><span class="hljs-params">(vec_ptr v, <span class="hljs-type">data_t</span> *dest)</span> <br>&#123;<br>    <span class="hljs-type">int</span> length = vec_length(v);<br>    <span class="hljs-type">int</span> limit = length - <span class="hljs-number">1</span>;           <span class="hljs-comment">// 限制循环边界，防止越界</span><br>    <span class="hljs-type">data_t</span> *d = get_vec_start(v);<br>    <span class="hljs-type">data_t</span> x = IDENT;                 <span class="hljs-comment">// 累积变量</span><br>    <span class="hljs-type">int</span> i;<br><br>    <span class="hljs-comment">/* Combine 2 elements at a time */</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; limit; i += <span class="hljs-number">2</span>) &#123;<br>        x = (x OP d[i]) OP d[i+<span class="hljs-number">1</span>];    <span class="hljs-comment">// ⚠️ 依然存在顺序依赖</span><br>    &#125;<br><br>    <span class="hljs-comment">/* Finish any remaining elements (处理剩下的尾部元素) */</span><br>    <span class="hljs-keyword">for</span> (; i &lt; length; i++) &#123;<br>        x = x OP d[i];<br>    &#125;<br><br>    *dest = x;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="结果分析">结果分析</h4>
+<ul>
+<li><strong>Integer Mult</strong>：CPE 降至 <strong>1.5</strong>（编译器进行了重组优化）。</li>
+<li><strong>Double FP Add/Mult</strong>：<strong>几乎没有提升</strong>。因为依然存在<strong>顺序依赖</strong>，无法突破延迟界限。</li>
+</ul>
+<h3 id="4-第三阶段：打破依赖-ILP-高级优化">4. 第三阶段：打破依赖 (ILP 高级优化)</h3>
+<p>利用 CPU 的 <strong>超标量</strong> 和 <strong>乱序执行</strong> 能力，突破延迟界限。</p>
+<h4 id="方法-A：重新结合变换-Reassociation">方法 A：重新结合变换 (Reassociation)</h4>
+<p>利用结合律改变计算顺序，增加并行度。</p>
+<ul>
+<li><strong>代码变换</strong>：
+<ul>
+<li>原代码：<code>x = (x OP d[i]) OP d[i+1]</code> （串行）</li>
+<li>新代码：<code>x = x OP (d[i] OP d[i+1])</code> （并行）</li>
+</ul>
+</li>
+<li><strong>原理</strong>：<code>d[i] OP d[i+1]</code> 不依赖累积变量 <code>x</code>，可提前并行计算。</li>
+<li><strong>效果</strong>：Double Add CPE 降至 <strong>1.5</strong>，打破了顺序依赖链。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">unroll2aa_combine</span><span class="hljs-params">(vec_ptr v, <span class="hljs-type">data_t</span> *dest)</span> <br>&#123;<br>    <span class="hljs-type">int</span> length = vec_length(v);<br>    <span class="hljs-type">int</span> limit = length - <span class="hljs-number">1</span>;<br>    <span class="hljs-type">data_t</span> *d = get_vec_start(v);<br>    <span class="hljs-type">data_t</span> x = IDENT;<br>    <span class="hljs-type">int</span> i;<br><br>    <span class="hljs-comment">/* Combine 2 elements at a time */</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; limit; i += <span class="hljs-number">2</span>) &#123;<br>        <span class="hljs-comment">// ✅ 关键改变：括号位置变了</span><br>        <span class="hljs-comment">// CPU 可以独立计算 (d[i] OP d[i+1])，不需要等待上一轮的 x</span><br>        x = x OP (d[i] OP d[i+<span class="hljs-number">1</span>]); <br>    &#125;<br><br>    <span class="hljs-comment">/* Finish any remaining elements */</span><br>    <span class="hljs-keyword">for</span> (; i &lt; length; i++) &#123;<br>        x = x OP d[i];<br>    &#125;<br><br>    *dest = x;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h4 id="方法-B：分离累积变量-Separate-Accumulators">方法 B：分离累积变量 (Separate Accumulators)</h4>
+<p>使用多个独立的变量并行累积，彻底利用硬件吞吐量。</p>
+<ul>
+<li><strong>代码变换</strong>：</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-comment">// 2路并行</span><br>x0 = x0 OP d[i];     <span class="hljs-comment">// 流 1</span><br>x1 = x1 OP d[i+<span class="hljs-number">1</span>];   <span class="hljs-comment">// 流 2</span><br>...<br>*dest = x0 OP x1;    <span class="hljs-comment">// 最后合并</span><br></code></pre></td></tr></table></figure>
+<ul>
+<li><strong>原理</strong>：创建两条完全独立的数据依赖链，CPU 同时执行。</li>
+<li><strong>效果</strong>：所有操作的 CPE 大幅下降，逼近 <strong>吞吐量界限 (Throughput Bound)</strong>。这是标量代码的最佳性能。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-type">void</span> <span class="hljs-title function_">unroll2a_combine_separate</span><span class="hljs-params">(vec_ptr v, <span class="hljs-type">data_t</span> *dest)</span> <br>&#123;<br>    <span class="hljs-type">int</span> length = vec_length(v);<br>    <span class="hljs-type">int</span> limit = length - <span class="hljs-number">1</span>;<br>    <span class="hljs-type">data_t</span> *d = get_vec_start(v);<br>    <span class="hljs-type">data_t</span> x0 = IDENT;      <span class="hljs-comment">// 累积变量 1 (负责偶数索引)</span><br>    <span class="hljs-type">data_t</span> x1 = IDENT;      <span class="hljs-comment">// 累积变量 2 (负责奇数索引)</span><br>    <span class="hljs-type">int</span> i;<br><br>    <span class="hljs-comment">/* Combine 2 elements at a time */</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; limit; i += <span class="hljs-number">2</span>) &#123;<br>        x0 = x0 OP d[i];    <span class="hljs-comment">// ✅ 独立的指令流 1</span><br>        x1 = x1 OP d[i+<span class="hljs-number">1</span>];  <span class="hljs-comment">// ✅ 独立的指令流 2</span><br>    &#125;<br><br>    <span class="hljs-comment">/* Finish any remaining elements */</span><br>    <span class="hljs-keyword">for</span> (; i &lt; length; i++) &#123;<br>        x0 = x0 OP d[i];    <span class="hljs-comment">// 将剩余元素合并到 x0</span><br>    &#125;<br><br>    *dest = x0 OP x1;       <span class="hljs-comment">// ✅ 最后将两条流的结果合并</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="5-最终阶段：向量化-Vector-Instructions">5. 最终阶段：向量化 (Vector Instructions)</h3>
+<ul>
+<li><strong>手段</strong>：使用 SSE / AVX 指令集 (SIMD)。</li>
+<li><strong>原理</strong>：单条指令同时运算多个数据。</li>
+<li><strong>效果</strong>：突破标量处理器的吞吐量界限。</li>
+</ul>
+<h3 id="总结：CPE-性能演进表">总结：CPE 性能演进表</h3>
+<table>
+<thead>
+<tr>
+<th><strong>优化阶段</strong></th>
+<th><strong>关键技术</strong></th>
+<th><strong>性能瓶颈</strong></th>
+<th><strong>Int Add CPE</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Combine1</strong></td>
+<td>原始代码</td>
+<td>函数调用、内存读写</td>
+<td>29.0</td>
+</tr>
+<tr>
+<td><strong>Combine4</strong></td>
+<td>代码移动、局部变量</td>
+<td><strong>延迟界限 (顺序依赖)</strong></td>
+<td>2.0</td>
+</tr>
+<tr>
+<td><strong>Unrolling</strong></td>
+<td>循环展开</td>
+<td>延迟界限</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td><strong>Reassoc</strong></td>
+<td>重新结合</td>
+<td>吞吐量界限 (部分并行)</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td><strong>Sep Accum</strong></td>
+<td><strong>分离累积变量</strong></td>
+<td><strong>吞吐量界限 (完全并行)</strong></td>
+<td><strong>1.0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>通过这一系列优化，性能从最初的 29.0 CPE 提升到了 1.0 CPE，实现了近 <strong>29 倍</strong> 的加速。</p>
+<h2 id="9-总结：如何获取高性能-Getting-High-Performance">9.  总结：如何获取高性能 (Getting High Performance)</h2>
+<ol>
+<li><strong>编译器与选项</strong>：使用优秀的编译器并开启 <code>-O1</code> 或更高优化。</li>
+<li><strong>避免低效算法</strong>：警惕隐蔽的算法低效（如循环内的 <code>strlen</code>）。</li>
+<li><strong>编写编译器友好的代码</strong>：
+<ul>
+<li>消除优化障碍（过程调用、内存引用/别名）。</li>
+<li>使用局部变量代替频繁的内存引用。</li>
+</ul>
+</li>
+<li><strong>聚焦最内层循环 (Innermost Loops)</strong>：大部分计算发生在这里。</li>
+<li><strong>针对机器调优</strong>：
+<ul>
+<li>利用指令级并行 (ILP)。</li>
+<li>避免不可预测的分支 (Unpredictable branches)。</li>
+<li>编写对缓存友好 (Cache friendly) 的代码。</li>
+</ul>
+</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 09.Optimization</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/09-Optimization/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-02-Transport-Layer-01/" title="Network - 02.Transport Layer-01">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Network - 02.Transport Layer-01</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/Network/Network-01-Application-Layer/" title="Network - 01.Application Layer">
+                        <span class="hidden-mobile">Network - 01.Application Layer</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,934 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="计算机组成原理笔记：存储器层次结构 (The Memory Hierarchy)              主要内容：本章探讨了如何通过架构设计来弥补 CPU 高速计算与存储器低速访问之间的巨大鸿沟。存储技术 (Storage Technologies)：分析了不同介质的物理特性与权衡。SRAM：快、贵、易失 (用于 CPU 缓存)。DRAM：较慢、较便宜、易失 (用于主存)。Disk&#x2F;SSD：极">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 08.MEM-01">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/08-MEM-01/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="计算机组成原理笔记：存储器层次结构 (The Memory Hierarchy)              主要内容：本章探讨了如何通过架构设计来弥补 CPU 高速计算与存储器低速访问之间的巨大鸿沟。存储技术 (Storage Technologies)：分析了不同介质的物理特性与权衡。SRAM：快、贵、易失 (用于 CPU 缓存)。DRAM：较慢、较便宜、易失 (用于主存)。Disk&#x2F;SSD：极">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T18:30:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.350Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 08.MEM-01 - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 08.MEM-01"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 02:30" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 08.MEM-01</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1>计算机组成原理笔记：存储器层次结构 (The Memory Hierarchy)</h1>
+<div class="note note-success 核心导读：存储器层次结构 (The Memory Hierarchy)">
+            <p><strong>主要内容</strong>：<br>本章探讨了如何通过架构设计来弥补 <strong>CPU 高速计算</strong>与<strong>存储器低速访问</strong>之间的巨大鸿沟。</p><ol><li><strong>存储技术 (Storage Technologies)</strong>：分析了不同介质的物理特性与权衡。<ul><li><strong>SRAM</strong>：快、贵、易失 (用于 CPU 缓存)。</li><li><strong>DRAM</strong>：较慢、较便宜、易失 (用于主存)。</li><li><strong>Disk/SSD</strong>：极慢、极便宜、非易失 (用于海量存储)。</li></ul></li><li><strong>局部性原理 (Locality)</strong>：层次结构生效的<strong>理论基石</strong>。<ul><li><strong>时间局部性</strong>：刚被访问过的很快会被再次访问。</li><li><strong>空间局部性</strong>：刚被访问过的附近的数据很快会被访问。</li></ul></li><li><strong>层次结构设计 (The Hierarchy)</strong>：构建了一个“金字塔”结构 (L0 寄存器 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> L1/L2/L3 缓存 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 主存 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.3669em;"></span><span class="mrel">→</span></span></span></span> 磁盘)。核心机制是 <strong>缓存 (Caching)</strong> —— 总是用更小、更快的上层作为更大、更慢下层的缓冲区。</li></ol><p><strong>Motivation</strong>：<br>程序员想要一个**“无限大、无限快、无限便宜”**的存储器，但物理定律决定了速度越快造价越高、容量越小。<br><strong>存储器层次结构</strong>利用程序的局部性创造了一个完美的幻觉：向 CPU 提供接近 <strong>SRAM 的速度</strong>，同时向程序员提供接近 <strong>磁盘的容量</strong>，从而解决了日益扩大的 <strong>CPU-Memory Gap</strong>。</p>
+          </div>
+<h2 id="1-存储技术-Storage-Technologies">1. 存储技术 (Storage Technologies)</h2>
+<p>计算机利用多种不同的技术来存储信息，它们在速度、容量和成本上各不相同。</p>
+<h3 id="1-1-随机访问存储器-RAM">1.1 随机访问存储器 (RAM)</h3>
+<p>RAM 分为两类：静态 RAM (SRAM) 和 动态 RAM (DRAM)。</p>
+<ul>
+<li>
+<p><strong>SRAM (Static RAM)</strong>：</p>
+<ul>
+<li><strong>原理</strong>：每个位使用 6 个晶体管存储。</li>
+<li><strong>特性</strong>：
+<ul>
+<li><strong>稳定</strong>：只要通电，数据就会保持，不需要刷新。</li>
+<li><strong>抗干扰</strong>：对光和电噪声不敏感。</li>
+<li><strong>速度</strong>：非常快（访问时间约 1x）。</li>
+<li><strong>成本</strong>：非常贵，集成度低。</li>
+</ul>
+</li>
+<li><strong>用途</strong>：主要用于 CPU 的 <strong>高速缓存 (Cache Memories, L1/L2/L3)</strong>。</li>
+</ul>
+</li>
+<li>
+<p><strong>DRAM (Dynamic RAM)</strong>：</p>
+<ul>
+<li><strong>原理</strong>：每个位使用 1 个晶体管和 1 个电容存储。</li>
+<li><strong>特性</strong>：
+<ul>
+<li><strong>不稳定</strong>：电容会漏电，必须周期性地<strong>刷新 (Refresh)</strong>（每几毫秒一次）。</li>
+<li><strong>敏感</strong>：对干扰比较敏感。</li>
+<li><strong>速度</strong>：比 SRAM 慢（访问时间约 10x）。</li>
+<li><strong>成本</strong>：便宜，集成度非常高。</li>
+</ul>
+</li>
+<li><strong>用途</strong>：主要用于 <strong>主存 (Main Memory)</strong> 和图形帧缓冲区。</li>
+<li><strong>增强型 DRAM</strong>：
+<ul>
+<li><strong>SDRAM (Synchronous DRAM)</strong>：与系统时钟同步。</li>
+<li><strong>DDR (Double Data-Rate) SDRAM</strong>：在时钟的上升沿和下降沿都传输数据，提高了带宽 (DDR, DDR2, DDR3, DDR4, DDR5)。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-2-非易失性存储器-Nonvolatile-Memory">1.2 非易失性存储器 (Nonvolatile Memory)</h3>
+<p>RAM 是易失的 (Volatile)，断电后数据丢失。非易失性存储器在断电后仍能保存数据。</p>
+<ul>
+<li><strong>ROM (Read-Only Memory)</strong>：在生产时编程。</li>
+<li><strong>Flash Memory (闪存)</strong>：基于 EEPROM 技术，可以电擦除和重写。
+<ul>
+<li><strong>SSD (固态硬盘)</strong> 就是基于闪存构建的。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-3-磁盘存储-Disk-Storage">1.3 磁盘存储 (Disk Storage)</h3>
+<ul>
+<li><strong>机械硬盘 (Rotating Disks)</strong>：
+<ul>
+<li><strong>结构</strong>：由盘片 (Platters)、表面 (Surfaces)、磁道 (Tracks)、扇区 (Sectors) 和 柱面 (Cylinders) 组成。</li>
+<li><strong>容量</strong>：由记录密度 (Recording density)、磁道密度 (Track density) 和面密度 (Areal density) 决定。</li>
+<li><strong>访问时间 (Access Time)</strong>：是机械运动时间，非常慢（毫秒级）。
+<ol>
+<li><strong>寻道时间 (Seek Time)</strong>：读写头移动到目标柱面的时间（最慢，约 3-9 ms）。</li>
+<li><strong>旋转延迟 (Rotational Latency)</strong>：等待目标扇区转到读写头下的时间（取决于 RPM）。</li>
+<li><strong>传输时间 (Transfer Time)</strong>：读取数据的时间（最快）。</li>
+</ol>
+</li>
+<li><strong>连接</strong>：通过 I/O 总线连接，使用 DMA (直接内存访问) 技术传送数据，不需要 CPU 干预。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-4-固态硬盘-SSD">1.4 固态硬盘 (SSD)</h3>
+<ul>
+<li><strong>结构</strong>：基于闪存 (Flash Memory)。数据按 <strong>页 (Page)</strong> 读写，按 <strong>块 (Block)</strong> 擦除。</li>
+<li><strong>特性</strong>：
+<ul>
+<li>无机械部件，比机械硬盘快、省电、耐用。</li>
+<li><strong>写操作复杂</strong>：在写入一个页之前，必须擦除整个块 (Block)。这导致写操作比读操作慢。</li>
+<li><strong>磨损 (Wear out)</strong>：每个块的擦除次数有限（约 100,000 次）。通过<strong>磨损均衡 (Wear Leveling)</strong> 逻辑来延长寿命。</li>
+</ul>
+</li>
+</ul>
+<h3 id="1-5-存储技术趋势">1.5 存储技术趋势</h3>
+<ul>
+<li><strong>SRAM</strong>：速度跟上 CPU，但容量小，价格贵。</li>
+<li><strong>DRAM</strong>：速度滞后于 CPU，主要提升容量。</li>
+<li><strong>Disk</strong>：容量巨大，但速度极慢。</li>
+<li><strong>CPU-Memory Gap</strong>：CPU 的速度提升远快于内存速度的提升，导致处理器和内存之间的性能差距不断扩大。这迫使我们必须使用<strong>存储器层次结构</strong>。</li>
+</ul>
+<hr>
+<h2 id="2-局部性原理-Locality">2. 局部性原理 (Locality)</h2>
+<p>这是计算机程序的一个基本属性，也是存储器层次结构有效的基础。</p>
+<p><strong>定义</strong>：程序倾向于引用邻近于其他最近引用过的数据项的数据项，或者引用最近引用过的数据项本身。</p>
+<h3 id="2-1-两种局部性">2.1 两种局部性</h3>
+<ol>
+<li>
+<p><strong>时间局部性 (Temporal Locality)</strong>：</p>
+<ul>
+<li>如果一个存储位置被引用了一次，那么它很可能在不久的将来再次被引用。</li>
+<li><strong>例子</strong>：循环中的变量（如 <code>sum</code> 或循环计数器 <code>i</code>），循环体内的指令。</li>
+</ul>
+</li>
+<li>
+<p><strong>空间局部性 (Spatial Locality)</strong>：</p>
+<ul>
+<li>如果一个存储位置被引用了一次，那么程序很可能在不久的将来引用其<strong>附近</strong>的存储位置。</li>
+<li><strong>例子</strong>：按顺序访问数组元素（步长为 1）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-2-代码示例分析">2.2 代码示例分析</h3>
+<ul>
+<li><strong>良好的局部性</strong>：
+<ul>
+<li>步长为 1 的数组访问 (Stride-1 reference pattern)。</li>
+<li>例如：<code>sum += a[i]</code> (C语言中数组行优先存储，按行遍历局部性好)。</li>
+</ul>
+</li>
+<li><strong>差的局部性</strong>：
+<ul>
+<li>大步长的跳转访问。</li>
+<li>例如：按列遍历二维数组 (Stride-N)，这会导致大量的缓存未命中。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="3-存储器层次结构-The-Memory-Hierarchy">3. 存储器层次结构 (The Memory Hierarchy)</h2>
+<p>为了弥补 CPU 和主存/磁盘之间的速度差异，计算机系统采用了分层的存储结构。</p>
+<h3 id="3-1-层次结构设计">3.1 层次结构设计</h3>
+<p>核心思想是：<strong>利用局部性原理，用上一层更小、更快的存储器作为下一层更大、更慢存储器的缓存 (Cache)。</strong></p>
+<ul>
+<li><strong>L0: 寄存器 (Registers)</strong>：CPU 内部，速度最快，容量最小。</li>
+<li><strong>L1: L1 高速缓存 (SRAM)</strong>：在 CPU 芯片上，访问需几个周期。</li>
+<li><strong>L2: L2 高速缓存 (SRAM)</strong>：在 CPU 芯片上，访问需十几个周期。</li>
+<li><strong>L3: L3 高速缓存 (SRAM)</strong>：在 CPU 芯片上，多核共享。</li>
+<li><strong>L4: 主存 (Main Memory - DRAM)</strong>：访问需几百个周期。</li>
+<li><strong>L5: 本地二级存储 (Local Disk)</strong>：访问需几百万个周期。</li>
+<li><strong>L6: 远程存储 (Remote Storage)</strong>：分布式文件系统，网络服务器。</li>
+</ul>
+<h3 id="3-2-缓存的概念-Caches">3.2 缓存的概念 (Caches)</h3>
+<p><strong>缓存</strong>是一个小而快的存储设备，它作为更大、更慢设备的<strong>缓冲区</strong>。</p>
+<ul>
+<li><strong>缓存命中 (Hit)</strong>：CPU 需要的数据刚好在当前层 (Level k) 的缓存中。速度极快。</li>
+<li><strong>缓存未命中 (Miss)</strong>：数据不在当前层，需要从下一层 (Level k+1) 取回数据，并将其放入当前层（可能会替换掉某个现有的块）。</li>
+</ul>
+<h3 id="3-3-缓存未命中的类型-3-C’s">3.3 缓存未命中的类型 (3 C’s)</h3>
+<ol>
+<li><strong>冷启动未命中 (Cold / Compulsory Miss)</strong>：
+<ul>
+<li>缓存是空的，第一次访问某个块时必然发生。</li>
+</ul>
+</li>
+<li><strong>冲突未命中 (Conflict Miss)</strong>：
+<ul>
+<li>由于<strong>放置策略 (Placement Policy)</strong> 限制（例如哈希映射），多个数据块映射到了同一个缓存槽位，导致互相驱逐。即使缓存还有空位，也会发生。</li>
+<li><strong>情况</strong>：缓存明明还有大量的空闲空间（Empty Space），但是你要访问的数据 <code>A</code> 和数据 <code>B</code> 根据映射规则（比如哈希取模），<strong>只能放在同一个坑位里</strong>。</li>
+</ul>
+<ul>
+<li><strong>后果</strong>：当你交替访问 <code>A</code> 和 <code>B</code> 时，它们会互相把对方踢出去（Thrashing，颠簸），导致每次都未命中。</li>
+</ul>
+</li>
+<li><strong>容量未命中 (Capacity Miss)</strong>：
+<ul>
+<li>活动数据集 (Working Set) 的大小超过了缓存的总容量，缓存装不下了。</li>
+<li>程序反复循环访问一个 1MB 的数组，但你的缓存只有 512KB。无论你怎么优化摆放位置，缓存都装不下这么多数据，旧数据必然会被挤出去。</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-4-总结">3.4 总结</h3>
+<ul>
+<li>存储器层次结构创建了一个巨大的存储池，其<strong>成本</strong>像底层存储一样便宜，但向程序提供数据的<strong>速度</strong>却像顶层存储一样快。</li>
+<li>理解存储器层次结构和局部性原理，对于编写高性能程序至关重要。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 08.MEM-01</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/08-MEM-01/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/08-MEM-02/" title="CSAPP - 08.MEM-02">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 08.MEM-02</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/07-PIPE-02/" title="CSAPP - 07.PIPE-02">
+                        <span class="hidden-mobile">CSAPP - 07.PIPE-02</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

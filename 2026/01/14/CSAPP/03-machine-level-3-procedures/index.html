@@ -1,0 +1,1018 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/my_icon.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Yima Gu">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="机器级编程 III: 过程 (Procedures)              主要内容：本章关注计算机如何实现逻辑控制。包括：条件码 (Condition Codes)：CPU 如何通过 ZF, SF 等标志位记住上一次计算的结果。跳转指令 (Jumps)：汇编中没有 if 和 while，只有 goto (即 jmp&#x2F;je)。翻译控制结构：详细讲解了 C 语言中的 if-else、while、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSAPP - 03.Machine-Level Programming III">
+<meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-3-procedures/index.html">
+<meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="机器级编程 III: 过程 (Procedures)              主要内容：本章关注计算机如何实现逻辑控制。包括：条件码 (Condition Codes)：CPU 如何通过 ZF, SF 等标志位记住上一次计算的结果。跳转指令 (Jumps)：汇编中没有 if 和 while，只有 goto (即 jmp&#x2F;je)。翻译控制结构：详细讲解了 C 语言中的 if-else、while、">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-01-14T17:55:00.000Z">
+<meta property="article:modified_time" content="2026-01-15T02:21:02.349Z">
+<meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>CSAPP - 03.Machine-Level Programming III - Yima Gu&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yima-gu.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":"G-JFL0C5NV2V","tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Yima Gu&#39;s Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bg/post.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="CSAPP - 03.Machine-Level Programming III"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-01-15 01:55" pubdate>
+          2026年1月15日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          34 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">CSAPP - 03.Machine-Level Programming III</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1><strong>机器级编程 III: 过程 (Procedures)</strong></h1>
+<div class="note note-success 核心导读：从“结构化”到“线性跳转”">
+            <p><strong>主要内容</strong>：<br>本章关注计算机如何实现逻辑控制。包括：</p><ol><li><strong>条件码 (Condition Codes)</strong>：CPU 如何通过 <code>ZF</code>, <code>SF</code> 等标志位记住上一次计算的结果。</li><li><strong>跳转指令 (Jumps)</strong>：汇编中没有 <code>if</code> 和 <code>while</code>，只有 <code>goto</code> (即 <code>jmp</code>/<code>je</code>)。</li><li><strong>翻译控制结构</strong>：详细讲解了 C 语言中的 <code>if-else</code>、<code>while</code>、<code>for</code> 和 <code>switch</code> 是如何被“降维打击”成汇编中的条件跳转和跳转表的。</li></ol><p><strong>Motivation</strong>：<br>高级语言有优雅的结构（如循环、分支），但底层硬件非常“笨”，只会按顺序执行或跳转。理解这一章，你就能明白<strong>编译器是如何“欺骗”硬件来模拟复杂逻辑的</strong>，也能理解为什么某些写法（如 switch 跳转表）会比其他写法更快。</p>
+          </div>
+<h2 id="3-1-过程-Procedures-的机制"><strong>3.1 过程 (Procedures) 的机制</strong></h2>
+<p>一个过程（或函数）的调用需要一套完整的机制来支持：</p>
+<ol>
+<li><strong>传递控制 (Passing Control)</strong>:
+<ul>
+<li>在调用时，程序必须能跳转到过程的起始地址。</li>
+<li>在过程返回时，程序必须能跳转回调用指令的<em>下一条</em>指令。</li>
+</ul>
+</li>
+<li><strong>传递数据 (Passing Data)</strong>:
+<ul>
+<li>必须能够将<strong>参数 (Arguments)</strong> 传递给过程。</li>
+<li>过程必须能够返回一个<strong>返回值 (Return Value)</strong>。</li>
+</ul>
+</li>
+<li><strong>内存管理 (Memory Management)</strong>:
+<ul>
+<li>过程在执行期间需要能够<strong>分配 (Allocate)</strong> 内存来存储局部变量。</li>
+<li>在过程返回时，必须<strong>释放 (Deallocate)</strong> 这部分内存。</li>
+</ul>
+</li>
+</ol>
+<p>这些机制都是通过机器指令集和一套固定的策略来实现的。这些策略和选择共同构成了 <strong>应用二进制接口 (Application Binary Interface, ABI)</strong>。</p>
+<h2 id="3-2-x86-64-栈-Stack-结构"><strong>3.2 x86-64 栈 (Stack) 结构</strong></h2>
+<p><code>栈 (Stack)</code> 是实现过程机制的核心数据结构。</p>
+<ul>
+<li><strong>栈区域</strong>: 内存中一块特殊的区域，遵循 <code>栈 (Stack)</code> 规则（后进先出, LIFO）来管理。</li>
+<li><strong>增长方向</strong>: 在 x86-64 架构中，栈从高地址<mark>向<strong>低地址</strong>增长</mark>，每次有压栈操作时候<code>%rsp</code>减8。（在64位计算机上，存储地址使用的是<code>64 bits</code>即<code>8 bytes</code>的大小）</li>
+<li><strong>栈指针 (Stack Pointer, %rsp)</strong>:
+<ul>
+<li><code>%rsp</code> 是一个特殊的寄存器<strong>栈指针寄存器</strong>，<mark>它始终指向<strong>栈顶 (Stack Top)</strong></mark>。</li>
+<li>“栈顶”指的是当前栈上<mark><em>最低</em></mark>的内存地址（即最后压入的数据所在的位置）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="栈操作-Stack-Operations"><strong>栈操作 (Stack Operations)</strong></h3>
+<ul>
+<li><strong><code>pushq Src</code> (压栈)</strong>:
+<ol>
+<li>从 <code>Src</code> 获取操作数。</li>
+<li>将 <code>%rsp</code> 减 8 (因为栈向低地址增长)。</li>
+<li>将操作数写入到 <code>%rsp</code> 指向的新地址。</li>
+</ol>
+</li>
+<li><strong><code>popq Dest</code> (出栈)</strong>:
+<ol>
+<li>从 <code>%rsp</code> 指向的地址读取值。</li>
+<li>将 <code>%rsp</code> 加 8。</li>
+<li>将读取的值写入到 <code>Dest</code> (通常是一个寄存器)。</li>
+</ol>
+</li>
+</ul>
+<h2 id="3-3-调用约定-Calling-Conventions"><strong>3.3 调用约定 (Calling Conventions)</strong></h2>
+<p><code>调用约定 (Calling Conventions)</code> 是一套必须遵守的规则，它详细规定了过程调用如何实现。</p>
+<h3 id="1-传递控制-Passing-Control"><strong>1. 传递控制 (Passing Control)</strong></h3>
+<p>控制流的传递依赖于 <code>栈 (Stack)</code> 和两条关键指令：</p>
+<ul>
+<li><strong><code>call label</code> <code>label</code>为地址 (过程调用)</strong>:
+<ol>
+<li>将<strong>返回地址 (Return Address)</strong> 压入栈中。（返回地址是 <code>call</code> 指令<em>之后</em>的那条指令的地址）。</li>
+<li>无条件跳转 (Jump) 到 <code>label</code> 处。</li>
+</ol>
+</li>
+<li><strong><code>ret</code> (过程返回)</strong>:
+<ol>
+<li>从栈顶弹出一个地址（这个地址就是之前 <code>call</code> 压入的返回地址）。</li>
+<li>无条件跳转到这个弹出的地址。</li>
+</ol>
+</li>
+</ul>
+<p>这个例子逐步展示了在一次函数调用中，<code>call</code> 和 <code>ret</code> 指令如何利用栈 (Stack) 来精确地转移程序控制权。</p>
+<p>这其中涉及两个关键寄存器：</p>
+<ul>
+<li><strong>%rsp (栈指针)</strong>: 始终指向栈顶。</li>
+<li><strong>%rip (程序计数器)</strong>: 始终指向下一条要执行的指令。</li>
+</ul>
+<p><strong>场景</strong>: 程序即将从 <code>multstore</code> 函数内部调用 <code>mult2</code> 函数。</p>
+<p><strong><code>call 0x400550 &lt;mult2&gt;</code> 指令执行时，会发生两件核心事情：</strong></p>
+<ol>
+<li><strong>压入返回地址</strong>：
+<ul>
+<li><code>call</code> 指令会查找它<mark>后面紧跟着的那条指令的地址</mark> (在这个例子中是 <code>0x400549</code>)。</li>
+<li>它将这个 “返回地址” 压入 (push) 栈顶。</li>
+<li>因此，栈指针 <code>%rsp</code> 的值会<strong>减少</strong> 8 字节 (例如，从 <code>0x120</code> 变为 <code>0x118</code>)，指向这个新压入的返回地址。</li>
+</ul>
+</li>
+<li><strong>跳转</strong>：
+<ul>
+<li>程序计数器 <code>%rip</code> 的值被更新为 <code>call</code> 指令的目标地址，即 <code>mult2</code> 函数的起始地址 <code>0x400550</code>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>结果</strong>: 程序控制权跳转到了 <code>mult2</code> 函数，并且栈上保存了&quot;返回票根&quot;（即返回地址），以便稍后能正确返回。</p>
+<p><strong>场景</strong>: <code>mult2</code> 函数已经执行完毕，即将执行其最后一条 <code>ret</code> (返回) 指令。</p>
+<p><strong>此时的状态：</strong></p>
+<ul>
+<li>程序计数器 <code>%rip</code> 指向 <code>ret</code> 指令本身的地址 (<code>0x400557</code>)。</li>
+<li>栈指针 <code>%rsp</code> 仍然是 <code>0x118</code>，栈顶仍然保存之前存入的返回地址 <code>0x400549</code>。</li>
+</ul>
+<p><strong>场景</strong>: <code>ret</code> 指令被执行。</p>
+<p><strong><code>ret</code> 指令会执行与 <code>call</code> 相反的操作：</strong></p>
+<ol>
+<li><strong>弹出返回地址</strong>:
+<ul>
+<li><code>ret</code> 指令从栈顶弹出 (pop) 一个值。在这个例子中，它弹出了 <code>0x400549</code>。</li>
+<li>因此，栈指针 <code>%rsp</code> 的值会<strong>增加</strong> 8 字节 (例如，从 <code>0x118</code> 恢复为 <code>0x120</code>)，栈被&quot;清理&quot;干净。</li>
+</ul>
+</li>
+<li><strong>跳转</strong>:
+<ul>
+<li>程序计数器 <code>%rip</code> 的值被更新为刚刚从栈中弹出的那个地址，即 <code>0x400549</code>。</li>
+</ul>
+</li>
+</ol>
+<p><strong>结果</strong>: 程序控制权无缝地返回到了 <code>multstore</code> 函数中，并从 <code>call</code> 指令的下一行 (<code>0x400549</code> 处) 继续执行。</p>
+<h3 id="2-传递数据-Passing-Data"><strong>2. 传递数据 (Passing Data)</strong></h3>
+<ul>
+<li><strong>传递参数 (Arguments)</strong>:
+<ul>
+<li><strong>前 6 个</strong> 整数或指针参数按顺序使用<mark>寄存器</mark>传递：
+<ol>
+<li><code>%rdi</code></li>
+<li><code>%rsi</code></li>
+<li><code>%rdx</code></li>
+<li><code>%rcx</code></li>
+<li><code>%r8</code></li>
+<li><code>%r9</code></li>
+</ol>
+</li>
+<li><strong>第 7 个及以后</strong>的参数通过 <code>栈 (Stack)</code> 传递。</li>
+</ul>
+</li>
+<li><strong>返回数据 (Return Value)</strong>:
+<ul>
+<li>返回值（如果是整数或指针）<strong>总是通过 <mark><code>%rax</code></mark> 寄存器</strong>返回。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-管理本地数据-Managing-Local-Data"><strong>3. 管理本地数据 (Managing Local Data)</strong></h3>
+<p>支持递归 (Recursion) 的语言（如C, Java）要求过程的代码是<strong>可重入的 (Reentrant)</strong>。这意味着一个过程可以调用它自己，而不会破坏上一次调用的状态。</p>
+<p>这是通过为<mark><strong>每一次过程调用</strong>（每一个实例）</mark>分配一个私有的内存区域来实现的，而不是为每一个函数分配一个内存空间，这个区域称为<strong>栈帧 (Stack Frame)</strong>。</p>
+<p>一个“栈帧”就是当一个函数（过程）被调用时，在栈上为它分配的一块专属内存区域，用来存放它运行所需的所有本地信息。</p>
+<p>这张图解从上到下（从高内存地址到低内存地址）展示了栈的结构，分为两个部分：<strong>“Caller Frame” (调用者栈帧)</strong> 和 <strong>“Current Stack Frame” (当前栈帧)</strong>。</p>
+<p>下面是 <strong>“当前栈帧”</strong> 各部分的详细讲解（按压栈顺序，从高地址到低地址）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs text">高地址 (High Address)<br>        |<br>+------------------------------+<br>| ...                          |<br>| A 的局部变量                 |<br>+------------------------------+ &lt;--- A 的栈帧结束<br>| 参数 8 (为 B 准备)           |  \<br>| 参数 7 (为 B 准备)           |   &#125;  B 的“输入” (Arguments 7+ for B)<br>+------------------------------+  /<br>| 返回地址 (Return Address)    |<br>+&lt;mark&gt;=&lt;/mark&gt;&lt;mark&gt;=&lt;/mark&gt;&lt;mark&gt;=&lt;/mark&gt;&lt;mark&gt;=&lt;/mark&gt;&lt;mark&gt;=&lt;/mark&gt;&lt;mark&gt;=&lt;/mark&gt;+ &lt;--- 分界线：B 的栈帧开始 (B&#x27;s Frame)<br>| 保存的寄存器 (Saved Regs)    |<br>| B 的局部变量 (Local Vars)    |<br>| ...                         |<br>+------------------------------+<br>| 参数 7 (为 C 准备)           |  \<br>| 参数 8 (为 C 准备)           |   &#125;  B 的“输出” (Argument Build Area)<br>+------------------------------+  /<br>        |<br>      低地址 (Low Address)    &lt;--- %rsp (栈顶指针)<br></code></pre></td></tr></table></figure>
+<ol>
+<li>Arguments 7+ (第7个及以上的参数)
+<ul>
+<li>这是由<strong>调用者 (Caller)</strong> 放入的。</li>
+<li>根据调用约定，前6个参数通过寄存器传递，而第7个、第8个等后续参数则在调用 <code>call</code> 指令<em>之前</em>被压入栈中，存放在这里。</li>
+</ul>
+</li>
+<li>Return Addr (返回地址)
+<ul>
+<li>这是由 <code>call</code> 指令<strong>自动</strong>压入栈中的。</li>
+<li>它保存了 <code>call</code> 指令的<em>下一条</em>指令的地址。当当前函数执行 <code>ret</code> 指令时，CPU会从这里弹出地址，并跳转回去，从而实现函数返回。</li>
+</ul>
+</li>
+<li>Old <code>%rbp</code> (旧的 <code>%rbp</code>, 可选)
+<ul>
+<li>这是<strong>当前栈帧的开始</strong>。</li>
+<li>如果当前函数需要使用 <code>%rbp</code> 作为帧指针（基址指针），它执行的第一件事就是 <code>pushq %rbp</code>，将<em>调用者</em>的 <code>%rbp</code> 值保存在这里。</li>
+</ul>
+</li>
+<li>Saved Registers + Local Variables (保存的寄存器 + 局部变量)
+<ul>
+<li>这是栈帧的主体部分。</li>
+<li><strong>Saved Registers</strong>: 如果当前函数需要使用任何“被调用者保存 (Callee-Saved)”的寄存器（如 <code>%rbx</code>, <code>%r12-%r15</code>），它必须在修改它们之前，先把它们的原始值保存在这里。</li>
+<li><strong>Local Variables</strong>: 当函数的局部变量太多，寄存器不够用时，或者当有数组、结构体等大型局部变量时，它们会被存放在这里。</li>
+</ul>
+</li>
+<li>Argument Build (参数构造区, 可选)
+<ul>
+<li>这是当前栈帧的<strong>最顶部</strong>（即最低的内存地址）。</li>
+<li>如果当前函数<em>自己</em>需要调用另一个函数，它就会在这里准备传递给那个新函数的参数。</li>
+<li>例如，如果它要调用的函数需要8个参数，它会把第7个和第8个参数放在这里，然后再执行 <code>call</code>。</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>%rsp (栈指针)</strong>
+<ul>
+<li>始终指向<strong>栈顶</strong>（即栈上已使用内存的最低地址）。在图中，它指向 “Argument Build” 区域的底部。</li>
+<li>它会随着 <code>pushq</code> (减小) 和 <code>popq</code> (增大) 或 <code>subq</code> / <code>addq</code> 指令而<strong>动态变化</strong>。</li>
+</ul>
+</li>
+<li><strong>%rbp (帧指针, 可选)</strong>
+<ul>
+<li>如果使用，它会在函数开始时被设置为指向一个<strong>固定位置</strong>（即 “Old %rbp” 的存放位置）。</li>
+<li><strong>它的好处是</strong>：即使 <code>%rsp</code> 因为构造参数等操作而移动，<code>%rbp</code> 仍然保持不变，使得编译器可以用固定的偏移量（如 <code>-8(%rbp)</code> 访问局部变量, <code>+16(%rbp)</code> 访问参数）来访问栈帧中的数据。</li>
+<li><code>%rbp</code> 寄存器随后会更新，指向这个位置，为访问局部变量和参数提供一个固定的基准点。</li>
+<li><strong>逻辑上</strong>，利用保存的 <code>Old %rbp</code> 构建了一个“链表”，让我们能回溯函数的调用历史。当前函数的 <code>%rbp</code>指向当前栈帧的基准点（就是存放 <code>Old %rbp</code> 的那个地址）。这个地址里存的值（即 <code>Old %rbp</code> 的内容）是指向<strong>上一个栈帧</strong>基准点的指针。</li>
+</ul>
+</li>
+</ul>
+<div class="note note-info">
+            <p>在现代 x86-64 架构中，<code>%rbp</code> 不再强制作为栈帧基准，主要出于以下优化考虑：</p><p><strong>1. 现代编译器的静态分析能力 (通过 <code>%rsp</code> 寻址)</strong></p><ul><li><strong>旧机制</strong>：过去因为 <code>%rsp</code> 会随压栈/出栈频繁变动，必须用 <code>%rbp</code> 作为一个固定锚点来定位局部变量（如 <code>-8(%rbp)</code>）。</li><li><strong>新机制</strong>：现代编译器非常智能，能够在编译时<strong>静态计算</strong>出任意时刻 <code>%rsp</code> 相对于局部变量的偏移量。因此，直接使用 <code>%rsp</code> 寻址（如 <code>8(%rsp)</code>）即可，不再需要固定的 <code>%rbp</code>。</li></ul><p><strong>2. 节省宝贵的寄存器资源</strong></p><ul><li>x86-64 只有 16 个通用寄存器。如果不强制 <code>%rbp</code> 做帧指针，它可以被当作<strong>第 17 个通用寄存器</strong>使用，用于存储普通变量，从而提升性能。</li><li>这种优化通常通过编译器选项 <code>-fomit-frame-pointer</code> 开启。</li></ul><p><strong>3. 必须使用 <code>%rbp</code> 的特殊情况</strong><br>虽然通常是可选的，但在以下场景中仍<strong>必须</strong>或<strong>建议</strong>使用：</p><ul><li><strong>变长数组 (VLA) / <code>alloca()</code></strong>：当栈帧大小在编译期无法确定（动态变化）时，编译器无法计算相对于 <code>%rsp</code> 的固定偏移量，<strong>必须</strong>依赖 <code>%rbp</code> 记录栈帧起始位置。<em>只有C99标准支持，标准C++不支持</em></li><li><strong>调试与回溯</strong>：保留 <code>%rbp</code> 链表结构能让调试器（如 GDB）更轻松、直观地解析函数调用栈（Backtrace）。</li></ul>
+          </div>
+<h3 id="4-寄存器保存约定-Register-Saving-Conventions"><strong>4. 寄存器保存约定 (Register Saving Conventions)</strong></h3>
+<p><strong>问题</strong>: 当一个过程（<code>Caller</code>, 调用者）调用另一个过程（<code>Callee</code>, 被调用者）时，<code>Callee</code> 可能会修改 <code>Caller</code> 稍后还需要使用的寄存器。</p>
+<p><strong>解决方案</strong>: x86-64 规定了一套寄存器保存约定：</p>
+<ul>
+<li>
+<p><strong>调用者保存 (Caller-Saved)</strong>:</p>
+<ul>
+<li>寄存器: <code>%rax</code>, <code>%rdi</code>, <code>%rsi</code>, <code>%rdx</code>, <code>%rcx</code>, <code>%r8</code>, <code>%r9</code>, <code>%r10</code>, <code>%r11</code>。</li>
+<li>规则: <code>Caller</code> (调用者) 必须假设 <code>Callee</code> (被调用者) 会<em>破坏</em>这些寄存器的内容。</li>
+<li>行动: 如果 <code>Caller</code> 在 <code>call</code> 之后还需要这些寄存器中的值，<code>Caller</code> 必须自己在 <code>call</code> 指令<em>之前</em>将它们保存（例如压入栈中），并在 <code>call</code> <em>之后</em>恢复它们。</li>
+</ul>
+</li>
+<li>
+<p><strong>被调用者保存 (Callee-Saved)</strong>:</p>
+<ul>
+<li>寄存器: <code>%rbx</code>, <code>%rbp</code>, <code>%r12</code>, <code>%r13</code>, <code>%r14</code>, <code>%r15</code>。</li>
+<li>规则: <code>Caller</code> (调用者) 可以假设 <code>Callee</code> (被调用者) 在返回时会<em>保持</em>这些寄存器的值不变。</li>
+<li>行动: 如果 <code>Callee</code> 需要使用这些寄存器，它必须在<em>使用前</em>保存它们的原始值（通常是压入栈中），并在 <code>ret</code> 指令<em>之前</em>将它们恢复。</li>
+</ul>
+</li>
+<li>
+<p><code>%rsp</code> 是特殊的，它必须在 <code>Callee</code> 返回时被正确恢复。</p>
+</li>
+</ul>
+<h2 id="3-4-递归-Recursion-的实现">3.4 递归 (Recursion) 的实现</h2>
+<p>在 Y86-64 与 x86-64 体系结构中，递归函数的实现<strong>不需要任何特殊的硬件指令支持</strong>。它完全依赖于标准的函数调用机制，即利用栈 (Stack) 的特性和软件层面的调用约定。</p>
+<h3 id="1-核心机制-Core-Mechanisms">1. 核心机制 (Core Mechanisms)</h3>
+<p>递归能够正常工作，主要得益于以下三个基石：</p>
+<ul>
+<li><strong>栈帧 (Stack Frames)</strong>:
+<ul>
+<li>每次函数调用（即使是调用自身）都会在栈上分配一段<strong>私有的存储空间</strong>。</li>
+<li>这保证了不同层级的递归（例如 <code>pcount_r(2)</code> 和 <code>pcount_r(1)</code>）虽然运行同一段代码，但拥有独立的局部变量和返回地址，互不干扰。</li>
+</ul>
+</li>
+<li><strong>寄存器保存约定 (Register Saving Conventions)</strong>:
+<ul>
+<li>这是递归中数据“存活”的关键。</li>
+<li><strong>被调用者保存 (Callee-Saved)</strong> 寄存器（如 <code>%rbx</code>）确保了当内层递归返回时，外层函数保存在其中的临时数据（如当前的计算结果）依然保持原样。</li>
+</ul>
+</li>
+<li><strong>栈的 LIFO 特性</strong>:
+<ul>
+<li>栈的“后进先出”规则与函数调用的 <code>call / ret</code> 模式（P调用Q，Q必须在P之前返回）完美契合。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-实例分析：统计置位位数-pcount-r">2. 实例分析：统计置位位数 (<code>pcount_r</code>)</h3>
+<p>这个例子展示了如何利用 <strong>Callee-Saved 寄存器 (%rbx)</strong> 在递归调用之间保存局部状态。</p>
+<h4 id="2-1-C-语言源代码">2.1 C 语言源代码</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">long</span> <span class="hljs-title function_">pcount_r</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> x)</span> &#123;<br>    <span class="hljs-keyword">if</span> (x == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    <span class="hljs-comment">// 逻辑拆解：</span><br>    <span class="hljs-comment">// 1. 计算 (x &amp; 1)。这个值必须保存下来，等待递归返回。</span><br>    <span class="hljs-comment">// 2. 递归调用 pcount_r(x &gt;&gt; 1)。</span><br>    <span class="hljs-comment">// 3. 将两部分结果相加。</span><br>    <span class="hljs-keyword">return</span> (x &amp; <span class="hljs-number">1</span>) + pcount_r(x &gt;&gt; <span class="hljs-number">1</span>);<br>&#125;<br>````<br><br>#### <span class="hljs-number">2.2</span> 汇编实现详解<br><br><br>```Code snippet<br>pcount_r:<br>    # --- <span class="hljs-number">1.</span> 保存现场 (Prologue) ---<br>    pushq %rbx           # 【关键步骤】<br>                         # %rbx 是 Callee-Saved 寄存器。<br>                         # 在使用它之前，必须把调用者(上一层)的值压栈保存。<br>                         # 这为当前层创建了一个安全的私有寄存器空间。<br><br>    movq %rdi, %rbx      # 将参数 x 复制到 %rbx，方便后续操作。<br><br>    # --- <span class="hljs-number">2.</span> 局部计算 ---<br>    andl $<span class="hljs-number">1</span>, %ebx        # 计算 %rbx = x &amp; <span class="hljs-number">1</span>。<br>                         # 此时，%rbx 保存的是当前这一位的计算结果。<br>                         # 因为它在 Callee-Saved 寄存器中，所以即使下面发生了 call，<br>                         # 这个值也不会被覆盖。<br><br>    shrq %rdi            # 计算 x &gt;&gt; <span class="hljs-number">1</span>。<br>                         # 更新 %rdi，作为传给下一层递归的参数。<br><br>    # --- <span class="hljs-number">3.</span> 递归调用 (Recursive Call) ---<br>    testq %rbx, %rbx     # (可选优化) 检查 x 是否为 <span class="hljs-number">0</span>，处理基准情况<br>    je .L_return_zero    # 如果是<span class="hljs-number">0</span>，跳转处理（省略具体代码，聚焦递归流）<br><br>    call pcount_r        # 【递归发生】<br>                         # 此时当前函数暂停，控制权交给下一层。<br>                         # 关键：下一层也会遵守约定先 pushq %rbx，<br>                         # 所以我们放在 %rbx 里的 (x&amp;<span class="hljs-number">1</span>) 是绝对安全的。<br><br>    # --- <span class="hljs-number">4.</span> 恢复与累加 (Accumulate) ---<br>    # 当 call 返回时：<br>    # %rax = pcount_r(x&gt;&gt;<span class="hljs-number">1</span>) 的返回值 (由下一层计算得出)<br>    # %rbx = (x &amp; <span class="hljs-number">1</span>) 的值 (我们之前算好并保存住的)<br><br>    addq %rbx, %rax      # 结果 = 当前位(x&amp;<span class="hljs-number">1</span>) + 剩余位统计(%rax)<br><br>    # --- <span class="hljs-number">5.</span> 恢复现场 (Epilogue) ---<br>    popq %rbx            # 【关键步骤】<br>                         # 函数返回前，必须将栈里保存的旧 %rbx 弹回寄存器。<br>                         # 做到“借用完原样归还”，不破坏上一层的数据。<br>    ret<br><br>.L_return_zero:<br>    movl $<span class="hljs-number">0</span>, %eax<br>    popq %rbx            # 即使是基准情况返回，也要配对 pop<br>    ret<br></code></pre></td></tr></table></figure>
+<h3 id="3-为什么必须保存寄存器？-Deep-Dive">3. 为什么必须保存寄存器？(Deep Dive)</h3>
+<ul>
+<li><strong>问题</strong>: 为什么不能把 <code>(x &amp; 1)</code> 的结果存在 <code>%rdx</code> 或 <code>%rcx</code> 这种 Caller-Saved 寄存器里？</li>
+<li><strong>原因</strong>: <code>Caller-Saved</code> 寄存器属于“临时工”。当你执行 <code>call pcount_r</code> 时，下一层函数有权随意修改 <code>%rdx</code> 的值。等你从 <code>call</code> 回来时，<code>%rdx</code> 里的数据可能已经变了。</li>
+<li><strong>解决</strong>: 必须使用 <code>Callee-Saved</code> 寄存器（如 <code>%rbx</code>）。约定强制要求：<strong>不管下一层函数怎么运行，它在返回时必须保证 <code>%rbx</code> 的值与调用前一模一样</strong>（通过它自己的 push/pop 实现）。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/CSAPP/" class="print-no-link">#CSAPP</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>CSAPP - 03.Machine-Level Programming III</div>
+      <div>https://yima-gu.github.io/2026/01/14/CSAPP/03-machine-level-3-procedures/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Yima Gu</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年1月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-cc-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/03-machine-level-4-advanced/" title="CSAPP - 03.Machine-Level Programming IV">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">CSAPP - 03.Machine-Level Programming IV</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/01/14/CSAPP/03-machine-level-2-control/" title="CSAPP - 03.Machine-Level Programming II">
+                        <span class="hidden-mobile">CSAPP - 03.Machine-Level Programming II</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"Yima-Gu/Yima-Gu.github.io","repo-id":"R_kgDOPz-yyQ","category":"General","category-id":"DIC_kwDOPz-yyc4CvvD2","theme-light":"preferred_color_scheme","theme-dark":"preferred_color_scheme","mapping":"pathname","reactions-enabled":1,"emit-metadata":0,"input-position":"bottom","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'preferred_color_scheme';
+        var dark = 'preferred_color_scheme';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  
+<script src="/js/mermaid-init.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

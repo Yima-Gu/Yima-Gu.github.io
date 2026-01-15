@@ -1,0 +1,501 @@
+---
+syntax_converted: true
+---
+
+# 计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)
+
+>[!tip] 核心导读：从逻辑门到处理器 
+>**主要内容**： 本章正式进入硬件实现（微架构）层面。我们将跨越数字电路基础，最终设计出一个完整的 CPU。
+>1. **数字电路基础**：组合逻辑（ALU、MUX）与时序逻辑（寄存器、时钟、锁存器）的区别与协作。
+>2. **HCL (Hardware Control Language)**：学习一种简单的硬件描述语言来表达控制逻辑。  
+>3. **SEQ (顺序) 处理器**：这是我们设计的第一个 CPU。它将指令执行分解为 6 个统一阶段（取指、译码、执行、访存、写回、更新），并在**一个时钟周期**内按顺序完成所有操作。
+>4. 本节内容为：**如何用 HCL 这种语言，来定义 SEQ 处理器的控制逻辑**
+>
+>**Motivation**： 这一章打破了软件和硬件的界限。你将看到抽象的指令（如 `addq`）是如何通过导线、逻辑门和时钟信号变成物理上的电信号操作的。这是理解**计算机是如何真正“跑”起来**的关键一步，也是后续学习流水线设计的基础。
+## 1. 逻辑设计基础 (Logic Design Basics)
+
+### 1.1 硬件基本需求
+* **通信 (Communication)**: 将值从一个地方传输到另一个地方。
+* **计算 (Computation)**: 对值进行处理。
+* **存储 (Storage)**: 保存这些值。
+
+### 1.2 电路分类
+
+* **组合电路 (Combinational Logic)**:
+    * 不存储任何信息。
+    * 输出仅取决于当前的输入（经过一定的延迟）。
+    * **无环网络 (Acyclic Network)**: 网络中不能有回路。
+    * 例子: ALU (算术逻辑单元)、MUX (多路复用器)。
+* **时序电路 (Sequential Circuits)**:
+    * 存储状态位。
+    * **寄存器 (Registers)**: 存储单个字，仅在时钟上升沿加载。
+    * **随机访问存储器 (Random-Access Memories)**: 存储多个字 (如寄存器文件、指令内存、数据内存)。
+
+### 1.3 硬件控制语言 (HCL - Hardware Control Language)
+HCL 是一种简单的语言，用于描述处理器的控制逻辑。
+* **数据类型**: `bool` (布尔值), `int` (字)。
+* **操作**: 
+	* 布尔运算: `&&` (AND), `||` (OR), `!` (NOT)。 
+	* 字比较: ` ==`, `!=`, `<`, `<=`, `>`, `>=`。
+	 * **集合成员 (Set Membership)**: `A in { B, C, D }`。 
+* **多路复用 (MUX) 描述**: 使用 Case 表达式。
+	```c 
+	[ test1 : val1; test2 : val2; 1 : default_val; ] // 按顺序评估，返回第一个成功测试对应的值 
+	```
+
+---
+
+
+```mermaid
+graph TD
+    %% 样式定义
+    classDef blueprint fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef material fill:#fff9c4,stroke:#fbc02d,stroke-width:2px;
+    classDef building fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px;
+    classDef glue fill:#f3e5f5,stroke:#7b1fa2,stroke-dasharray: 5 5;
+
+    subgraph ISA_Layer [ISA: 需求说明书 / 蓝图]
+        direction TB
+        I1("定义状态 (State)<br/>(寄存器 %rax, PC, 条件码)"):::blueprint
+        I2("定义指令 (Instruction)<br/>(编码: 60=addq, 行为)"):::blueprint
+        I3("定义功能 (Function)<br/>(如: addq 需要加法运算)"):::blueprint
+    end
+
+    subgraph Logic_Layer [Logic: 建筑材料 / 工具]
+        direction TB
+        L1("组合逻辑 (计算)<br/>ALU, MUX, 加法器"):::material
+        L2("时序逻辑 (存储)<br/>寄存器, 时钟, 内存"):::material
+    end
+
+    subgraph HCL_Layer [HCL: 胶水 / 控制逻辑]
+        H1(HCL 语言):::glue
+    end
+
+    subgraph SEQ_Layer [SEQ: 最终建筑 / 实现方案]
+        S1("SEQ 处理器微架构<br/>(单周期执行 6 阶段)"):::building
+    end
+
+    %% 关系连接
+    I1 -->|决定硬件需求| L2
+    I2 -->|决定解码逻辑| L1
+    I3 -->|决定计算单元| L1
+
+    %% 修复部分：拆分连线并去掉了单引号
+    I1 ==>|规定 做什么 What| SEQ_Layer
+    I2 ==>|规定 做什么 What| SEQ_Layer
+    I3 ==>|规定 做什么 What| SEQ_Layer
+    
+    L1 ==>|提供 怎么做 How| SEQ_Layer
+    L2 ==>|提供 怎么做 How| SEQ_Layer
+    
+    L1 & L2 -.-> H1
+    H1 -.->|指挥数据流动| S1
+```
+
+## 2. SEQ 处理器概述 (SEQ Processor Overview)
+
+**SEQ (Sequential)** 处理器的核心设计思想是：**在一个时钟周期内，顺序地完成一条指令的所有执行步骤**。
+
+### 2.1 设计策略：复用 (Reuse)
+* 将每条不同指令所需的计算步骤映射到一个统一的**通用框架**中。
+* 共享硬件单元（如 ALU、内存），通过控制逻辑来决定每条指令具体使用哪些功能。
+
+### 2.2 六大阶段 (The 6 Stages)
+所有 Y86-64 指令的执行都被组织成以下 6 个阶段：
+
+1.  **取指 (Fetch)**: 从指令内存读取指令字节，计算下一条指令地址 (`valP`)。
+2.  **译码 (Decode)**: 从寄存器文件读取操作数 (`valA`, `valB`)。
+3.  **执行 (Execute)**: ALU 执行计算 (`valE`)，设置条件码 (CC)。
+4.  **访存 (Memory)**: 读写数据内存 (`valM`)。
+5.  **写回 (Write Back)**: 将结果写回寄存器文件。
+6.  **更新 PC (PC Update)**: 更新程序计数器，指向下一条指令。
+
+
+```mermaid
+flowchart LR
+    %% 阶段定义
+    subgraph Stage1 ["1: 取指 Fetch"]
+        direction TB
+        S1_ISA["ISA: 规定指令字节编码<br/>如 rmmovq 占10字节"]
+        S1_HW["硬件: Instruction Memory<br/>Split/Align 逻辑"]
+        S1_ACT["动作: 读内存, 拆分icode/ifun<br/>计算 valP"]
+        S1_ISA --> S1_HW --> S1_ACT
+    end
+
+    subgraph Stage2 ["2: 译码 Decode"]
+        direction TB
+        S2_ISA["ISA: 规定操作数寄存器<br/>如 rA, rB"]
+        S2_HW["硬件: Register File<br/>多端口读取"]
+        S2_ACT["动作: 读 srcA, srcB<br/>得到 valA, valB"]
+        S2_ISA --> S2_HW --> S2_ACT
+    end
+
+    subgraph Stage3 ["3: 执行 Execute"]
+        direction TB
+        S3_ISA["ISA: 规定运算行为<br/>如 addq 做加法"]
+        S3_HW["硬件: ALU<br/>条件码寄存器 CC"]
+        S3_ACT["动作: ALU 计算 valE<br/>设置条件码"]
+        S3_ISA --> S3_HW --> S3_ACT
+    end
+
+    subgraph Stage4 ["4: 访存 Memory"]
+        direction TB
+        S4_ISA["ISA: 规定内存读写<br/>如 popq, rmmovq"]
+        S4_HW["硬件: Data Memory"]
+        S4_ACT["动作: 读/写内存<br/>得到 valM"]
+        S4_ISA --> S4_HW --> S4_ACT
+    end
+
+    subgraph Stage5 ["5: 写回 Write Back"]
+        direction TB
+        S5_ISA["ISA: 规定结果存回位置<br/>如 %rax, %rsp"]
+        S5_HW["硬件: Register File<br/>写端口"]
+        S5_ACT["动作: 写 dstE, dstM<br/>更新寄存器"]
+        S5_ISA --> S5_HW --> S5_ACT
+    end
+
+    subgraph Stage6 ["6: 更新 PC Update"]
+        direction TB
+        S6_ISA["ISA: 规定下条指令<br/>顺序 或 跳转"]
+        S6_HW["硬件: PC 寄存器<br/>MUX 多路复用器"]
+        S6_ACT["动作: 选择 valP/valC/valM<br/>写入 PC"]
+        S6_ISA --> S6_HW --> S6_ACT
+    end
+
+    %% 连接各阶段形成流
+    Stage1 --> Stage2 --> Stage3 --> Stage4 --> Stage5 --> Stage6
+    
+    %% 样式
+    classDef isa fill:#e3f2fd,stroke:#1565c0,color:black;
+    classDef hw fill:#fff3e0,stroke:#ef6c00,color:black;
+    classDef act fill:#e8f5e9,stroke:#2e7d32,color:black;
+    
+    class S1_ISA,S2_ISA,S3_ISA,S4_ISA,S5_ISA,S6_ISA isa;
+    class S1_HW,S2_HW,S3_HW,S4_HW,S5_HW,S6_HW hw;
+    class S1_ACT,S2_ACT,S3_ACT,S4_ACT,S5_ACT,S6_ACT act;
+```
+
+
+## 3. SEQ 硬件实现详解 (Hardware Implementation)
+
+<img src="12-sequential.pdf#page=17&rect=7,30,700,532" alt="12-sequential, p.17">
+
+在 SEQ 处理器的硬件设计图中，不同的连线样式代表了不同宽度的数据流：
+
+**1. 粗实线 (Thick Lines)**
+* **含义**: 表示 **64位 (64-bit)** 的字数据 (Word values)。
+* **用途**: 用于传输主要的程序数据和地址。
+* **示例**:
+    * 程序计数器的值 (`PC`)
+    * 寄存器中的数据 (`valA`, `valB`)
+    * ALU 计算结果 (`valE`)
+    * 从内存读取的数据 (`valM`)
+    * 内存地址
+
+**2. 细实线 (Thin Lines)**
+* **含义**: 表示 **4-8位 (4-8 bit)** 的较小数值。
+* **用途**: 通常用于传输索引、ID 或指令的组成部分。
+* **示例**:
+    * 寄存器 ID (Register IDs): 如 `srcA`, `srcB`, `dstE`, `dstM` (4-bit)。
+    * 指令代码 (`icode`) 和功能代码 (`ifun`) (4-bit)。
+    * 指令中的寄存器指示字节 (`rA`, `rB`)。
+
+**3. 虚线 (Dotted Lines)**
+* **含义**: 表示 **1位 (1-bit)** 的数值。
+* **用途**: 用于传输布尔值 (Boolean) 或控制信号 (Control Signals)。
+* **示例**:
+    * 条件标志 (`Cnd`): 决定跳转是否发生。
+    * 指令有效性信号 (`instr_valid`)。
+    * 内存错误信号 (`imem_error`, `dmem_error`)。
+    * 时钟信号 (`Clock`)。
+
+> [!info] 硬件图例解码 (Reading the Diagram)
+> 课件中硬件架构图的视觉语言非常关键，它是看懂数据通路的基础：
+>
+> **1. 硬件单元 (方框颜色)**
+> * **蓝色方框**: 预先设计好的**硬件黑盒**（如内存、ALU、寄存器文件）。我们只管使用它们的功能，不关心内部如何实现。
+> * **灰色方框**: **控制逻辑 (Control Logic)**。这是本章的核心，通常用 **HCL** 语言描述。它们像开关一样，决定了数据在电线中如何流动。
+> * **白色椭圆**: 信号标签，用于标注线路上流动的是什么值。
+>
+> **2. 数据流连线 (线条样式)**
+> * **粗实线**: 传输 **64位** 字数据 (Word)，例如寄存器里的值 (`%rax`)、内存读出的数据 (`valM`)。
+> * **细实线**: 传输 **4-8位** 数据，例如寄存器 ID (`srcA`, `rA`)、指令功能码 (`ifun`)。
+> * **虚线**: 传输 **1位** 布尔信号 (Bit)，例如条件码跳转信号 (`Cnd`)、时钟信号、或者控制逻辑的输出（如 `mem_read`）。
+
+
+> [!important] SEQ 数据通路核心信号 (Key Signals)
+>
+> **1. 取指阶段 (Fetch) 产生的信号**
+> * **`valP` (Next PC)**:
+>     * **含义**: 下一条指令的地址 (`PC` + 当前指令长度)。
+>     * **作用**: 用于顺序更新 PC，或作为 `call` 指令压栈的**返回地址**。
+> * **`valC` (Constant)**:
+>     * **含义**: 指令中嵌入的 **8 字节常数**。
+>     * **作用**: 用作立即数 (`irmovq`)、内存地址偏移量 (`rmmovq`) 或跳转目标地址。
+>
+> **2. 译码阶段 (Decode) 读出的信号**
+> * **`valA`**:
+>     * **含义**: 寄存器 A 的值。通常读取 `rA`，但在 `popq`/`ret` 中读取 **`%rsp`**。
+> * **`valB`**:
+>     * **含义**: 寄存器 B 的值。通常读取 `rB`，但在栈操作 (`push`/`pop`/`call`/`ret`) 中读取 **`%rsp`**。
+>
+> **3. 计算与访存阶段 (Execute & Memory) 产生的信号**
+> * **`valE` (ALU Result)**:
+>     * **含义**: **ALU 计算结果**。
+>     * **作用**: 可能是算术运算结果、计算出的**有效内存地址**、或增减后的**新栈指针**。
+> * **`valM` (Memory Value)**:
+>     * **含义**: **从数据内存读出的值**。
+>     * **作用**: 用于 `mrmovq` 写回寄存器，或 `pop`/`ret` 恢复数据。
+
+### 3.1 取指阶段 (Fetch Stage)
+
+**阶段目标**：从内存中读出当前指令，弄清楚它是谁，有多长，下一条指令在哪里 (`valP`)。
+
+<img src="12-sequential.pdf#page=18&rect=10,30,697,523" alt="12-sequential, p.18|575">
+
+* **硬件单元**:
+	- **PC**: 提供当前地址。
+	- **指令内存 (Instruction Memory)**: 一次性读出 10 个字节（最长指令长度）。
+	- **Split (分割单元)**: 把第 1 个字节切成 `icode` (指令代码) 和 `ifun` (功能代码) 。
+	- **Align (对齐单元)**: 把剩下的字节整理好，提取出寄存器指示符 `rA`, `rB` 和常数 `valC` 。
+* **控制逻辑 (HCL)**:
+    * **Instr Valid**: 检查 `icode` 是否合法。
+    * **Need regids**: 判断指令是否包含寄存器字节 (如 `IRRMOVQ`, `IOPQ` 等)。
+      <img src="12-sequential.pdf#page=21&rect=4,1,716,535" alt="12-sequential, p.21|575">
+    * **Need valC**: 判断指令是否包含常数 (如 `IIRMOVQ`, `IRMMOVQ`)。
+    * **PC Increment**: 计算 `valP = PC + 1 + r + 8i` (其中 r 为寄存器字节长, i 为常数字节长)。`i`和 `r`都是`bool`量
+
+
+> [!example] **典型指令行为**
+> **核心逻辑**：读指令，定长度，算下个 PC (`valP`)。
+> * **`OPq rA, rB` (整数运算)**:
+>     * `icode:ifun` ← `M1[PC]`
+>     * `rA:rB` ← `M1[PC+1]`
+>     * `valP` ← `PC + 2`
+> * **`irmovq V, rB` (立即数传送)**:
+>     * 读出 `rA:rB` 和 `valC` (8字节常数)。
+>     * `valP` ← `PC + 10` (1 + 1 + 8)。
+> * **`popq rA` (出栈)**:
+>     * `icode:ifun` ← `M1[PC]`
+>     * `rA:rB` ← `M1[PC+1]`
+>     * `valP` ← `PC + 2`
+
+
+### 3.2 译码阶段 (Decode Stage)
+
+**阶段目标**：从寄存器文件 (Register File) 中读取所需的操作数 (`valA`, `valB`)。
+
+<img src="12-sequential.pdf#page=24&rect=11,6,706,521" alt="12-sequential, p.24|650">
+<img src="12-sequential.pdf#page=25&rect=7,11,703,528" alt="12-sequential, p.25|650">
+
+- **硬件动作**：
+    - 寄存器文件有两个读端口 (A 和 B)，可以同时读出两个值 。
+- **HCL 控制逻辑 (重点)**：
+    - **`srcA` (读端口 A 地址)**：通常读指令里的 `rA`。**特例**：如果是 `popq` 或 `ret` 指令，它们需要弹栈，所以必须读栈指针 `%rsp` 。
+    - **`srcB` (读端口 B 地址)**：通常读 `rB`。**特例**：`pushq`, `popq`, `call`, `ret` 都要操作栈，所以要读 `%rsp` 。
+
+> [!example] **典型指令行为追踪**
+> **核心逻辑**：确定读端口 `srcA` 和 `srcB` 的地址，读出 `valA` 和 `valB`。
+> * **`OPq rA, rB`**:
+>     * `srcA` = `rA` (读操作数A) → 得到 `valA`
+>     * `srcB` = `rB` (读操作数B) → 得到 `valB`
+> * **`pushq rA`**:
+>     * `srcA` = `rA` (读要压栈的值) → 得到 `valA`
+>     * `srcB` = `%rsp` (读栈指针) → 得到 `valB`
+> * **`popq rA` (重点考点)**:
+>     * `srcA` = `%rsp` (读栈指针，用于后续**内存读取地址**) → 得到 `valA`
+>     * `srcB` = `%rsp` (读栈指针，用于后续**ALU加法**) → 得到 `valB`
+>     * *注：这里同时从两个端口读取 `%rsp` 的旧值。*
+
+### 3.3 执行阶段 (Execute Stage)
+
+**阶段目标**：让 ALU (算术逻辑单元) 进行计算，得到结果 `valE`。
+
+<img src="12-sequential.pdf#page=27&rect=12,14,708,519" alt="12-sequential, p.27|625">
+<img src="12-sequential.pdf#page=28&rect=13,0,706,529" alt="12-sequential, p.28|625">
+<img src="12-sequential.pdf#page=29&rect=11,8,697,529" alt="12-sequential, p.29|625">
+
+* **硬件单元**:
+    * **ALU**: 执行算术/逻辑运算，生成 `valE`。
+    * **CC**: 条件码寄存器 (ZF, SF, OF)。
+    * **cond**: 根据 CC 和 `ifun` 计算条件标志 `Cnd` (用于跳转或条件传送)。
+* **控制逻辑 (HCL)**:
+    * **aluA**: 选择 ALU 输入 A。
+        * `valA`: 用于算术运算。
+        * `valC`: 用于地址计算 (如 `rmmovq`, `mrmovq`)。
+        * `-8` / `+8`: 用于栈指针调整 (`call`, `push`, `ret`, `pop`)。
+    - **`aluB` (输入 B)**：通常选 `valB`。
+    * **alufun**: 选择 ALU 功能 (加、减、与、异或)。
+    * **Set CC**: 决定这次计算要不要更新条件码（只有算术指令更新，跳转指令不更新）
+
+
+> [!example] **典型指令行为追踪**
+> **核心逻辑**：ALU 计算 `valE`，可能更新 CC。
+> * **`OPq rA, rB`**:
+>     * `valE` ← `valB` OP `valA`
+>     * **更新 CC** (ZF, SF, OF)
+> * **`rmmovq rA, D(rB)` (写内存)**:
+>     * `valE` ← `valB` + `valC` (计算有效地址：基址+偏移)
+>     * **不更新 CC**
+> * **`popq rA`**:
+>     * `valE` ← `valB` + 8 (栈指针 +8)
+> * **`call Dest`**:
+>     * `valE` ← `valB` - 8 (栈指针 -8)
+
+
+### 3.4 访存阶段 (Memory Stage)
+
+**阶段目标**：如果指令需要，就去读写数据内存（注意不是指令内存）。
+
+<img src="12-sequential.pdf#page=30&rect=13,76,696,520" alt="12-sequential, p.30|600">
+
+* **硬件单元**: **数据内存 (Data Memory)**，读出一个字 (`valM`) 或写入一个字。
+* **控制逻辑 (HCL)**:
+    * **Mem. addr**: 选择内存地址。通常是 `valE` (计算出的有效地址) 或 `valA` (如 `popq`/`ret` 的栈顶地址)。
+    * **Mem. read/write**: 控制读写信号。
+    * **Stat**: 生成指令状态 (AOK, HLT, ADR, INS)。
+
+> [!note] 状态码 (Stat) 的生成逻辑
+> 处理器不仅计算数据，还要时刻监控自身的健康状态。`Stat` 寄存器由 HCL 逻辑直接生成，用于告诉操作系统当前发生了什么：
+>
+> ```c
+> int Stat = [
+>     imem_error || dmem_error : SADR;  // 内存地址异常 (如访问越界)
+>     !instr_valid             : SINS;  // 非法指令异常 (遇到不能识别的编码)
+>     icode == IHALT           : SHLT;  // 遇到 halt 指令，正常停机
+>     1                        : SAOK;  // 一切正常 (Default)
+> ];
+> ```
+
+
+<img src="12-sequential.pdf#page=32&rect=13,0,699,518" alt="12-sequential, p.32|600">
+
+`call`指令将返回地址压栈，`valP`的值是之前计算的下一条指令的地址`PC + 1 + r + 8i`，`valE`是`%rsp - 8`，新的栈顶地址。
+
+> [!example] **典型指令行为追踪**
+> **核心逻辑**：读 (`valM`) 或 写 内存。
+> * **`rmmovq rA, D(rB)`**:
+>     * 写内存：`M[valE]` ← `valA` (将寄存器值写入地址)。
+> * **`mrmovq D(rB), rA`**:
+>     * 读内存：`valM` ← `M[valE]` (从地址读出数据)。
+> * **`popq rA`**:
+>     * 读内存：`valM` ← `M[valA]` (注意：使用**旧栈指针** `valA` 读栈顶数据)。
+> * **`call Dest`**:
+>     * 写内存：`M[valE]` ← `valP` (将**返回地址** `valP` 压入**新栈顶** `valE`)。
+
+
+### 3.5 写回阶段 (Write Back)
+
+**阶段目标**：把计算结果 (`valE`) 或内存读出的结果 (`valM`) 写回到寄存器文件。
+
+* **写端口 (Write Ports)**: E 和 M，地址为 `dstE`（**ALU 计算结果** (`valE`) 的目标寄存器 ID）, `dstM`（**内存读取结果** (`valM`) 的目标寄存器 ID）。
+* **控制逻辑 (HCL)**:
+    * **`dstE`**: 决定写端口 E 的目标寄存器 (通常写入 ALU 的计算结果)，通常写回 `rB`。
+        * 条件传送 (`cmovXX`)：如果条件不满足 (`!Cnd`)，则设为 `RNONE` (不写入)。
+        * `pushq`, `popq`, `call`, `ret`：更新 `%rsp`。
+    - **`dstM` (写端口 M 地址)**：通常写回 `rA` (比如 `popq rA` 读出的值要给 `rA`) 。
+
+>[!note] **为什么需要两个写端口 (`dstE` 和 `dstM`)？**
+>这是 SEQ 处理器设计中的一个关键点，主要是为了支持 **`popq` (出栈)** 这种复杂指令：
+>- **`popq rA` 指令**在一个周期内需要同时修改两个寄存器：
+>	1. **栈指针 `%rsp`** 需要更新（加 8）：这个值由 ALU 计算得出 (`valE`)，写入 **`dstE`** (`%rsp`) 。
+>	2. **目标寄存器 `rA`** 需要存入弹出的数据：这个值由内存读出 (`valM`)，写入 **`dstM`** (`rA`) 。
+>	
+>如果没有两个写端口，`popq` 指令就无法在一个时钟周期内完成。
+
+> [!example] **典型指令行为追踪**
+> **核心逻辑**：设置端口 `dstE` (ALU结果) 和 `dstM` (内存结果) 的写入目标寄存器。
+> * **`OPq rA, rB`**:
+>     * `dstE` = `rB` (写回计算结果)。
+> * **`popq rA` (双写操作)**:
+>     * `dstE` = `%rsp` (更新栈指针)。
+>     * `dstM` = `rA` (写入弹出的数据)。
+> * **`call Dest` / `ret` / `pushq`**:
+>     * `dstE` = `%rsp` (更新栈指针)。
+> * **`cmovXX` (条件传送)**:
+>     * 如果条件 `Cnd` 成立：`dstE` = `rB`。
+>     * 如果不成立：`dstE` = `RNONE` (什么都不写)。
+
+### 3.6 更新 PC 阶段 (PC Update Stage)
+
+<img src="12-sequential.pdf#page=35&rect=14,11,705,528" alt="12-sequential, p.35|500">
+
+* **控制逻辑 (HCL)** (`new_pc`):
+    * `call`: 设置为目标地址 `valC`。
+    * `jXX` (条件跳转): 如果跳转 (`Cnd` 为真) 设为 `valC`，否则设为 `valP`。
+    * `ret`: 设置为返回地址 `valM`。
+    * 其他: 默认设为 `valP` (下一条指令)。
+
+> [!example] **典型指令行为追踪**
+> **核心逻辑**：决定下一条指令地址 `PC`。
+> * **顺序执行 (`OPq`, `push`, `pop` 等)**:
+>     * `PC` ← `valP`
+> * **`call Dest`**:
+>     * `PC` ← `valC` (跳转到目标函数地址)。
+> * **`ret`**:
+>     * `PC` ← `valM` (跳转到从栈里弹出的返回地址)。
+> * **`jxx Dest` (条件跳转)**:
+>     * `PC` ← `Cnd ? valC : valP` (条件成立跳 `valC`，否则继续 `valP`)。
+
+
+> [!summary] 关键 HCL 控制信号速查表
+> 处理器“思考”的过程，本质上就是生成这些控制信号的过程。
+>
+> | 阶段 | 信号名 | 逻辑描述 (HCL 核心思想) | 关键特例 / 考点 |
+> | :--- | :--- | :--- | :--- |
+> | **取指** | `need_regids` | 指令包含寄存器字节吗？ | `addq`, `pushq` 需要; `jmp`, `call` 不需要。 |
+> | **取指** | `need_valC` | 指令包含常数(立即数/地址)吗？ | `irmovq`, `rmmovq` 需要; `addq` 不需要。 |
+> | **译码** | `srcA` | 端口 A 读哪个寄存器？ | 通常读 `rA`; **`popq`, `ret` 必须读 `%rsp`**。 |
+> | **译码** | `srcB` | 端口 B 读哪个寄存器？ | 通常读 `rB`; `pushq`, `popq`, `call`, `ret` 读 `%rsp`。 |
+> | **执行** | `aluA` | ALU 输入 A 选谁？ | 通常是 `valA`; 内存指令选 `valC`; 栈指令选 `8` 或 `-8`。 |
+> | **执行** | `aluB` | ALU 输入 B 选谁？ | 通常是 `valB`; `rmmovq` 等地址计算选 `valB`。 |
+> | **访存** | `mem_read` | 是否读内存？ | `mrmovq`, `popq`, `ret` 为真。 |
+> | **访存** | `mem_write` | 是否写内存？ | `rmmovq`, `pushq`, `call` 为真。 |
+> | **更新** | `new_pc` | 下一条指令地址在哪？ | `call` 去 `valC`; `ret` 去 `valM`; 否则默认 `valP`。 |
+
+## 4. SEQ 时序与评价 (Timing & Evaluation)
+
+### 4.1 SEQ 工作流程详解 (Timing & Workflow)
+
+SEQ 处理器采用**单周期设计**，即在一个时钟周期内完整执行一条指令的全部 6 个阶段。
+
+#### 1. 时钟上升沿 (The Rising Edge): 状态更新的瞬间
+* **动作**: 时钟信号从低变高。这是周期的开始，也是上一条指令的结束。
+* **对象**: 所有的**状态元件** (State Elements) 在这一瞬间同时打开“大门”，锁存输入线上的新值。
+    * **PC**: 更新为 `newPC` (指向当前指令)。
+    * **寄存器文件**: 写入上一条指令计算出的 `valE` 或 `valM` (如果需要写)。
+    * **CC**: 更新条件码。
+    * **数据内存**: 写入数据 (如果是 `rmmovq` 或 `pushq` 等写指令)。
+* **物理意义**: 计算机的“状态”在这一刻发生改变。
+
+#### 2. 高&低电平期间 (The Interval): 信号的漫长传播
+
+* **动作**: 信号通过**组合逻辑** (Combinational Logic) 进行传播和计算。
+* **流程**:
+    * **无阻碍流动**: 信号从刚刚更新的 PC/寄存器出发，像多米诺骨牌一样依次流过：`指令内存` $\to$ `译码逻辑` $\to$ `ALU` $\to$ `数据内存`。
+    * **产生中间信号**: 在这个过程中，`valP`, `valA`, `valB`, `valE`, `valM` 等信号依次生成。
+    * **信号驻留**: 计算完成后（例如 ALU 2ns 就算完了，周期有 10ns），`valE` 等信号会**稳定地维持在导线上**，作为电压（电平）“顶”在寄存器或内存的输入端门口，等待下一次开门。
+* **关键**: 此时状态元件（寄存器/PC）的值**不会改变**，它们只负责稳定输出旧值，驱动组合逻辑工作。
+
+#### 3. 下一个时钟上升沿 (Next Rising Edge): 锁存结果
+
+* **动作**: 当前周期结束，下一个周期开始。
+* **结果**: 刚才在导线上排队等候的稳定信号 (`valE`, `valM`, `newPC`) 被瞬间写入状态元件。
+
+
+### 4.2 局限性 (Limitations)
+* **速度太慢 (Too slow)**: 时钟周期必须足够长，以容纳**最慢**的那条指令在所有阶段的信号传播延迟 (例如 `ret` 或 `mrmovq` 需要经过所有阶段)。
+* **硬件利用率低**: 在周期的某一时刻，只有一小部分硬件在有效工作。
+
+> [!failure] SEQ 的致命弱点：为什么我们需要流水线？
+>
+> **1. 单周期时序的束缚 (Single-Cycle Timing)**
+> * SEQ 处理器必须在**一个时钟周期**内完成一条指令的所有 6 个阶段。
+> * 运作流程：`时钟上升沿(更新状态)` -> `组合逻辑漫长的传播(取指...更新PC)` -> `下个上升沿(锁存结果)`。
+> * 这意味着时钟频率不能太高，必须等待电信号跑完全程。
+>
+> **2. 性能瓶颈 (The Performance Bottleneck)**
+> * **木桶效应**：时钟周期的时间长度，取决于**最慢**的那条指令（通常是 `mrmovq` 或 `ret`，因为它们既要运算又要访存）。这导致简单的指令（如 `addq`）也被迫等待这么久。
+> * **硬件浪费**：在周期的任意时刻，只有一小部分硬件在工作。例如在取指阶段，昂贵的 ALU 和数据内存是闲置的。
+>
+> **结论**：SEQ 虽然逻辑清晰、设计简单，但**吞吐量 (Throughput)** 太低。为了让硬件并行工作，我们需要引入 **流水线 (Pipelining)** 技术。

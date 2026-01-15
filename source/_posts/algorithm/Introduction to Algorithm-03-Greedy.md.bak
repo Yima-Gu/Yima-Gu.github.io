@@ -1,16 +1,23 @@
 ---
+title: Introduction to Algorithm-03-Greedy
+date: 2025-06-15 19:45
+tags:
+    - Greedy
+    - Algorithm
+categories:
+  - Algorithm
+math: true
 syntax_converted: true
 ---
 
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.252' %}
+读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。
+{% endnote %}
 
-> [!PDF|yellow] [[算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library).pdf#page=252&selection=9,8,10,26&color=yellow|算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.252]]
-> > 读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。
-
->  [[算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library).pdf#page=256&selection=149,5,164,18&color=yellow|算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.256]]
-> > 更一般地，我们可以按如下步骤设计贪心算法：
-> > 1. 将最优化问题转化为这样的形式：对其做出一次选择后，只剩下一个子问题需要求解。
-> > 2.  证明做出贪心选择后，原问题总是存在最优解，即贪心选择总是安全的。 
-> > 3. 证明做出贪心选择后，剩余的子问题满足性质：其最优解与贪心选择组合即可得到原问题的最优解，这样就得到了最优子结构。
+> 更一般地，我们可以按如下步骤设计贪心算法：
+> 1. 将最优化问题转化为这样的形式：对其做出一次选择后，只剩下一个子问题需要求解。
+> 2.  证明做出贪心选择后，原问题总是存在最优解，即贪心选择总是安全的。 
+> 3. 证明做出贪心选择后，剩余的子问题满足性质：其最优解与贪心选择组合即可得到原问题的最优解，这样就得到了最优子结构。
 
 
 ### An activity-selection problem
@@ -82,7 +89,6 @@ $$
 T(n) = O(n)
 $$
 
-0-1背包问题的动态规划算法参照[[Introduction to Algorithm-02-DP#0-1 Kinapsack]]
 
 ### Huffman code
 
@@ -90,17 +96,21 @@ $$
 
 #### Greedy choice property
 
-> [!PDF|yellow] [[算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library).pdf#page=262&selection=110,8,155,7&color=yellow|算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.262]]
-> > 下面的引理证明问题具有贪心选择性质。
-> > 引理 16.2： 令 C 为一个字母表，其中每个字符 $c \in C$ 都有一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。那么存在 C 的一个最优前缀码， x 和 y 的码字长度相同，且只有最后一个二进制位不同。
-> 
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.262' %}
+下面的引理证明问题具有贪心选择性质。
+引理 16.2： 令 C 为一个字母表，其中每个字符 $c \in C$ 都有一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。那么存在 C 的一个最优前缀码， x 和 y 的码字长度相同，且只有最后一个二进制位不同。
+{% endnote %}
+
 
 **上述证明的是，全局最优解一定包含局部最优解，或者说贪心算法总是安全的**！可以构造一个最优解，并且证明可以找到满足上面的条件的解表现一定不会更差！
 
 
-> [!PDF|yellow] [[算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library).pdf#page=263&selection=29,0,149,9&color=yellow|算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.263]]
-> > 下面的引理证明了构造最优前缀码的问题具有最优子结构性质。
-> > 引理 16.3：令 C 为一个给定的字母表，其中每个字符$c \in C$都定义了一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。令 C' 为 C 去掉字符 x 和 y, 加入一个新字符 z 后得到的字母表，即$C' = C-\{x,y\}\cup \{z\}$。类似 C, 也为 C' 定义 freq, 不同之处只是$z. freq= x. freq + y. freq$。令 T' 为字母表 C' 的任意一个最优前缀码对应的编码树。于是我们可以将 T' 中叶结点 z 替换为一个以 x 和 y 为孩子的内部结点，得到树 T, 而 T 表示字母表 C 的一个最优前缀码。
+
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.263' %}
+下面的引理证明了构造最优前缀码的问题具有最优子结构性质。
+引理 16.3：令 C 为一个给定的字母表，其中每个字符$c \in C$都定义了一个频率$c. freq$。令 x 和 y 是 C 中频率最低的两个字符。令 C' 为 C 去掉字符 x 和 y, 加入一个新字符 z 后得到的字母表，即$C' = C-\{x,y\}\cup \{z\}$。类似 C, 也为 C' 定义 freq, 不同之处只是$z. freq= x. freq + y. freq$。令 T' 为字母表 C' 的任意一个最优前缀码对应的编码树。于是我们可以将 T' 中叶结点 z 替换为一个以 x 和 y 为孩子的内部结点，得到树 T, 而 T 表示字母表 C 的一个最优前缀码。
+{% endnote %}
+
 
 $$
 
@@ -158,9 +168,6 @@ $$
 	-  如果 $S′$ 多了一次 miss，就说明在之前的某个请求中，$S′$ 至少少了一次 miss，从而总的 miss 数量并不增加
 	- 这个部分用到了“反证法”：  假如 $S′$ 总是比 $S$ 多 miss，那说明 $x$ 这个被保留下来的块应该在中间某次请求中被访问。但那时它在 $S′$ 的缓存中、而不在 $S$ 中 $\Rightarrow$ $S′$ 命中而 $S$ 未命中 $\Rightarrow$ 矛盾
 5. 我们构造了一个不比原解差的新解 $S'$，它选择在 $b_i$ 请求时淘汰了 $z$，这说明**存在一个最优解在该时刻淘汰 $z$**。
-
-完整证明参考：
-[[算法导论 第四版（英）.pdf#page=583|算法导论 第四版（英）, p.583]]
 
 
 

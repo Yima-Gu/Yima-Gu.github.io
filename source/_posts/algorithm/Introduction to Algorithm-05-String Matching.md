@@ -68,7 +68,7 @@ def naive_string_matching(text, pattern):
 
 ### Finitie automata
 
-用于匹配的有限自动机，$M=\mathcal{M}$$，\text{是一个五元组}$$(Q, \Sigma, \delta, q_0, F)$
+用于匹配的有限自动机，$M=\mathcal{M}$$\text{，}\text{是一个五元组}$$(Q, \Sigma, \delta, q_0, F)$
 - $Q$是状态集合，$Q=\{ 0,1,2\dots m\}$
 - $q_0=0$，$F = \{m\}$
 

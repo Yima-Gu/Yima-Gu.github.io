@@ -1,0 +1,341 @@
+---
+title: CSAPP - 05.Logic
+date: 2026-01-15 10:10:00 +0800
+tags:
+    - CSAPP
+categories:
+    - CSAPP
+math: true
+syntax_converted: true
+---
+
+
+# 计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)
+
+{% note success '核心导读：从 0/1 到 处理器 (From Logic Gates to CPU)' %}
+**主要内容 (Overview)**：
+本章深入计算机的**微架构 (Microarchitecture)** 层面，讲解如何用基础的电子元件搭建出计算核心：
+1.  **数字电路基础**：
+    * **组合逻辑 (Combinational Logic)**：如 ALU 和 MUX，负责“计算”，输出只取决于当前输入，没有记忆。
+    * **时序逻辑 (Sequential Logic)**：如寄存器和 RAM，负责“存储”，由**时钟 (Clock)** 控制状态更新。
+2.  **HCL (Hardware Control Language)**：学习一种类 C 的简单语言，用来描述硬件的控制逻辑（例如：ALU 该做加法还是减法？）。
+
+**Motivation**：
+* **打破黑盒**：之前我们把 CPU 当作一个能执行指令的黑盒子。这一章打开了这个盒子，看到 `addq` 指令在物理上是如何通过导线、晶体管和电压变化来实现的。
+* **理解时序**：理解**时钟周期**和**边沿触发**是理解计算机性能（频率）、流水线设计以及并发问题的物理基础。这是连接软件逻辑与物理硬件的关键桥梁。
+* 
+{% endnote %}
+
+## 1. 逻辑设计基础 (Logic Design Fundamentals)
+
+### 硬件的基本需求
+
+1. **通信 (Communication)**：如何将值从一个地方传到另一个地方。
+2. **计算 (Computation)**：如何对值进行处理。
+3. **存储 (Storage)**：如何保存这些值。
+
+### 数字化：比特 (Bits)
+
+- 所有事物都用 0 和 1 来表示。
+- **通信**：导线上的低电压 (0) 或高电压 (1)。
+- **计算**：计算布尔函数 (Boolean functions)。
+- **存储**：存储信息位。
+- **数字信号**：我们使用电压阈值从连续信号中提取离散的 0 和 1。这种方式不易受噪声影响，可以使电路简单、小巧且快速。
+
+
+## 2. 组合逻辑 (Combinational Logic)
+
+组合电路从本质上来讲，**不存储任何信息**，它只是简单地响应输入信号，并（经过短暂延迟后）产生等于输入信号某个函数的输出。
+
+### 逻辑门 (Logic Gates)
+
+- 数字电路的基本计算元素。
+- **与 (AND)**: `out = a && b`
+- **或 (OR)**: `out = a || b`
+- **非 (NOT)**: `out = !a`
+
+### 组合电路 (Combinational Circuits)
+
+- 由逻辑门组成的**无环网络 (Acyclic Network)**。
+- 网络中不能有回路，否则会导致函数计算有歧义。
+- 它的输出是其输入的布尔函数。
+
+### HCL (Hardware Control Language)
+
+HCL 是一种非常简单的硬件描述语言，语法类似 C 语言，用于描述处理器的控制逻辑。
+
+- **数据类型**：
+    - `bool`：布尔值 (a, b, c, ...)
+    - `int`：字 (A, B, C, ...)
+- **HCL 表达式**：
+    - **布尔表达式 (Boolean Expressions)**：
+        - 逻辑操作: `a && b`, `a || b`, `!a`
+        - 字比较: `A == B`, `A != B`, `A < B`, `A <= B`, `A >= B`, `A > B`
+        - 集合成员: `A in { B, C, D }` (等价于 `A <mark> B || A </mark> C || A == D`)
+    - **字表达式 (Word Expressions)**：
+        - **案例表达式 (Case expression)**：按顺序评估测试，并为第一个成功的测试返回其对应的值。
+
+#### HCL 组合电路示例：
+
+1. **位相等 (Bit Equality)**：
+    - `bool eq = (a && b) || (!a && !b);`
+    - 如果 a 和 b 相等，则产生 1。
+2. **字相等 (Word Equality)**：
+    - `bool Eq = (A == B);`
+    - 这是位相等的 64 位版本。
+3. **位多路复用器 (Bit MUX - Multiplexor)**：
+    - `bool out = (s && a) || (!s && b);`
+    - 根据**控制信号 s**，从 `a` 和 `b` 两个数据信号中选择一个作为输出。
+    - 如果 `s=1`，输出 `a`；如果 `s=0`，输出 `b`。
+4. **字多路复用器 (Word MUX)**：
+    - 使用 HCL 的案例表达式来表示。
+    
+```Terraform
+    int Out = [
+        s : A;  // 如果 s 为 1, 输出 A
+        1 : B;  // 否则 (s 为 0), 输出 B
+    ];
+```
+    
+5. **4路 MUX (4-Way Multiplexor)**：
+    - 使用两个控制信号 `s1` 和 `s0` 从 4 个输入 (`D0`, `D1`, `D2`, `D3`) 中选择一个。
+    ```Terraform
+    int Out4 = [
+        !s1 && !s0 : D0; // s1=0, s0=0
+        !s1        : D1; // s1=0, s0=1
+        !s0        : D2; // s1=1, s0=0
+        1          : D3; // s1=1, s0=1
+    ];
+    ```
+
+### ALU (Arithmetic Logic Unit - 算术逻辑单元)
+
+- 这是一个组合逻辑块。
+- 有一个**控制信号**输入，用于选择它执行哪种计算。
+- 对应 Y86-64 中的 4 种算术/逻辑操作 (Add, Sub, And, Xor)。
+- 除了计算结果 (X+Y, X-Y, ...)，它还计算**条件码 (Condition Codes)**：`OF` (溢出), `ZF` (零), `CF` (进位)。
+
+
+## 3. 时序电路 (Sequential Circuits) - 存储
+
+为了创建**状态 (State)**，我们必须引入**存储 (Storage)** 设备。
+
+### 存储 1 比特：双稳态元件 (Bistable Element)
+
+- 通过将两个**非门 (NOT gate)** 的输出交叉连接到对方的输入，可以构成一个**双稳态元件**。
+- 这个电路有两个**稳定状态** (Stable 0, Stable 1) 和一个**亚稳态** (Metastable)。
+- 它可以无限期地保持一个比特（0 或 1）。
+
+### 锁存器 (Latch)
+
+- **R-S 锁存器**：基于双稳态元件构建，有两个输入 S (Set, 置位) 和 R (Reset, 复位)。
+	- *输入 S (Set - 置位)**: 用于将锁存器的状态设置为 1。
+	- *输入 R (Reset - 复位)**: 用于将锁存器的状态清零为 0。
+1.  **存储模式 (Storing Mode) (S=0, R=0)**:
+    * 当 S 和 R 均为 0 时，锁存器“锁住”当前状态。
+    * 两个门的交叉反馈会无限期地保持当前的值（Q+ 保持为 q, Q- 保持为 !q）。这就是它的记忆功能。
+2.  **置位模式 (Setting Mode) (S=1, R=0)**:
+    * 当 S 输入为 1 (R为0) 时，它会强制 `Q+` 输出变为 1，同时 `Q-` 输出变为0。
+3.  **复位模式 (Resetting Mode) (S=0, R=1)**:
+    * 当 R 输入为 1 (S为0) 时，它会强制 `Q+` 输出变为 0，同时 `Q-` 输出变为1。
+
+- **D 锁存器 (D Latch)**：
+    - 有两个输入：数据 `D` (Data) 和时钟 `C` (Clock)。
+    - 当 `C=1` 时，锁存器处于 **“锁存模式” (Latching)**：输出 `Q+` 会跟随输入 `D` 的变化（此时电路是**透明的**）。
+    - 当 `C=0` 时，锁存器处于 **“存储模式” (Storing)**：输出 `Q+` 保持 `C` 从 1 变为 0 瞬间 `D` 的值，不再随 `D`变化。
+
+### D 触发器 (Edge-Triggered Latch / Flip-Flop)
+
+- D 锁存器的问题在于它在 `C=1` 的整个期间都是透明的。
+- **边沿触发**的设计只在时钟信号的**上升沿 (Rising edge)** 这个极短的瞬间才进入锁存模式。
+- 在时钟的所有其他时间，它都处于存储模式，输出保持稳定。
+- **这是构建处理器存储（如寄存器）的基础。**
+
+### 硬件寄存器 (Registers)
+
+- 一个**硬件寄存器**是多个**边沿触发锁存器**的集合，用于存储一个完整的**字 (Word)**（例如，一个 64 位的寄存器由 64 个 D 触发器并排组成，共享同一个时钟信号）。
+- 在时钟**上升沿**时，它加载输入值 `I`，并将其作为输出值 `O`。
+- **寄存器的作用**：作为电路中不同组合逻辑块之间的**屏障 (barrier)**，用来控制数据流，确保在一个时钟周期内，数据能稳定地从一个阶段传播到下一个阶段。
+
+### 随机访问存储器 (Random-Access Memory - RAM)
+
+在 SEQ 处理器设计中，**随机访问存储器 (RAM)** 是一个通用的概念，指的是可以根据**地址 (Address)** 读写数据的存储设备。
+最典型的实现就是 CPU 内部的 **寄存器文件 (Register File)**。它就像一个超高速的小型 RAM。
+- 用于存储多个字（例如内存或寄存器文件）。
+- 有一个**地址 (Address)** 输入，用于指定要读取或写入哪个字。
+
+#### 寄存器文件 (Register File)
+
+- 是一种特殊的 RAM，用于保存程序寄存器（如 `%rax`, `%rsp` 等）。
+- 它使用寄存器 ID (如 `%rax` 的 `0`) 作为地址。
+- **多端口 (Multiple Ports)**：允许在一个时钟周期内同时进行多次读写。Y86-64 需要两个读端口（`srcA`, `srcB`）和两个写端口（`dstE`, `dstM`，在 SEQ 设计中合并为 `dstW`）。
+- **寄存器文件时序 (Timing)**：
+    - **读操作**：类似于组合逻辑。一旦地址（如 `srcA`）稳定，数据（`valA`）就会（经过延迟后）出现在输出端。
+    - **写操作**：是时序逻辑。数据（`valW`）仅在时钟**上升沿**才会被写入到地址（`dstW`）指定的寄存器中。
+
+{% note default '核心辨析：两种截然不同的 "寄存器" (Register vs. Register File)' %}
+在计算机体系结构中，"Register" 一词指代两个完全不同的硬件实体，**混淆它们会导致无法理解 CPU 时序**。
+
+| 特性 | 1. 程序寄存器 (Program Registers) | 2. 硬件寄存器 (Hardware Registers) |
+| :--- | :--- | :--- |
+| **别名** | **寄存器文件 (Register File)** | **时序寄存器 / 状态寄存器** |
+| **具体例子** | `%rax`, `%rsp`, `%rbx` (共15个) | `PC`, `CC`, `Stat`, 流水线寄存器(F/D/E...) |
+| **核心本质** | **ISA 层的“变量”** (数据容器) | **微架构层的“门栓”** (时序屏障) |
+| **可见性** | **可见** (程序员用汇编直接读写) | **不可见** (硬件自动维护，程序员无法接触) |
+| **物理实现** | **存储阵列 (SRAM)**<br>必须通过 **ID (地址)** 灵活寻址访问。 | **D 触发器组 (D Flip-Flops)**<br>物理位置固定“焊死”，**无需寻址**。 |
+| **电路作用** | 提供运算所需的数据源。 | **隔离时钟周期**。在时钟上升沿截断信号，防止数据在阶段间乱窜。 |
+
+**为什么必须区分？**
+* **设计视角**：你在写汇编 `addq %rax, %rbx` 时，把它们看作变量（瞬间读写）。
+* **硬件视角**：在电路中，**程序寄存器**负责在周期内**提供**数据，而**硬件寄存器**负责在周期结束时**锁住**结果。如果不区分，就会误以为数据能瞬间更新，从而画错时序图。
+
+{% endnote %}
+
+---
+
+## 4. SEQ (顺序) 处理器设计
+
+我们将设计一个 CPU，这个 CPU 在一个时钟周期内**顺序**地完成执行一条指令的所有步骤。
+
+### SEQ 核心思想：复用 (Reuse)
+
+- 执行一条指令需要很多处理（计算操作、计算地址、更新栈指针、确定下一条指令地址）。
+- 幸运的是，每条指令的整个流程都比较相似。
+- **降低复杂度**：让不同的指令共享尽量多的硬件。
+- **挑战**：将每条不同指令所需要的计算放入到一个**通用框架**中。
+
+### SEQ 硬件结构 (Hardware Structure)
+
+- **状态元件 (State)**：
+    - PC (Program Counter) 寄存器
+    - 条件码寄存器 (CC)
+    - 寄存器文件 (Register File)
+    - 内存 (Memories)：分为指令内存 (Instruction memory) 和数据内存 (Data memory)。
+- **指令流 (Instruction Flow)**：
+    - 处理器无限循环，执行这些阶段。
+    - 从 PC 指定的地址读取指令。
+    - 按阶段处理指令。
+    - 更新 PC。
+
+### Y86-64 数据信号定义 (Key Data Signals)
+
+| 信号 (Symbol) | 产生阶段 (Stage) | 来源 (Source) | 含义与作用 (Description) |
+| :--- | :--- | :--- | :--- |
+| **`valP`** | **取指 (Fetch)** | PC + 指令长度 | **顺序下一条指令地址** (Fall-through PC)。即便发生跳转，第一步也会先计算出如果“不跳”该去的地址。 |
+| **`valC`** | **取指 (Fetch)** | 指令代码 | **立即数 / 常数**。直接编码在指令中的 8 字节常数（如 `irmovq` 的立即数 V 或 `rmmovq` 的偏移量 D）。 |
+| **`valA`** | **译码 (Decode)** | 寄存器文件 (Port A) | **寄存器读出值 A**。通常是指令中 `rA` 对应的寄存器值；在 `pop`/`ret` 中对应 `%rsp`。 |
+| **`valB`** | **译码 (Decode)** | 寄存器文件 (Port B) | **寄存器读出值 B**。通常是指令中 `rB` 对应的寄存器值；常作为 ALU 运算的被加数或基址。 |
+| **`valE`** | **执行 (Execute)** | ALU 输出 | **执行结果**。是 ALU 计算出的数值结果，或者是计算出的**有效内存地址**。 |
+| **`valM`** | **访存 (Memory)** | 数据内存 | **内存读出值**。仅在涉及读内存操作（`mrmovq`, `popq`, `ret`）时有效。 |
+
+### SEQ 的 6 个阶段 (SEQ Stages)
+
+1. **取指 (Fetch)**
+    - 从**指令内存 (Instruction memory)** 中读取指令字节。
+    - PC 作为地址。
+    - 计算 `valP`（下一条指令的地址）。
+2. **译码 (Decode)**
+    - 从**寄存器文件 (Register file)** 中读取操作数。
+    - 例如，读取 `rA` 和 `rB` 对应的寄存器值 `valA` 和 `valB`。
+3. **执行 (Execute)**
+    - **ALU (算术逻辑单元)** 执行指令指定的操作（加、减、计算地址等）。
+    - 得到结果 `valE`。 
+    - 设置或使用**条件码 (CC)**。
+4. **访存 (Memory)**
+    - 从**数据内存 (Data memory)** 中读取数据（`valM`），或向其写入数据。
+5. **写回 (Write Back)**
+    - 将结果（来自**执行**阶段的 `valE` 或来自**访存**阶段的 `valM`）写回到**寄存器文件 (Register file)**。
+6. **PC 更新 (PC Update)**
+    - 更新 PC (程序计数器) 为下一条指令的地址。
+
+
+## 5. 详解：每条指令的 6 阶段计算
+
+所有指令都遵循这个通用模式，只是在每一步具体计算的内容不同。
+
+#### 1. `OPq rA, rB` (例如 `addq %rax, %rbx`)
+
+- **取指 (Fetch)**: 读 2 字节 (`icode:ifun`, `rA:rB`)。`valP = PC + 2`。
+- **译码 (Decode)**: 读 `valA = R[rA]`，读 `valB = R[rB]`。
+- **执行 (Execute)**: `valE = valB OP valA` (ALU 执行加/减/与/异或)。设置 CC。
+- **访存 (Memory)**: (什么也不做)。
+- **写回 (Write Back)**: 将 `valE` 写入 `R[rB]` (`dstE = rB`)。
+- **PC 更新 (PC Update)**: `PC = valP`。
+
+#### 2. `rmmovq rA, D(rB)` (写内存)
+
+- **取指 (Fetch)**: 读 10 字节 (`icode:ifun`, `rA:rB`, `valC=D`)。`valP = PC + 10`。
+- **译码 (Decode)**: 读 `valA = R[rA]`，读 `valB = R[rB]`。
+- **执行 (Execute)**: `valE = valB + valC` (ALU 计算有效地址 D+rB)。
+- **访存 (Memory)**: 将 `valA` 写入内存 `M[valE]`。
+- **写回 (Write Back)**: (什么也不做)。
+- **PC 更新 (PC Update)**: `PC = valP`。
+
+#### 3. `popq rA`
+
+- **取指 (Fetch)**: 读 2 字节 (`icode:ifun`, `rA:rB`)。`valP = PC + 2`。
+- **译码 (Decode)**: 读 `%rsp` 两次 (得 `valA = R[%rsp]`, `valB = R[%rsp]`)。
+- **执行 (Execute)**: `valE = valB + 8` (ALU 计算新栈顶地址)。
+- **访存 (Memory)**: 从 `M[valA]` (旧栈顶) 读取 `valM`。
+- **写回 (Write Back)**: 将 `valE` 写入 `%rsp` (更新栈顶)，将 `valM` 写入 `R[rA]` (写入弹出的值)。
+- **PC 更新 (PC Update)**: `PC = valP`。
+
+#### 4. `cmovXX rA, rB` (条件传送)
+
+- **取指 (Fetch)**: 读 2 字节 (`icode:ifun`, `rA:rB`)。`valP = PC + 2`。
+- **译码 (Decode)**: 读 `valA = R[rA]`。
+- **执行 (Execute)**: `valE = 0 + valA` (ALU 仅仅传递 `valA`)。
+- **访存 (Memory)**: 没有操作。
+- **写回 (Write Back)**: **根据条件码**和 `ifun` 判断。如果条件不满足，则不写入 (`rB` 设为 `0xF` 来禁用)。如果条件满足，`R[rB] = valE`。
+- **PC 更新 (PC Update)**: `PC = valP`。
+
+#### 5. `jXX Dest` (条件跳转)
+
+- **取指 (Fetch)**: 读 9 字节 (`icode:ifun`, `valC=Dest`)。`valP = PC + 9` (valP 是 "fall-thru" 地址)。
+- **译码 (Decode)**: (什么也不做)。
+- **执行 (Execute)**: `Cnd = Cond(CC, ifun)` (ALU 检查条件码，输出 Cnd 标志)。
+	- 逻辑电路（我们称为 `Cond` 模块）**输入**：**`ifun`**：指令里的功能码，告诉 CPU 是哪种跳转；**`CC`**：当前的条件码状态。
+	- 产生一个 1 位的信号 **`Cnd`** (Condition Holds)，表示是否跳转。
+- **访存 (Memory)**: (什么也不做)。
+- **写回 (Write Back)**: (什么也不做)。
+- **PC 更新 (PC Update)**: `PC = Cnd ? valC : valP` (根据 Cnd 标志，选择 Dest 或 fall-through 地址)。
+
+#### 6. `call Dest`
+
+- **取指 (Fetch)**: 读 9 字节 (`icode:ifun`, `valC=Dest`)。`valP = PC + 9` (valP 是<mark>**返回地址**</mark>)。
+- **译码 (Decode)**: 读 `valB = R[%rsp]`。
+- **执行 (Execute)**: `valE = valB + -8` (ALU 计算 `rsp-8`，即新栈顶)。
+- **访存 (Memory)**: 将 `valP` (返回地址) 写入内存 `M[valE]` (压入栈)。
+- **写回 (Write Back)**: 将 `valE` 写入 `%rsp` (更新栈顶)。
+- **PC 更新 (PC Update)**: `PC = valC` (跳转到 Dest)。
+
+#### 7. `ret` (返回)
+
+- **取指 (Fetch)**: 读 1 字节 (`icode:ifun`)。
+- **译码 (Decode)**: 读 `%rsp` <mark>两次</mark> (得 `valA = R[%rsp]`, `valB = R[%rsp]`)。
+- **执行 (Execute)**: `valE = valB + 8` (ALU 计算 `rsp+8`，即新栈顶)。
+- **访存 (Memory)**: 从 `M[valA]` (旧栈顶) 读取 `valM` (即**返回地址**)。
+- **写回 (Write Back)**: 将 `valE` 写入 `%rsp` (更新栈顶)。
+- **PC 更新 (PC Update)**: `PC = valM` (跳转到返回地址)。
+
+{% note default '核心辨析：内部信号与双重读取 (Internal Signals & Dual Read)' %}
+
+**1. `valA`, `valE`, `valM` 是寄存器吗？**
+* **不是**。它们是 CPU 内部的**临时信号线 (Wires)**，仅在当前时钟周期内有效。
+* **对比**：`%rax`, `%rsp` 是**架构寄存器**（仓库/存储）；`valA`, `valE` 是**内部信号**（传送带/运输）。
+* **速查字典**：
+    * `valP`: 下一条指令地址 (Next **P**C)。
+    * `valC`: 指令中的常数/立即数 (**C**onstant)。
+    * `valE`: **ALU** 计算出的结果 (**E**xecute)。
+    * `valM`: **数据内存**读出的值 (**M**emory)。
+
+---
+
+**2. 为什么 `popq` 或 `ret` 需要读两次 `%rsp`？**
+* **根本原因**：SEQ 处理器的硬件连线是固定的，必须并行工作。
+* **分工需求**：这条指令既要用 `%rsp` 指向的地址**去读内存**，又要用 `%rsp` 的值**去加 8**。
+* **硬件实现**：
+    * **读端口 A (`valA`)** $\to$ 物理连向 **内存地址端** (Memory Address)。
+    * **读端口 B (`valB`)** $\to$ 物理连向 **ALU 输入端** (ALU Input)。
+* **结论**：为了让内存和 ALU 同时拿到 `%rsp` 的旧值开始干活，控制逻辑必须让寄存器文件同时从 A、B 两个端口输出 `%rsp` 的值。
+{% endnote %}

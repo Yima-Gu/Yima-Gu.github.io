@@ -1,0 +1,473 @@
+---
+title: CSAPP - 03.Machine-Level Programming II
+date: 2026-01-15 9:50:00 +0800
+tags:
+    - CSAPP
+categories:
+    - CSAPP
+math: true
+syntax_converted: true
+---
+
+
+# 机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic & Control)
+
+> 真正的程序员可以用任何语言编写汇编代码。(REAL PROGRAMMERS CAN WRITE ASSEMBLY CODE IN ANY LANGUAGE.)
+> 
+> — Larry Wall, 美国程序员 (American Programmer)
+
+{% note success '核心导读：从“结构化”到“线性跳转”' %}
+**主要内容**：
+本章关注计算机如何实现逻辑控制。包括：
+1.  **条件码 (Condition Codes)**：CPU 如何通过 `ZF`, `SF` 等标志位记住上一次计算的结果。
+2.  **跳转指令 (Jumps)**：汇编中没有 `if` 和 `while`，只有 `goto` (即 `jmp`/`je`)。
+3.  **翻译控制结构**：详细讲解了 C 语言中的 `if-else`、`while`、`for` 和 `switch` 是如何被“降维打击”成汇编中的条件跳转和跳转表的。
+
+**Motivation**：
+高级语言有优雅的结构（如循环、分支），但底层硬件非常“笨”，只会按顺序执行或跳转。理解这一章，你就能明白**编译器是如何“欺骗”硬件来模拟复杂逻辑的**，也能理解为什么某些写法（如 switch 跳转表）会比其他写法更快。
+
+{% endnote %}
+**今日主题 (Today)**
+
+- 控制：条件码 (Control: Condition codes)
+- 条件分支 (Conditional branches)
+- 循环 (Loops)
+- Switch 语句 (Switch Statements)
+ 
+## 2.1 控制流 (Control Flow)
+
+高级语言使用 `if/else` 这样的控制结构，但汇编只有跳转 (jumps)。
+
+**C 代码 (C Code) 示例:**
+
+```C
+extern void op1(void);
+extern void op2(void);
+void decision(int x) {
+  if (x) { // (x != 0)
+    op1();
+  }
+  else {
+    op2();
+  }
+}
+```
+
+**汇编 (Assembly) 中的控制流:**
+
+```Code snippet
+decision:
+  subq    $8, %rsp     
+  testl   %edi, %edi   ; 测试 x (在 %edi 中)。设置标志位。
+  je      .L2          ; 如果相等 (if x == 0) 则跳转到 .L2
+  call    op1          ; (then 块): 调用 op1
+  jmp     .L1          ; 无条件跳转到 .L1 (跳过 else)
+.L2:
+  call    op2          ; (else 块): 调用 op2
+.L1:
+  addq    $8, %rsp     
+  ret                  
+```
+
+- 这一切都是用 **GOTO** (跳转) 完成的！
+
+### 处理器状态 (Processor State) (x86-64, 部分)
+
+这是关于当前执行程序的信息。
+
+- **寄存器 (Registers):** 临时数据 (Temporary data)
+    - `%rax`, `%rbx`, `%rcx`, `%rdx`, `%rsi`, `%rdi`, `%rbp`, `%rsp`
+    - `%r8` - `%r15`
+- **指令指针 (Instruction pointer) (`%rip`):**
+    - 当前代码控制点的位置 (Location of current code control point)
+- **条件码 (Condition codes):**
+    - `CF`, `ZF`, `SF`, `OF`
+    - 最近测试的状态 (Status of recent tests)
+
+### 条件码 (Condition Codes) (隐式设置)
+
+这些是单位寄存器 (Single bit registers)，它们作为算术操作（例如 `addq`）的副作用被隐式设置。
+
+- **`CF` (Carry Flag):** <mark>进位标志</mark> (用于无符号数)
+    - 如果最高有效位 (most significant bit) 产生进位（无符号溢出），则设置。
+    - 在执行**减法**操作（如 `sub` 或 `cmp`）时，它充当的是 **借位标志 (Borrow Flag)**。
+- **`ZF` (Zero Flag):** <mark>零标志</mark>
+    - 如果结果 `t == 0`，则设置。
+- **`SF` (Sign Flag):** <mark>符号标志</mark> (用于有符号数)
+    - 如果结果 `t < 0`（作为有符号数），则设置。
+- **`OF` (Overflow Flag):** <mark>溢出标志</mark> (用于有符号数)
+    - 如果发生二补数（有符号）溢出，则设置。
+    - `(a>0 && b>0 && t<0) || (a<0 && b<0 && t>=0)`
+
+**注意:** `lea` (Load Effective Address) 指令**不会**设置条件码。
+
+### 显式设置
+
+- **`cmp a, b`**
+	- 计算 `b - a`（就像 `sub`），但是`sub`指令会将结果（差）放在`b`中，但是`cmp`不会。
+	- 根据结果设置条件码
+		- 在 AT&T 语法（即 `Instruction Source, Destination`）中，条件跳转指令的阅读顺序通常是**从右往左**读，或者说是**第二个操作数 与 第一个操作数 比较**
+	- 用于 `if (a < b)` 这样的判断
+- **`test a, b`**
+	- 计算 `b & a`（就像 `and`），区别在于**不改变** `b`
+	- 根据结果设置条件码（主要是 `SF` 和 `ZF`）
+	- **最常见用途:** `test %rX, %rX`，用于比较 `%rX` 和 0 
+
+### 条件码小结
+
+- **构成:** 四个标识 (Four flags): `CF`, `ZF`, `SF`, `OF`
+- **设置方法:**
+    - 显式 (Explicit): `CMP` 与 `TEST`
+    - 隐式 (Implicit): 算术运算 (Arithmetic operations)
+- **访问方法:**
+    - 显式 (Explicit): `SET` 指令 (SET instructions)
+    - 隐式 (Implicit): 条件跳转 (Conditional jumps)、条件赋值 (Conditional moves)
+
+## 2.2 条件分支（Conditional branches）
+
+### 访问条件码：Jumping (jX)
+
+`jX` 指令根据条件码跳转到代码的不同部分。
+
+| **指令 (Instruction)** | **条件 (Condition)** | **描述 (Description)**            |
+| -------------------- | ------------------ | ------------------------------- |
+| `jmp`                | `1`                | 无条件 (Unconditional)             |
+| `je`                 | `ZF`               | 相等 / 零 (Equal / Zero)           |
+| `jne`                | `~ZF`              | 不相等 / 非零 (Not Equal / Not Zero) |
+| `js`                 | `SF`               | 负数 (Negative)                   |
+| `jns`                | `~SF`              | 非负数 (Nonnegative)               |
+| `jg`                 | `~(SF^OF) & ~ZF`   | 大于 (Greater) (有符号)              |
+| `jge`                | `~(SF^OF)`         | 大于或等于 (Greater or Equal) (有符号)  |
+| `jl`                 | `(SF^OF)`          | 小于 (Less) (有符号)                 |
+| `jle`                | `(SF^OF) \| ZF`    | 小于或等于 (Less or Equal) (有符号)     |
+| `ja`                 | `~CF & ~ZF`        | 高于 (Above) (无符号)                |
+| `jb`                 | `CF`               | 低于 (Below) (无符号)                |
+
+### 访问条件码：Setting (setX)
+
+`setX` 指令根据条件码的组合将目标的低位**字节** (low-order byte) 设置为 0 或 1。
+
+- 它**不会改变寄存器中剩余的 7 个字节**。
+- `setX` 的参数总是一个**低位字节寄存器**（如 `%al`, `%r8b` 等）。
+
+|**指令 (Instruction)**|**条件 (Condition)**|**描述 (Description)**|
+|---|---|---|
+|`sete`|`ZF`|相等 / 零 (Equal / Zero)|
+|`setne`|`~ZF`|不相等 / 非零 (Not Equal / Not Zero)|
+|`sets`|`SF`|负数 (Negative)|
+|`setns`|`~SF`|非负数 (Nonnegative)|
+|`setg`|`~(SF^OF) & ~ZF`|大于 (Greater) (有符号)|
+|`setge`|`~(SF^OF)`|大于或等于 (Greater or Equal) (有符号)|
+|`setl`|`(SF^OF)`|小于 (Less) (有符号)|
+|`setle`|`(SF^OF) \| ZF`|小于或等于 (Less or Equal) (有符号)|
+|`seta`|`~CF & ~ZF`|高于 (Above) (无符号)|
+|`setb`|`CF`|低于 (Below) (无符号)|
+
+#### `setX` 指令示例
+
+`movzbl` (Move Zero-Extend Byte to Long) 通常在 `setX` 之后使用，以将 32 位寄存器的高位清零。
+
+**C 代码 (C Code):**
+
+```C
+int gt (long x, long y)
+{
+  return x > y;
+}
+```
+
+**汇编 (Assembly Code):**
+
+```Code snippet
+; %rdi = x, %rsi = y
+  cmpq    %rsi, %rdi  ; 比较 x:y
+  setg    %al         ; 如果 > (Greater) 则设置 %al
+  movzbl  %al, %eax   ; 将 %al 零扩展到 %eax (清零 %rax 的其余部分)
+  ret
+```
+
+- `movzbl %al, %eax` 将 `%al` 中的 1 字节结果移动到 4 字节的 `%eax`，并将高 3 字节填充为 0。这也将 64 位 `%rax`寄存器的高 4 字节清零。
+- 在 x86-64 架构中，**任何向 32 位寄存器（如 `%eax`）写入的操作，都会自动将高 32 位（即 `%rax` 的高半部分）全部清零。**
+### 条件分支示例 (Conditional Branch Example)
+
+**C 代码 (C Code):**
+
+```C
+long absdiff(long x, long y)
+{
+  long result;
+  if (x > y)
+    result = x - y;
+  else
+    result = y - x;
+  return result;
+}
+```
+
+**汇编 (Assembly) (使用分支):**
+
+```Code snippet
+; %rdi = x, %rsi = y, %rax = 返回值 (Return value)
+absdiff:
+  cmpq    %rsi, %rdi  ; 比较 x:y
+  jle     .L4         ; 如果 x <= y, 跳转到 .L4
+  movq    %rdi, %rax  ; result = x
+  subq    %rsi, %rax  ; result = x - y
+  ret                 
+.L4:
+  ; x <= y
+  movq    %rsi, %rax  ; result = y
+  subq    %rdi, %rax  ; result = y - x
+  ret                 
+```
+
+#### 用 Goto 代码表达 (Expressing with Goto Code)
+
+C 语言允许 `goto` 语句。编译器实质上是将 `if-else` 结构翻译成基于 `goto` 的版本。
+
+**`goto` 版本 (编译器视角):**
+
+```C
+long result;
+int ntest = (x <= y);
+if (ntest) goto Else;
+result = x - y;
+goto Done;
+
+Else:
+  result = y - x;
+Done:
+  return result;
+```
+
+### 结构化编程 (Structured Programming)
+
+- 1968年，Edsger Dijkstra 写了“Go To Statement Considered Harmful”（Go To 语句被认为有害）的里程碑式论文。
+- 他认为 `goto` 语句会导致“面条式代码” (spaghetti code)，使程序难以理解。
+- 新语言引入了用于受控分支 (controlled branching) 的结构：
+    - `if / else-if / else` 和 `switch` 语句
+    - `while` 和 `for` 循环
+
+#### 通用条件表达式翻译 (使用分支)
+
+C 代码 (C Code) (三元运算符):`val = Test ? Then_Expr : Else_Expr;`
+**Goto 版本 (Goto Version):**
+
+```C
+ntest = !Test;
+if (ntest) goto Else;
+val = Then_Expr;
+goto Done;
+Else:
+val = Else_Expr;
+Done:
+```
+
+这为 `then` 和 `else` 表达式创建了单独的代码区域，并执行适当的一个。
+
+### 使用条件移动 (Using Conditional Moves)
+
+- **条件移动指令 (Conditional Move Instructions)** (`cmovX`) 提供了分支 (branching) 的替代方案。
+- 指令支持：`if (Test) Dest = Src`。
+- **为何使用它们?**
+    - 分支 (Branches) 对现代处理器的指令流水线 (pipelines) 具有非常大的干扰性。
+    - 条件移动不需要控制转移 (control transfer)。
+
+#### 条件移动 (Conditional Move) 示例
+
+**C 代码 (C Code):**
+
+```C
+long absdiff(long x, long y)
+{
+  long result;
+  if (x > y)
+    result = x - y;
+  else
+    result = y - x;
+  return result;
+}
+```
+
+**汇编 (Assembly) (使用 `cmov`):**
+
+```code snippet
+; %rdi = x, %rsi = y
+absdiff:
+  movq    %rdi, %rax  ; rax = x
+  subq    %rsi, %rax  ; rax = x - y (result)
+  movq    %rsi, %rdx  ; rdx = y
+  subq    %rdi, %rdx  ; rdx = y - x (eval)
+  cmpq    %rsi, %rdi  ; 比较 x:y
+  cmovle  %rdx, %rax  ; if (x <= y) result = eval
+  ret
+```
+
+- 此代码计算了 `x-y` 和 `y-x` _两者_。
+- `cmovle` (Conditional Move if Less or Equal) 根据 `cmpq` 的标志位选择正确的结果，而**无需跳转**。
+- 在不使用 jump 语句时候，**处理器运行速度更快**。
+
+#### 条件移动的不适用情况 (Bad Cases for Conditional Move)
+
+条件移动会计算**两个**表达式，因此在以下情况下表现不佳：
+1. **昂贵的计算 (Expensive Computations):**
+    - `val = Test(x) ? Hard1(x) : Hard2(x);`
+    - `Hard1(x)` 和 `Hard2(x)` 都会被计算。
+2. **有风险的计算 (Risky Computations) (不安全 Unsafe):**
+    - `val = p ? *p : 0;`
+    - 这会尝试解引用 (dereference) `p`，即使 `p` 是 `NULL`，导致错误。
+3. **有副作用的计算 (Computations with side effects) (非法 Illegal):**
+    - `val = x > 0 ? x *= 7 : x += 3;`
+    - 代码必须没有副作用。
+
+## 2.3循环 (Loops)
+
+### "Do-While" 循环示例
+
+此函数计算 `x` 中 '1' 的数量 (popcount)。
+
+**C 代码 (C Code):**
+
+```C
+long pcount_do(unsigned long x) {
+  long result = 0;
+  do {
+    result += x & 0x1;
+    x >>= 1;
+  } while (x);
+  return result;
+}
+```
+
+**Goto 版本 (Goto Version):**
+
+```C
+long pcount_goto(unsigned long x) {
+  long result = 0;
+loop:
+  result += x & 0x1;
+  x >>= 1;
+  if (x) goto loop;
+  return result;
+}
+```
+
+### "Do-While" 循环编译
+
+**汇编 (Assembly) (针对 `pcount_goto`):**
+
+```Code snippet
+; %rdi = x, %rax = result
+  movl    $0, %eax        ; result = 0
+.L2:                      ; loop:
+  movq    %rdi, %rdx      
+  andl    $1, %edx        ; t = x & 0x1
+  addq    %rdx, %rax      ; result += t
+  shrq    %rdi            ; x >>= 1
+  jne     .L2             ; if (x != 0) goto loop
+  rep; ret
+```
+
+### 通用 "Do-While" 翻译
+
+**C 代码 (C Code):**
+
+```C
+do
+  Body
+while (Test);
+```
+
+**Goto 版本 (Goto Version):**
+
+```C
+loop:
+  Body
+  if (Test)
+    goto loop
+```
+
+### 通用 "While" 翻译 #1 (Jump-to-middle)
+
+- "跳转到中间" (Jump-to-middle) 翻译
+- 与 `-Og` 编译选项一起使用
+
+**While 版本 (While version):**
+
+```C
+while (Test)
+  Body
+```
+
+**Goto 版本 (Goto Version):**
+
+```C
+  goto test;
+loop:
+  Body
+test:
+  if (Test)
+    goto loop;
+done:
+```
+
+### 通用 "While" 翻译 #2 (Do-while conversion)
+
+- "Do-while" 转换
+- 与 `-O1` 编译选项一起使用
+
+**While 版本 (While version):**
+
+```C
+while (Test)
+  Body
+```
+
+**Do-While 版本 (Do-While Version):**
+
+```C
+if (!Test)
+  goto done;
+do
+  Body
+while (Test);
+done:
+```
+
+
+### "For" 循环 (For Loop)
+
+`for` 循环通过将其转换为 `do-while` 形式来进行翻译。
+
+**For 版本 (For version):**
+
+```C
+for (Init; Test; Update)
+  Body
+```
+
+**Do-While 版本 (Do-While Version):**
+
+```C
+Init;
+if (!Test)
+  goto done;
+do {
+  Body
+  Update
+} while(Test);
+done:
+```
+
+## 总结 (Summarizing)
+
+编译器生成代码序列以实现复杂的 C 控制结构。
+
+| **C 控制 (C Control)** | **汇编控制 (Assembler Control)**                                |
+| -------------------- | ----------------------------------------------------------- |
+| `if-then-else`       | 条件跳转 (Conditional jump) 或 条件移动 (Conditional move)           |
+| `do-while`           | 条件跳转 (Conditional jump)                                     |
+| `while`, `for`       | 条件跳转 (Conditional jump) (转换为 `do-while` 或 `jump-to-middle`) |
+| `switch`             | 间接跳转 (Indirect jump) (通过跳转表 (jump tables))                  |
+
+- 稀疏的 `switch` 语句可能使用决策树 (decision trees) (if-elseif-else)。

@@ -8,24 +8,17 @@ def replace_chinese_in_latex_match(match):
     Regex replacer callback.
     Receives a match object containing a LaTeX formula (including delimiters).
     Replaces Chinese characters inside with \text{...} while preserving existing \text{...} blocks.
+    Also fixes common Unicode mathematical symbol issues (like prime ′ -> ').
     """
     latex_content = match.group(0)
     
+    # 0. Handle Prime Symbol (′ -> ') BEFORE protecting text
+    # This specifically fixes: [unknownSymbol] Unrecognized Unicode character "′" (8242)
+    latex_content = latex_content.replace('\u2032', "'")
+
     placeholders = []
     
-    # 1. Protect existing \text{...} blocks to avoid double wrapping (e.g. \text{求解} becoming \text{求\text{解}})
-    # Pattern explanation:
-    # \\text\{        : Match literal \text{
-    # (               : Start capturing group 1 (the content)
-    #   (?:           : Start non-capturing group (for alternatives)
-    #     \\.         : Match any escaped character (e.g. \{, \})
-    #     |           : OR
-    #     [^{}]       : Match any character that is NOT { or }
-    #   )*            : Repeat 0 or more times
-    # )               : End capturing group
-    # \}              : Match literal }
-    # This handles simple nesting like \{ \} but not full recursive nesting { { } }. 
-    # For standard Chinese math labels, this is usually sufficient.
+    # 1. Protect existing \text{...} blocks to avoid double wrapping
     existing_text_pattern = re.compile(r'\\text\{((?:\\.|[^{}])*)\}')
     
     def protect_callback(m):
@@ -37,9 +30,13 @@ def replace_chinese_in_latex_match(match):
     # Replace valid \text{...} blocks with placeholders
     temp_content = existing_text_pattern.sub(protect_callback, latex_content)
     
-    # 2. Wrap remaining Chinese characters in the content (which now lacks the protected parts)
-    # Regex to find Chinese characters: \u4e00-\u9fa5
-    chinese_char_pattern = re.compile(r'([\u4e00-\u9fa5]+)')
+    # 2. Wrap remaining Chinese characters AND Chinese Punctuation in the content
+    # Expanded Regex to cover more signs:
+    # \u4e00-\u9fa5 : Common Chinese Characters
+    # \uf900-\ufaff : CJK Compatibility Ideographs
+    # \u3000-\u303f : CJK Symbols and Punctuation (includes 、 。 《 》)
+    # \uff00-\uffef : Halfwidth and Fullwidth Forms (includes ， ： ？ ！ （ ）)
+    chinese_char_pattern = re.compile(r'([\u4e00-\u9fa5\uf900-\ufaff\u3000-\u303f\uff00-\uffef]+)')
     
     def wrap_in_text(m):
         return r'\text{' + m.group(1) + '}'

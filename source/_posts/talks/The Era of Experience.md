@@ -32,56 +32,6 @@ Sutton argues that we are transitioning between major eras of AI development. To
 _The evolution from simulation to static data, and finally to interactive experience._
 
 
-```mermaid
-
-graph LR
-    <!-- %% Styles
-    classDef past fill:#e0e0e0,stroke:#333,stroke-width:1px;
-    classDef present fill:#ffebd0,stroke:#f39c12,stroke-width:2px;
-    classDef future fill:#d5f5e3,stroke:#27ae60,stroke-width:4px; -->
-
-    %% Era 1
-    subgraph Era1 ["2014 - 2018"]
-        direction TB
-        A["<b>Era of Simulation</b><br/>(Simulated Env)"]
-        A1("Atari Games")
-        A2("AlphaGo / AlphaZero")
-        A --> A1
-        A --> A2
-    end
-
-    %% Era 2
-    subgraph Era2 ["2018 - 2023"]
-        direction TB
-        B["<b>Era of Human Data</b><br/>(Static Datasets)"]
-        B1("GPT-3 / GPT-4")
-        B2("ChatGPT / Claude")
-        B --> B1
-        B --> B2
-        note1["Limitation: Imitation<br/>Lack of Interaction"]
-    end
-
-    %% Era 3
-    subgraph Era3 ["2024 Onwards"]
-        direction TB
-        C["<b>Era of Experience</b><br/>(First-person Interaction)"]
-        C1("AlphaProof")
-        C2("OaK Architecture")
-        C --> C1
-        C --> C2
-        note2["Goal: Superhuman<br/>Self-generated Data"]
-    end
-
-    %% Connections
-    Era1 -.-> Era2
-    Era2 ==>|Paradigm Shift| Era3
-
-    %% Apply Styles
-    class A,A1,A2 past;
-    class B,B1,B2,note1 present;
-    class C,C1,C2,note2 future;
-```
-
 ### Key Analysis of the Eras
 
 - **Era of Human Data (Status Quo)**:

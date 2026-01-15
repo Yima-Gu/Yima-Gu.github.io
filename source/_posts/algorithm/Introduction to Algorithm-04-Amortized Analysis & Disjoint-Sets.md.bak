@@ -1,5 +1,5 @@
 ---
-title: Introduction to Algorithm-04-Amortized Analysis & Disjoint-Sets
+title: Introduction to Algorithm-04-Amortized Analysis and Disjoint-Sets
 date: 2025-06-16 08:45
 tags:
     - Amortized Analysis
@@ -23,7 +23,9 @@ syntax_converted: true
 
 1. **插入操作**：大多数插入操作只需在末尾添加元素，时间复杂度为 $O(1)$。 
 2. **扩容操作**：每次扩容时，需要进行 $O(n)$ 的复制操作。 
-3. **均摊成本**：在 $n$ 次插入操作中，扩容操作发生的次数是对数级别的（即 $\log n$ 次），因此每次插入的均摊成本为： $$ \frac{ 1 + 2 +4 + 8 + \cdots 2^{\left[\lg n \right]} }{n} = O(1) $$ 其中，$1, 2, 4, \ldots, n$ 表示每次扩容时的元素复制次数。
+3. **均摊成本**：在 $n$ 次插入操作中，扩容操作发生的次数是对数级别的（即 $\log n$ 次），因此每次插入的均摊成本为： 
+$$ \frac{ 1 + 2 +4 + 8 + \cdots 2^{\left[\lg n \right]} }{n} = O(1) $$ 
+其中，$1, 2, 4, \ldots, n$ 表示每次扩容时的元素复制次数。
 
 ### Aggregate analysis
 
@@ -39,8 +41,12 @@ $$
 
 ### The Accounting method
 
->[!PDF|yellow] [[算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library).pdf#page=275&selection=61,0,72,34|算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.275]]
-> 用核算法 (accounting method) 进行摊还分析时，我们对不同操作赋予不同费用，赋予某些操作的费用可能多于或少于其实际代价。我们将赋予一个操作的费用称为它的摊还代价。当一个操作的摊还代价超出其实际代价时，我们将差额**存入数据结构中的特定对象**，存入的差额称为信用。对于后续操作中摊还代价小于实际代价的情况，信用可以用来支付差额。因此，我们可以将一个操作的摊还代价分解为其实际代价和信用（存入的或用掉的）。不同的操作可能有不同的摊还代价。这种方法不同于聚合分析中所有操作都赋予相同摊还代价的方式。
+{% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.275' %}
+用核算法 (accounting method) 进行摊还分析时，我们对不同操作赋予不同费用，赋予某些操作的费用可能多于或少于其实际代价。
+我们将赋予一个操作的费用称为它的摊还代价。当一个操作的摊还代价超出其实际代价时，我们将差额**存入数据结构中的特定对象**，存入的差额称为信用。
+对于后续操作中摊还代价小于实际代价的情况，信用可以用来支付差额。因此，我们可以将一个操作的摊还代价分解为其实际代价和信用（存入的或用掉的）。不同的操作可能有不同的摊还代价。这种方法不同于聚合分析中所有操作都赋予相同摊还代价的方式。
+{% endnote %}
+
 
 
 **每次操作**都分配一个固定的费用，实际上可能会比实际的费用要多，剩余的费用可以用来支付后续的操作。正确的操作要求**银行的存款总是非负的**，即：
@@ -49,7 +55,8 @@ $$
 $$
 其中$\hat{c_i}$是分配的费用，$c_i$是实际的费用，在满足前提的情况下使得$\hat{c_i}$尽量小。
 
-<img src="Pasted image 20251107185825.png" alt="">
+
+
 ### Potential method
 
 势能法的工作方式为，**对一个数据结构分配一个势能函数$\Phi$**，在每次**操作**时，势能函数的值会发生变化。势能函数的变化量可以看作是对操作的额外费用。对于每个操作$i$，我们可以定义：
@@ -61,7 +68,7 @@ $$
 $$
 只需要$\Phi(D_n) \geq \Phi(D_0)$即可满足在支付分析中要求的条件，不妨令$\Phi(D_0) = 0$
 
-<img src="Pasted image 20251107185845.png" alt="">
+
 
 ### Data Structures for Disjoint Sets
 
@@ -78,8 +85,6 @@ $$
 上面的操作可以将复杂度降低为$O(\log n)$。在$m$次操作中，其中$n$个是MakeSet操作，$m-n$个是Find和Union操作，时间复杂度为：$O(m + n \lg n)$
 由于每一次更新指针一定是在较小的集合中，每个元素更新指针的次数不会超过$\lg n$
 
-<img src="Pasted image 20250422083158.png" alt="">
-<img src="Pasted image 20250422083208.png" alt="">
 
 
 #### Disjoint set forests
@@ -133,7 +138,7 @@ $$
 $$
 \alpha(n) = \min \{ k | A_k(n) \geq n \}
 $$
-<img src="Pasted image 20250422090324.png" alt="">
+
 
 ##### Analysis of union-find
 
@@ -143,7 +148,7 @@ $$
 
 - 如果 $x$ 是根节点或其秩为 0，则 $\phi(x) = 0$。
     
-- 否则，$$\phi(x) = (\alpha(n) - \text{level}(x)) \cdot x.\text{rank} - \text{iter}(x)$$
+- 否则，$\phi(x) = (\alpha(n) - \text{level}(x)) \cdot x.\text{rank} - \text{iter}(x)$
 
 其中：
 
@@ -152,11 +157,9 @@ $$
 - $\text{iter}(x)$：节点 $x$ 在当前级别内的“迭代”次数，表示路径压缩过程中节点状态的微调。
 - $x.\text{rank}$：节点 $x$ 的秩，通常是树高度的上界（在使用按秩合并时）。
 这种势能函数的设计反映了路径压缩和按秩合并对树结构的影响
+
 #### Applications of Disjoint Sets
 
 ##### Connected Components
 
 可以使用并查集来计算无向图的连通分量。每个顶点初始化为一个独立的集合，然后通过遍历边来合并顶点所在的集合。
-
-
-

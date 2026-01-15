@@ -5,27 +5,31 @@ tags:
   - DeepLearning
   - AI
   - 李宏毅机器学习
+categories:
+  - Deep Learning
 math: true
+syntax_converted: true
+
 ---
 
-**AI Agent**：人类==只给AI目标==，AI自己想办法完成某个研究问题。
+**AI Agent**：人类<mark>只给AI目标</mark>，AI自己想办法完成某个研究问题。
 
-![|450](attachments/{281D8726-4976-4970-BCA0-4A9C9D175927}.png)
+<img src="{281D8726-4976-4970-BCA0-4A9C9D175927}.png" alt="" width="450">
 
 整个图示清晰地展现了强化学习的核心循环：智能体观察环境的**状态** (棋盘布局)，基于其策略和**目标** (赢棋) 来选择一个**行动** (下一步棋)，该行动改变了环境的**状态**，然后智能体又观察到新的状态，如此循环往复，直到游戏结束分出胜负。
 通过这种方式，AI的目标（图中的“赢棋”）被转化成了一个数学问题：**如何选择一系列的行动（下棋），来最大化未来能获得的累积奖励（最终得到那个+1）**。
 
 强化学习 (*RL*) 就是一个让智能体 (*Agent*) 在与环境 (*Environment*) 的互动中，通过“试错” (*Trial-and-Error*) 的方式来自主学习的过程。它的学习目标是找到一个最优策略 (*Policy*)，也就是一套决策方法，使得它从长远来看能够获得的累积奖励 (*Cumulative Reward*) 最多。
 
->但是上面的问题在于**需要为每一个任务训练特定的模型**，而且需要大量的计算资源。==能不能使用一个模型来完成所有的任务？==
+>但是上面的问题在于**需要为每一个任务训练特定的模型**，而且需要大量的计算资源。<mark>能不能使用一个模型来完成所有的任务？</mark>
 
-![|450](attachments/{FC397F83-D2DE-4C4E-9F05-5329C2558432}.png)
+<img src="{FC397F83-D2DE-4C4E-9F05-5329C2558432}.png" alt="" width="450">
 
 上面的过程就是LLM擅长的文字接龙功能。
 
 ### AI Agent& LLM
 
-**优势**：能够理解和利用“丰富的、人类可读的”反馈信息，而不仅仅是“稀疏的、数字化的”奖励信号，从而极大地提升了学习和纠错的效率。==在下面过程中都不涉及AI的训练过程==。
+**优势**：能够理解和利用“丰富的、人类可读的”反馈信息，而不仅仅是“稀疏的、数字化的”奖励信号，从而极大地提升了学习和纠错的效率。<mark>在下面过程中都不涉及AI的训练过程</mark>。
 
 #### Computer Use Operator
 
@@ -45,7 +49,7 @@ WebArena主要测试基于文本的能力。**VisualWebArena**是一个专门测
 
 ### AI Agent如何根据经验调整行为
 
-![|450](attachments/{22EECDE5-9FA4-41A9-A3AA-02B15F268B9A}.png)
+<img src="{22EECDE5-9FA4-41A9-A3AA-02B15F268B9A}.png" alt="" width="450">
 
 当AI行动时，现实世界会发生变化（上图中的*obs*），在AI下一次行动时会根据以前的经验来作出更好的决策。
 
@@ -63,7 +67,7 @@ WebArena主要测试基于文本的能力。**VisualWebArena**是一个专门测
 
 #### Write & Reflection & Read
 
-![|450](attachments/{D54BA4B1-ACDF-404C-968F-018E57CD0D26}.png)
+<img src="{D54BA4B1-ACDF-404C-968F-018E57CD0D26}.png" alt="" width="450">
 
 - **Write**: 主要是**数据存储**，基本不用Prompt。但在**执行`Write`操作之前**，可以增加一个“**重要性评估**”的环节。这个环节的核心就是一个精心设计的Prompt。
 - **Reflection**: 核心是**Prompt工程**，通过Prompt引导LLM从原始数据中提炼智慧。
@@ -81,7 +85,7 @@ WebArena主要测试基于文本的能力。**VisualWebArena**是一个专门测
 
 **Tool Use**：AI Agent使用工具的能力是其核心特征之一。通过调用外部工具，AI可以扩展其能力，完成更复杂的任务。
 
-![|450](attachments/Pasted%20image%2020250720102659.png)
+<img src="Pasted%20image%2020250720102659.png" alt="" width="450">
 
 **语言模型本身并不“执行”工具，而是“生成”一段代表工具调用的文本**。
 
@@ -119,7 +123,7 @@ TROVE的核心思想是让一个擅长编程的语言模型（Code LM）来扮�
 
 但是使用工具带来的问题是：Agent可能会因为**过度相信工具而犯错**。尤其是当外部知识用冲突，或者与LLM训练时获得的知识冲突时，Agent可能会错误地依赖工具的输出，而不是自己的判断。即使所有找到的资料都是正确的，不代表AI就不会犯错。
 
-![|450](attachments/{BBAE77B9-5B82-4103-88B0-BEB5D20B0FA6}.png)
+<img src="{BBAE77B9-5B82-4103-88B0-BEB5D20B0FA6}.png" alt="" width="450">
 *研究什么样的外部知识比较容易说服AI*
 
 ### AI能不能做计划
@@ -163,4 +167,3 @@ AI Agent的计划能力是其智能化的重要体现。通过制定计划，AI�
 [^14]: [[2407.01476] Tree Search for Language Model Agents](https://arxiv.org/abs/2407.01476)
 
 [^15]: [[2411.06559] Is Your LLM Secretly a World Model of the Internet? Model-Based Planning for Web Agents](https://arxiv.org/abs/2411.06559)
-

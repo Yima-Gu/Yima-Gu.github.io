@@ -12,9 +12,9 @@ categories:
 math: true
 syntax_converted: true
 mermaid: true
-
+description: "Deep Dive: OaK Architecture & The Era of Experience"
+sticky: 5
 ---
-
 # Deep Dive: OaK Architecture & The Era of Experience
 
 

@@ -7,9 +7,9 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "1. 核心概念：位、字节与字"
+sticky: 9
 ---
-
-
 ## 1. 核心概念：位、字节与字
 
 在计算机系统中，所有信息都表示为二进制位（bits）。

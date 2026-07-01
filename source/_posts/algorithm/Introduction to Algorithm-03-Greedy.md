@@ -8,8 +8,8 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
+description: "读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。"
 ---
-
 {% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.252' %}
 读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。
 {% endnote %}

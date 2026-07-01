@@ -7,8 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "Program Optimization (程序性能优化)"
 ---
-
 # Program Optimization (程序性能优化)
 
 ## 1. 性能现状 (Performance Realities)

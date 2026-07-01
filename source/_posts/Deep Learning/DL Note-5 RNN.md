@@ -2,15 +2,14 @@
 title: DL Note-5 RNN
 date: 2025-07-28 12:30
 tags:
-  - DeepLearning
+  - Deep Learning
   - RNN
 categories:
   - Deep Learning
 math: true
 syntax_converted: true
-
+description: "Recurrent Network"
 ---
-
 ## Recurrent Network
 
 ### Sequence Model

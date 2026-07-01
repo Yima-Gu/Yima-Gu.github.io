@@ -5,6 +5,9 @@ db.json
 node_modules/
 public/
 .deploy*/
+
+*.bak
+themes/landscape/
 _multiconfig.yml
 
 .deploy_git/

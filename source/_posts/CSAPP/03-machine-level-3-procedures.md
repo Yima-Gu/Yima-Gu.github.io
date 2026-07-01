@@ -7,8 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "机器级编程 III: 过程 (Procedures)"
 ---
-
 # **机器级编程 III: 过程 (Procedures)**
 
 {% note success '核心导读：从“结构化”到“线性跳转”' %}

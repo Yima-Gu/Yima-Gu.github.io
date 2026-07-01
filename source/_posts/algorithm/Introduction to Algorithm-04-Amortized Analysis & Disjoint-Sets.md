@@ -9,8 +9,8 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
+description: "Dynamic tables"
 ---
-
 ### Dynamic tables
 #### Dynamic array
 

@@ -8,8 +8,8 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
+description: "String Matching"
 ---
-
 ## String Matching
 
 

@@ -7,8 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "计算机体系结构: ISA (Instruction Set Architecture)"
 ---
-
 # 计算机体系结构: ISA (Instruction Set Architecture)
 
 

@@ -7,9 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "第6章：无线与移动网络 (Wireless and Mobile Networks)"
 ---
-
-
 # 第6章：无线与移动网络 (Wireless and Mobile Networks)
 
 ## 6.1 引言 (Introduction)

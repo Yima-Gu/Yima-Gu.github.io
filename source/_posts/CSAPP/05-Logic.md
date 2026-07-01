@@ -7,9 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)"
 ---
-
-
 # 计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)
 
 {% note success '核心导读：从 0/1 到 处理器 (From Logic Gates to CPU)' %}

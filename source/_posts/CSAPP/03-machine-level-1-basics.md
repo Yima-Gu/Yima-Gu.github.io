@@ -7,9 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "对干机器级编程来说，其中两种抽象尤为重要。第一种是由指令集体系结构或指令集架构(Instruction Set Architecture,ISA)来定义机器级程序的格式和行为，它定义了处理器状态、指令的格式，以及每条指令对状态的影响。"
 ---
-
-
 {% note warning '深入理解计算机系统 (布莱恩特) (Z-Library), p.149' %}
 对干机器级编程来说，其中两种抽象尤为重要。第一种是由指令集体系结构或指令集架构(Instruction Set Architecture,**ISA**)来定义机器级程序的格式和行为，它定义了处理器状态、指令的格式，以及每条指令对状态的影响。
 {% endnote %}

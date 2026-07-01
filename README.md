@@ -1,92 +1,98 @@
 # Yima Gu's Personal Website
 
-🌐 我的个人技术博客 - 专注于分享技术学习心得、项目经验和个人思考
-<br>
-**[https://yima-gu.github.io](https://yima-gu.github.io)**
+个人技术笔记站，基于 Hexo + Fluid 主题构建。
 
-<p align="center">
-  <a href="https://hexo.io/"><img src="https://img.shields.io/badge/Hexo-7.3.0-blue.svg?logo=hexo" alt="Hexo"></a>
-  <a href="https://github.com/fluid-dev/hexo-theme-fluid"><img src="https://img.shields.io/badge/Theme-Fluid_1.9.8-0E83CD.svg" alt="Fluid Theme"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-%3E=16-green.svg?logo=node.js" alt="Node.js"></a>
-  <a href="https://pages.github.com/"><img src="https://img.shields.io/badge/Host-GitHub_Pages-black.svg?logo=github" alt="GitHub Pages"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
-</p>
+[![Website](https://img.shields.io/badge/website-yima--gu.github.io-blue)](https://yima-gu.github.io)
+[![Hexo](https://img.shields.io/badge/hexo-8.x-blue)](https://hexo.io)
 
----
+**网站地址**: [https://yima-gu.github.io](https://yima-gu.github.io)
 
-## 博客内容
+## 内容方向
 
-- 清华大学软件学院课程笔记
-  - 形式语言与自动机
-  - 算法分析与设计基础
-  - 计算机网络
-  - 计算机组成原理
-  - 深度学习
+- 计算机网络课程笔记
+- CSAPP 读书笔记
+- 算法导论学习笔记
+- 深度学习笔记
+- 形式语言与自动机
 
-## 🚀 快速上手 (本地开发)
+## 技术栈
 
-1.  **克隆与安装**
-    ```bash
-    git clone https://github.com/Yima-Gu/Yima-Gu.github.io.git
-    cd Yima-Gu.github.io
-    npm install
-    ```
-2.  **本地预览**
-    ```bash
-    npm run server
-    ```
-    (访问 `http://localhost:4000` 预览)
+| 技术 | 用途 |
+|------|------|
+| [Hexo](https://hexo.io/) | 静态网站生成器 |
+| [Fluid Theme](https://github.com/fluid-dev/hexo-theme-fluid) | 主题框架 |
+| [KaTeX](https://katex.org/) | 数学公式渲染 |
+| [Giscus](https://giscus.app/) | 评论系统 |
+| [GitHub Actions](https://github.com/features/actions) | 自动部署到 GitHub Pages |
 
-## ⚡ 常用命令
+## 本地开发
 
+### 环境要求
 
-| 命令 | 描述 |
-| :--- | :--- |
-| `npm run server` | 启动本地预览 (http://localhost:4000) |
-| `npm run build` | 生成静态文件 (到 `public/` 目录) |
-| `npm run deploy` | 部署到 GitHub Pages |
-| `npm run clean` | 清理缓存 (`db.json` 和 `public/`) |
-| `npx hexo new post "..."` | 创建新文章 |
+- Node.js >= 18
+- npm >= 8
 
-## ✨ 核心功能
+### 快速开始
 
-* **内容**: 标准 Markdown, LaTeX 数学公式 (by MathJax), 多语言代码高亮
-* **主题**: Fluid 响应式设计, 移动端优化, 图片自动懒加载
-* **功能**: 集成 Google Analytics, Gitalk 评论系统, 本地搜索
-
-<details>
-
-<summary>📝 点击查看：内容创作与项目结构 (维护者参考)</summary>
-
-### 文章 Front-matter
-
-```yaml
----
-title: 文章标题
-date: 2025-07-05
-categories: [技术分享]
-tags: [JavaScript, React]
-description: 文章描述
----
-
-文章内容...
+```bash
+git clone https://github.com/Yima-Gu/Yima-Gu.github.io.git
+cd Yima-Gu.github.io
+npm install
+npm run server
 ```
 
-### 项目结构
+访问 [http://localhost:4000](http://localhost:4000) 预览。
+
+### 常用命令
+
+```bash
+npm run clean    # 清理缓存
+npm run build    # 生成静态文件
+npm run server   # 本地预览
+```
+
+推送至 `main` 分支后，GitHub Actions 会自动构建并部署到 `gh-pages` 分支。
+
+### 发布新文章
+
+```bash
+# 从 Obsidian 导出后，先预处理 Markdown（图片迁移、语法转换）
+./publish.sh source/_posts/your-post.md
+
+# 或仅本地预览
+npx hexo new post "文章标题"
+npm run server
+```
+
+## 项目结构
 
 ```text
-Yima-Gu.github.io/
-├── source/         # 源文件目录 (文章/页面)
-├── themes/         # 主题文件
-├── public/         # 生成的静态文件
-├── _config.yml     # Hexo 主配置
-└── _config.fluid.yml # Fluid 主题配置
+├── source/
+│   ├── _posts/        # 博客文章
+│   ├── about/         # 关于页面
+│   ├── series/        # 系列笔记索引
+│   └── img/           # 图片资源
+├── _config.yml        # Hexo 主配置
+├── _config.fluid.yml  # Fluid 主题配置
+├── py_scripts/        # Markdown 预处理脚本
+└── .github/workflows/ # CI 部署
 ```
-</details>
 
-## 🤝 贡献与支持
+## 功能特性
 
-如果您发现任何问题或有改进建议，欢迎提交 [Issue](https://github.com/Yima-Gu/Yima-Gu.github.io/issues) 或 [Pull Request](https://github.com/Yima-Gu/Yima-Gu.github.io/pulls)。
+- 站内搜索（hexo-generator-search）
+- RSS 订阅（`/atom.xml`）
+- Sitemap（`/sitemap.xml`）
+- 数学公式（KaTeX）
+- Mermaid 图表
+- Giscus 评论
+- Google Analytics 统计
 
-⭐ 如果这个项目对您有帮助，请给个 **Star** 支持一下！
+## 联系
 
+- GitHub: [Yima-Gu](https://github.com/Yima-Gu)
+- Email: yima.gu.23@gmail.com
+
+## 许可证
+
+MIT License

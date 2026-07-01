@@ -8,9 +8,8 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
+description: "如果对规模为的任意输入，近似算法所产生的近似解的代价与最优解的代价只差一个因子使得"
 ---
-
-
 ## Definition
 
 - 如果对规模为$n$的任意输入，近似算法所产生的近似解的代价$C$与最优解的代价$C^*$只差一个因子$\rho(n)$使得
@@ -68,7 +67,7 @@ $$
 c_x = \frac{1}{|S_k- (S_1 \cup S_2 \cup \cdots S_{k-1} )|}
 $$
 
-<img src="Pasted image 20251107191028.png" alt="">
+![](Pasted image 20251107191028.png)
 
 ## Randomized Approximation Algorithms
 
@@ -85,7 +84,7 @@ $$\mathbb{E}[C] = \frac{8}{7}C^*$$
 
 ### Weighed Vertex Cover
 
-<img src="{C6FC1B3C-D4D5-4DF5-97A8-BE8B40B75F71}.png" alt="">
+![]({C6FC1B3C-D4D5-4DF5-97A8-BE8B40B75F71}.png)
 
 上述近似算法是一个$\rho = 2$近似算法。可以证明该算法的近似比为2
 

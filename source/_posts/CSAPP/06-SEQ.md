@@ -7,9 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)"
 ---
-
-
 # 计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)
 
 {% note success '核心导读：从逻辑门到处理器' %}

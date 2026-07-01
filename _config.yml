@@ -4,9 +4,14 @@
 
 # Site
 title: Yima Gu's Blog
-subtitle: ''
-description: ''
+subtitle: '计算机课程笔记与学习复盘'
+description: 'Yima Gu 的技术笔记站，记录计算机网络、CSAPP、算法导论、深度学习等课程学习心得与踩坑复盘。'
 keywords:
+  - 计算机网络
+  - CSAPP
+  - 算法
+  - 深度学习
+  - 学习笔记
 author: Yima Gu
 language: zh-CN
 timezone: Asia/Shanghai
@@ -104,6 +109,22 @@ deploy:
   type: git
   repository: git@github.com:Yima-Gu/Yima-Gu.github.io.git
   branch: gh-pages
+
+# Search index (hexo-generator-search)
+search:
+  path: local-search.xml
+  field: post
+  content: true
+
+# RSS feed (hexo-generator-feed)
+feed:
+  type: atom
+  path: atom.xml
+  limit: 30
+
+# Sitemap (hexo-generator-sitemap)
+sitemap:
+  path: sitemap.xml
 
 markdown:
   render:

@@ -7,8 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "主要任务： 将数据报 (datagrams) 从源主机跨越多个网络路由 (routing) 到目标主机。"
 ---
-
 {% note success '**主要任务**' %}
 - **主要任务：** 将数据报 (datagrams) 从源主机跨越多个网络**路由 (routing)** 到目标主机。
 	- **逻辑寻址 (Addressing)：** 定义全局唯一的 IP 地址（如 IPv4、IPv6）来标识网络中的主机 。

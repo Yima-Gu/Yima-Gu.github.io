@@ -7,9 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "Chapter 8: Network Security (Part 2)"
 ---
-
-
 # Chapter 8: Network Security (Part 2)
 
 ## 1. Network Security Attack Events (网络安全攻击事件案例)

@@ -7,9 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "一、小数的二进制表示 (Fractional Binary Numbers)"
 ---
-
-
 ## 一、小数的二进制表示 (Fractional Binary Numbers)
 
 ### 1. 表示方法

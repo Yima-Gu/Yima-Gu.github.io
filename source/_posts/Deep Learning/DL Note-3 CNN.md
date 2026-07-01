@@ -2,13 +2,13 @@
 title: DL Note-3 CNN
 date: 2025-07-10 20:30:00 +0800
 tags:
-  - DeepLearning
+  - Deep Learning
   - CNN
 categories:
   - Deep Learning
 math: true
 syntax_converted: true
-
+description: "Convolutional Neural Networks"
 ---
 ## Convolutional Neural Networks
 

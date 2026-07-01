@@ -2,11 +2,12 @@
 title: DL Note-4 Optimization
 date: 2025-07-21 14:30
 tags:
-  - DeepLearning
+  - Deep Learning
   - Optimization
 categories:
   - Deep Learning
 math: true
+description: "Optimization"
 ---
 ## Optimization
 

@@ -2,15 +2,14 @@
 title: DL Notes-7 Generative Models
 date: 2025-08-03 17:41
 tags:
-  - DeepLearning
+  - Deep Learning
   - GenerativeModel
 categories:
   - Deep Learning
 math: true
 syntax_converted: true
-
+description: "Generative Model"
 ---
-
 ## Generative Model
 
 

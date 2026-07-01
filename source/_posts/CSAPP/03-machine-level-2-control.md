@@ -7,9 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic & Control)"
 ---
-
-
 # 机器级编程 II：算数与控制 (Machine-Level Programming II: Arithmetic & Control)
 
 > 真正的程序员可以用任何语言编写汇编代码。(REAL PROGRAMMERS CAN WRITE ASSEMBLY CODE IN ANY LANGUAGE.)

@@ -7,8 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "* 冲突的本质： 互联网最初是为数据传输（如文件、邮件）设计的，提供的是“尽力而为 (Best-Effort)”的服务——不保证时间，但保证完整。然而，多媒体应用（音频/视频）的需求恰恰相反：它们对延迟和抖动极度敏感，但对少量丢包可以容忍。"
 ---
-
 {% note success 'Motivation & Summary' %}
 
 **Motivation**

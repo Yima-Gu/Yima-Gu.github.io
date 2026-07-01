@@ -8,9 +8,8 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
+description: "考虑以数组中元素为结尾的最大子数组和，对于数组中的第i个元素，有两种选择："
 ---
-
-	
 #### 最大子段和
 
 考虑以数组中元素为结尾的最大子数组和，对于数组中的第i个元素，有两种选择：

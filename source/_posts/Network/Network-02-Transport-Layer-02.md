@@ -7,10 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "3.4 可靠数据传输 (Reliable Data Transfer - RDT) 原理"
 ---
-
-
-
 ## 3.4 可靠数据传输 (Reliable Data Transfer - RDT) 原理
 
 ### RDT 总结

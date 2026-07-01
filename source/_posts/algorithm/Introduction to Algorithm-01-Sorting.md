@@ -8,9 +8,9 @@ categories:
   - Algorithm
 math: true
 syntax_converted: true
-
+description: "在 RAM 模型中，我们并不试图对当代计算机中常见的内存层次进行建模"
+sticky: 7
 ---
-
 # notation
 
 {% note warning '算法导论 第三版 可复制 有目录 (Thmos.H.Cormen ,Charles E. Leiserson etc.) (Z-Library), p.27' %}

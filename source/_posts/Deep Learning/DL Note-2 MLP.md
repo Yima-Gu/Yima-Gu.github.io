@@ -2,15 +2,14 @@
 title: DL Note-2 MLP
 date: 2025-06-28 12:30
 tags:
-  - DeepLearning
+  - Deep Learning
   - MLP
 categories:
   - Deep Learning
 math: true
 syntax_converted: true
-
+description: "Brain and Neuron"
 ---
-
 # Brain and Neuron
 
 感知机*Perceptron*是神经元的一个相当简单的数学模型，包括：输入、权重、**激活函数**、输出。其实是在空间超平面上嵌入了一个非线性函数。

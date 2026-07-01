@@ -7,8 +7,9 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "为用户应用程序提供网络服务，并定义应用程序之间通信的规则。"
+sticky: 10
 ---
-
 {% note success '**主要任务**' %}
 - 为用户应用程序提供网络服务，并定义应用程序之间通信的规则。
 - 定义数据交换的格式（例如，Web 浏览器如何向服务器请求页面）。

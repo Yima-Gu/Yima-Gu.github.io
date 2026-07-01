@@ -7,9 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "路由算法 (Routing Algorithms)"
 ---
-
-
 {% note success '' %}
 **路由算法 (Routing Algorithms)**
 * **核心目标：** 在网络中找到从源到目的地的**最低成本路径**。

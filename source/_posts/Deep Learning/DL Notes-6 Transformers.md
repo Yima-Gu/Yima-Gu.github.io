@@ -2,15 +2,14 @@
 title: DL Notes-6 Transformers
 date: 2025-08-01 15:41
 tags:
-  - DeepLearning
+  - Deep Learning
   - Transformer
 categories:
   - Deep Learning
 math: true
 syntax_converted: true
-
+description: "Transformers"
 ---
-
 ## Transformers
 
 ### Transformers: Attention is All You Need

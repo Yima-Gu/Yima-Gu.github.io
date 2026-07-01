@@ -7,10 +7,8 @@ categories:
     - Network
 math: true
 syntax_converted: true
+description: "这一层负责在物理上相邻的两个节点之间传输数据。"
 ---
-
-
-
 {% note success '**主要任务**' %}
 这一层负责在**物理上相邻**的两个节点之间传输数据。
 - **主要任务：** 将数据报（Datagram）通过**单个链路**（一“跳”）从一个节点（如主机）可靠地传输到下一个节点（如路由器） 。

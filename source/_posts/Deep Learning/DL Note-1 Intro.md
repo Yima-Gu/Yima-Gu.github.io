@@ -2,13 +2,14 @@
 title: DL Note-1 Intro
 date: 2025-06-21 12:30
 tags:
-  - DeepLearning
+  - Deep Learning
 categories:
   - Deep Learning
 math: true
 comments: true
+description: "*人工智能 (Artificial Intelligence)*：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。"
+sticky: 8
 ---
-
 **人工智能 (*Artificial Intelligence*)**：宏观的目标，即创造出能够模拟、延伸和扩展人类智能的机器。
 
 **机器学习 (*Machine Learning*)**：实现人工智能的一种核心方法。它的特点是**不通过显式编程来解决问题，而是让算法从数据中自动学习规律**。

@@ -7,8 +7,8 @@ categories:
     - CSAPP
 math: true
 syntax_converted: true
+description: "机器级编程 IV：高级 （Advanced Topics）"
 ---
-
 # **机器级编程 IV：高级 （Advanced Topics）**
 
 {% note success '核心导读：利用与防御——栈的脆弱性' %}

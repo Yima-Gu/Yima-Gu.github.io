@@ -17,17 +17,17 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Yima Gu">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="计算机网络,CSAPP,算法,深度学习,学习笔记">
   
-    <meta name="description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)              主要内容：上一节我们构建了 PIPE-（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。本章的目标是将 PIPE- 升级为最终的 PIPE 处理器，核心手段是：数据转发 (Data Forwarding)：解决大部分数据冒险，不需要暂">
+    <meta name="description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CSAPP - 07.PIPE-02">
 <meta property="og:url" content="https://yima-gu.github.io/2026/01/14/CSAPP/07-PIPE-02/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)              主要内容：上一节我们构建了 PIPE-（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。本章的目标是将 PIPE- 升级为最终的 PIPE 处理器，核心手段是：数据转发 (Data Forwarding)：解决大部分数据冒险，不需要暂">
+<meta property="og:description" content="计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-01-14T18:25:00.000Z">
-<meta property="article:modified_time" content="2026-01-15T02:21:02.350Z">
+<meta property="article:modified_time" content="2026-07-01T11:38:22.787Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="CSAPP">
 <meta name="twitter:card" content="summary_large_image">
@@ -104,7 +104,8 @@
 
 
   
-<meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Yima Gu's Blog" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -138,6 +139,18 @@
               <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
                 <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/series/" target="_self">
+                <i class="iconfont icon-books-fill"></i>
+                <span>系列笔记</span>
               </a>
             </li>
           

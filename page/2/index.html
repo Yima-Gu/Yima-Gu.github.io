@@ -17,14 +17,21 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Yima Gu">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="计算机网络,CSAPP,算法,深度学习,学习笔记">
   
-    <meta property="og:type" content="website">
+    <meta name="description" content="Yima Gu 的技术笔记站，记录计算机网络、CSAPP、算法导论、深度学习等课程学习心得与踩坑复盘。">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Yima Gu&#39;s Blog">
 <meta property="og:url" content="https://yima-gu.github.io/page/2/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Yima Gu 的技术笔记站，记录计算机网络、CSAPP、算法导论、深度学习等课程学习心得与踩坑复盘。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -91,7 +98,8 @@
 
 
   
-<meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Yima Gu's Blog" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -125,6 +133,18 @@
               <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
                 <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/series/" target="_self">
+                <i class="iconfont icon-books-fill"></i>
+                <span>系列笔记</span>
               </a>
             </li>
           
@@ -244,15 +264,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/01/14/Network/Network-01-Application-Layer/" target="_self">
-          Network - 01.Application Layer
+        <a href="/2026/01/14/Network/Network-04-Datalink-Layer-01/" target="_self">
+          Network - 04.Data Link Layer-01
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-01-Application-Layer/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-04-Datalink-Layer-01/" target="_self">
         <div>
-          为用户应用程序提供网络服务，并定义应用程序之间通信的规则。定义数据交换的格式（例如，Web 浏览器如何向服务器请求页面）。提供各种网络应用协议 。示例协议：  HTTP（万维网）、SMTP（电子邮件）、DHCP（地址配置）、DNS（域名解析） 以及 YouTube、Google、Netflix 等服务 。            应用层核心原理 网络应用程序的体系结构 (A
+          这一层负责在物理上相邻的两个节点之间传输数据。
         </div>
       </a>
 
@@ -260,7 +280,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 02:40" pubdate>
+            <time datetime="2026-01-15 03:10" pubdate>
               2026-01-15
             </time>
           </div>
@@ -305,6 +325,311 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
+        <a href="/2026/01/14/Network/Network-03-Network-Layer-02/" target="_self">
+          Network - 03.Network Layer-02
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-03-Network-Layer-02/" target="_self">
+        <div>
+          路由算法 (Routing Algorithms)
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-15 03:05" pubdate>
+              2026-01-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">#Network</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/01/14/Network/Network-03-Network-Layer-01/" target="_self">
+          Network - 03.Network Layer-01
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-03-Network-Layer-01/" target="_self">
+        <div>
+          主要任务： 将数据报 (datagrams) 从源主机跨越多个网络路由 (routing) 到目标主机。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-15 03:00" pubdate>
+              2026-01-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">#Network</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/01/14/Network/Network-02-Transport-Layer-02/" target="_self">
+          Network - 02.Transport Layer-02
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-02-Transport-Layer-02/" target="_self">
+        <div>
+          3.4 可靠数据传输 (Reliable Data Transfer - RDT) 原理
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-15 02:55" pubdate>
+              2026-01-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">#Network</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/01/14/Network/Network-02-Transport-Layer-01/" target="_self">
+          Network - 02.Transport Layer-01
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/Network/Network-02-Transport-Layer-01/" target="_self">
+        <div>
+          在两个端点（主机）上运行的应用程序进程之间建立、管理和终止通信会话。这与网络层负责主机之间的通信形成对比。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-15 02:45" pubdate>
+              2026-01-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Network/" class="category-chain-item">Network</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Network/">#Network</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/01/14/CSAPP/09-Optimization/" target="_self">
+          CSAPP - 09.Optimization
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/09-Optimization/" target="_self">
+        <div>
+          Program Optimization (程序性能优化)
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-01-15 02:40" pubdate>
+              2026-01-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/CSAPP/">#CSAPP</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
         <a href="/2026/01/14/CSAPP/08-MEM-02/" target="_self">
           CSAPP - 08.MEM-02
         </a>
@@ -313,7 +638,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/08-MEM-02/" target="_self">
         <div>
-          主要内容 (Overview)：本章深入探讨了计算机系统中最重要的性能优化组件之一：高速缓存 (Cache Memories)。缓存的基本组织结构：如何将巨大的内存空间映射到小容量的缓存中（直接映射、组相联、全相联）。缓存的读写机制：CPU 如何查找数据，以及写入数据时的策略（写穿透 vs 写回）。缓存对性能的影响：通过具体的矩阵乘法示例，展示了缓存友好的代码如何带来数量
+          主要内容 (Overview)：
         </div>
       </a>
 
@@ -374,7 +699,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/08-MEM-01/" target="_self">
         <div>
-          计算机组成原理笔记：存储器层次结构 (The Memory Hierarchy)              主要内容：本章探讨了如何通过架构设计来弥补 CPU 高速计算与存储器低速访问之间的巨大鸿沟。存储技术 (Storage Technologies)：分析了不同介质的物理特性与权衡。SRAM：快、贵、易失 (用于 CPU 缓存)。DRAM：较慢、较便宜、易失 (用于主存)。Disk/SSD：极
+          计算机组成原理笔记：存储器层次结构 (The Memory Hierarchy)
         </div>
       </a>
 
@@ -435,7 +760,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/07-PIPE-02/" target="_self">
         <div>
-          计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)              主要内容：上一节我们构建了 PIPE-（基础流水线），但它遇到冒险时只能通过“暂停”或“插入气泡”来解决，效率极其低下。本章的目标是将 PIPE- 升级为最终的 PIPE 处理器，核心手段是：数据转发 (Data Forwarding)：解决大部分数据冒险，不需要暂
+          计算机组成原理笔记：流水线实现 II (Pipelined Implementation Part II)
         </div>
       </a>
 
@@ -496,7 +821,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/07-PIPE-01/" target="_self">
         <div>
-          主要内容：本章重点介绍了从 SEQ (顺序执行) 处理器向 PIPE (流水线) 处理器的演进过程。流水线原理：流水线 (Pipelining) ——将任务分解为子任务并行处理，以提高 吞吐量 (Throughput)。PIPE- 设计：在 SEQ+ 的基础上插入流水线寄存器 (Pipeline Registers)，实现了基本的流水线处理器 PIPE-。流水线挑战：讨论
+          本章重点介绍了从 SEQ (顺序执行) 处理器向 PIPE (流水线) 处理器的演进过程。
         </div>
       </a>
 
@@ -505,311 +830,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2026-01-15 02:20" pubdate>
-              2026-01-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSAPP/">#CSAPP</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/01/14/CSAPP/06-SEQ/" target="_self">
-          CSAPP - 06. SEQ
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/06-SEQ/" target="_self">
-        <div>
-          计算机体系结构笔记：SEQ 顺序实现 (Sequential Implementation)              主要内容： 本章正式进入硬件实现（微架构）层面。我们将跨越数字电路基础，最终设计出一个完整的 CPU。数字电路基础：组合逻辑（ALU、MUX）与时序逻辑（寄存器、时钟、锁存器）的区别与协作。HCL (Hardware Control Language)：学习一种简单的硬件描述语言
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 02:15" pubdate>
-              2026-01-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSAPP/">#CSAPP</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/01/14/CSAPP/05-Logic/" target="_self">
-          CSAPP - 05.Logic
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/05-Logic/" target="_self">
-        <div>
-          计算机体系结构：逻辑设计 (Computer Architecture: Logic Design)              主要内容 (Overview)：本章深入计算机的微架构 (Microarchitecture) 层面，讲解如何用基础的电子元件搭建出计算核心：数字电路基础：组合逻辑 (Combinational Logic)：如 ALU 和 MUX，负责“计算”，输出只取决于当前输入，没
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 02:10" pubdate>
-              2026-01-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSAPP/">#CSAPP</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/01/14/CSAPP/04-ISA/" target="_self">
-          CSAPP - 04.ISA
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/04-ISA/" target="_self">
-        <div>
-          计算机体系结构: ISA (Instruction Set Architecture)              主要内容：本章从使用汇编转向了设计 CPU。ISA (指令集架构)：介绍了 ISA 作为软硬件契约的概念，以及 CISC (x86) 与 RISC (ARM/MIPS) 的设计哲学区别。Y86-64：为了教学目的，简化了复杂的 x86-64，定义了一个迷你的指令集 Y86-64。我们详
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 02:05" pubdate>
-              2026-01-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSAPP/">#CSAPP</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/01/14/CSAPP/03-machine-level-4-advanced/" target="_self">
-          CSAPP - 03.Machine-Level Programming IV
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/03-machine-level-4-advanced/" target="_self">
-        <div>
-          机器级编程 IV：高级 （Advanced Topics）              主要内容：本章探讨内存布局与安全漏洞。内存布局：栈、堆、数据段在 x86-64 Linux 中的分布。缓冲区溢出：演示了如何利用 C 语言不检查数组边界的特性，通过覆盖栈上的“返回地址”来劫持程序控制流。防御机制：介绍了现代系统如何通过栈随机化 (ASLR)、栈金丝雀 (Canary) 和不可执行位 (NX) 来
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 02:00" pubdate>
-              2026-01-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/CSAPP/" class="category-chain-item">CSAPP</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/CSAPP/">#CSAPP</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/01/14/CSAPP/03-machine-level-3-procedures/" target="_self">
-          CSAPP - 03.Machine-Level Programming III
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2026/01/14/CSAPP/03-machine-level-3-procedures/" target="_self">
-        <div>
-          机器级编程 III: 过程 (Procedures)              主要内容：本章关注计算机如何实现逻辑控制。包括：条件码 (Condition Codes)：CPU 如何通过 ZF, SF 等标志位记住上一次计算的结果。跳转指令 (Jumps)：汇编中没有 if 和 while，只有 goto (即 jmp/je)。翻译控制结构：详细讲解了 C 语言中的 if-else、while、
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-01-15 01:55" pubdate>
               2026-01-15
             </time>
           </div>

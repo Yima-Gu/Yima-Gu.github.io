@@ -17,23 +17,21 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Yima Gu">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="计算机网络,CSAPP,算法,深度学习,学习笔记">
   
-    <meta name="description" content="在现在的计算机中，多核处理器使用的是共享存储器架构。并行计算的目标是将计算任务分解为多个子任务，并在多个处理器上同时执行这些子任务，以提高计算效率。 动态多线程：在动态多线程中，处理器可以根据需要动态地分配任务。这种方法可以更好地利用处理器资源，但也可能导致任务之间的依赖关系和竞争条件。              多线程模型具有如下几个重要的优点：它是串行编程模型的一个简单扩展。通过在伪代码中加入">
+    <meta name="description" content="在现在的计算机中，多核处理器使用的是共享存储器架构。并行计算的目标是将计算任务分解为多个子任务，并在多个处理器上同时执行这些子任务，以提高计算效率。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Introduction to Algorithm-08-Parallel">
 <meta property="og:url" content="https://yima-gu.github.io/2025/06/16/algorithm/Introduction%20to%20Algorithm-08-Parallel/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
-<meta property="og:description" content="在现在的计算机中，多核处理器使用的是共享存储器架构。并行计算的目标是将计算任务分解为多个子任务，并在多个处理器上同时执行这些子任务，以提高计算效率。 动态多线程：在动态多线程中，处理器可以根据需要动态地分配任务。这种方法可以更好地利用处理器资源，但也可能导致任务之间的依赖关系和竞争条件。              多线程模型具有如下几个重要的优点：它是串行编程模型的一个简单扩展。通过在伪代码中加入">
+<meta property="og:description" content="在现在的计算机中，多核处理器使用的是共享存储器架构。并行计算的目标是将计算任务分解为多个子任务，并在多个处理器上同时执行这些子任务，以提高计算效率。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://yima-gu.github.io/2025/06/16/algorithm/Introduction%20to%20Algorithm-08-Parallel/Pasted%20image%2020251107191431.png">
 <meta property="article:published_time" content="2025-06-16T12:45:00.000Z">
-<meta property="article:modified_time" content="2026-01-15T02:21:02.360Z">
+<meta property="article:modified_time" content="2026-07-01T11:38:22.796Z">
 <meta property="article:author" content="Yima Gu">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Parallel">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://yima-gu.github.io/2025/06/16/algorithm/Introduction%20to%20Algorithm-08-Parallel/Pasted%20image%2020251107191431.png">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -107,7 +105,8 @@
 
 
   
-<meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Yima Gu's Blog" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -141,6 +140,18 @@
               <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
                 <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/series/" target="_self">
+                <i class="iconfont icon-books-fill"></i>
+                <span>系列笔记</span>
               </a>
             </li>
           
@@ -309,7 +320,7 @@
 <p>上面的斐波那契数的计算是一个线性时间的时间的计算</p>
 <p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>T</mi><mi mathvariant="normal">∞</mi></msub><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>T</mi><mi mathvariant="normal">∞</mi></msub><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>+</mo><mi>O</mi><mo stretchy="false">(</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">T_{\infty}(n) = T_{\infty}(n-1) + O(1)
 </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∞</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">∞</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">O</span><span class="mopen">(</span><span class="mord">1</span><span class="mclose">)</span></span></span></span></span></p>
-<img src="Pasted image 20251107191431.png" srcset="/img/loading.gif" lazyload alt="">
+<p>![](Pasted image 20251107191431.png)</p>
 <h3 id="Definition">Definition</h3>
 <ul>
 <li>多线程计算的工作量是指在一个处理器上执行整个计算的总时间。换句话说，工作量就是每个链消耗时间的总和。如果计算有向无环图中的每个链耗费单位时间，那么工作量正是图中的顶点数</li>

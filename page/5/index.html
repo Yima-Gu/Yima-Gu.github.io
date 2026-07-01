@@ -17,14 +17,21 @@
   
   <meta name="theme-color" content="#2f4154">
   <meta name="author" content="Yima Gu">
-  <meta name="keywords" content="">
+  <meta name="keywords" content="计算机网络,CSAPP,算法,深度学习,学习笔记">
   
-    <meta property="og:type" content="website">
+    <meta name="description" content="Yima Gu 的技术笔记站，记录计算机网络、CSAPP、算法导论、深度学习等课程学习心得与踩坑复盘。">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Yima Gu&#39;s Blog">
 <meta property="og:url" content="https://yima-gu.github.io/page/5/index.html">
 <meta property="og:site_name" content="Yima Gu&#39;s Blog">
+<meta property="og:description" content="Yima Gu 的技术笔记站，记录计算机网络、CSAPP、算法导论、深度学习等课程学习心得与踩坑复盘。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Yima Gu">
+<meta property="article:tag" content="CSAPP">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="计算机网络">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -91,7 +98,8 @@
 
 
   
-<meta name="generator" content="Hexo 8.1.1"></head>
+<meta name="generator" content="Hexo 8.1.1"><link rel="alternate" href="/atom.xml" title="Yima Gu's Blog" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -125,6 +133,18 @@
               <a class="nav-link" href="/" target="_self">
                 <i class="iconfont icon-home-fill"></i>
                 <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/series/" target="_self">
+                <i class="iconfont icon-books-fill"></i>
+                <span>系列笔记</span>
               </a>
             </li>
           
@@ -244,15 +264,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-01-Sorting/" target="_self">
-          Introduction to Algorithm-01-Sorting
+        <a href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-03-Greedy/" target="_self">
+          Introduction to Algorithm-03-Greedy
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-01-Sorting/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-03-Greedy/" target="_self">
         <div>
-          notation              在 RAM 模型中，我们并不试图对当代计算机中常见的内存层次进行建模            在算法分析的时候不用考虑内外存的问题，但是在某些问题中，如B树需要考虑。              一般来说，当渐近记号出现在某个公式中时，我们将其解释为代表某个我们不关注名称的匿名函数。            记号一方面理解为集合，同时可以理解为是某个“匿名函数
+          读者稍后会发现，贪心算法只需考虑一个选择（即贪心的选择），在做贪心选择时，子问题之一必是空的，因此，只留下一个非空子问题。
         </div>
       </a>
 
@@ -260,7 +280,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-15 13:45" pubdate>
+            <time datetime="2025-06-15 19:45" pubdate>
               2025-06-15
             </time>
           </div>
@@ -291,9 +311,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Sorting/">#Sorting</a>
-            
               <a href="/tags/Algorithm/">#Algorithm</a>
+            
+              <a href="/tags/Greedy/">#Greedy</a>
             
           </div>
         
@@ -307,15 +327,15 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/15/Formal_Language&amp;Automata/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" target="_self">
-          形式语言与自动机
+        <a href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-02-DP/" target="_self">
+          Introduction to Algorithm-02-DP
         </a>
       </h2>
 
       
-      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/15/Formal_Language&amp;Automata/%E5%BD%A2%E5%BC%8F%E8%AF%AD%E8%A8%80%E4%B8%8E%E8%87%AA%E5%8A%A8%E6%9C%BA/" target="_self">
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/06/15/algorithm/Introduction%20to%20Algorithm-02-DP/" target="_self">
         <div>
-          形式语言与自动机 第一讲：绪论&amp;数学基础 一. 数学基础 1. 幂集合、关系、半群的概念   幂集合：S的幂集是S所有子集的集合 例如：S={a,b,c} 则S的幂集为2S2^S2S={∅\emptyset∅,{a},{b},{c},{a,b},{a,c},{b,c},{a,b,c}}   笛卡尔积：A×B是有序数对 例如：A = { 2, 4 } ， B = { 2, 3, 5 } A
+          考虑以数组中元素为结尾的最大子数组和，对于数组中的第i个元素，有两种选择：
         </div>
       </a>
 
@@ -323,7 +343,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-15 12:45" pubdate>
+            <time datetime="2025-06-15 14:45" pubdate>
               2025-06-15
             </time>
           </div>
@@ -339,7 +359,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/Formal-Language-Automata/" class="category-chain-item">Formal Language &amp; Automata</a>
+  <a href="/categories/Algorithm/" class="category-chain-item">Algorithm</a>
   
   
 
@@ -354,9 +374,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Formal-Language/">#Formal Language</a>
+              <a href="/tags/Algorithm/">#Algorithm</a>
             
-              <a href="/tags/Automata/">#Automata</a>
+              <a href="/tags/Dynamic-Programming/">#Dynamic Programming</a>
             
           </div>
         

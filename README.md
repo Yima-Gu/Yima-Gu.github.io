@@ -11,4 +11,4 @@ A small, dependency-free academic homepage for [yima-gu.github.io](https://yima-
 
 GitHub Pages serves the files directly from the `main` branch root. Open `index.html` locally to preview; no build step is needed.
 
-The illustrated avatar is copied from the existing [blog](https://yima-gu.github.io/blog/). Replace `assets/avatar.jpg` and its alt text when a personal portrait is available.
+The portrait in `assets/portrait.jpg` was provided by Yima Gu.

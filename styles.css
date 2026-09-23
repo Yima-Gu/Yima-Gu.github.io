@@ -92,6 +92,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid #79abdb; outline-offs
   width: 172px;
   height: 172px;
   object-fit: cover;
+  object-position: center top;
   border-radius: 50%;
   border: 1px solid #e9eef6;
 }

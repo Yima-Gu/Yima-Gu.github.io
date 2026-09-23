@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" role="img" aria-labelledby="title">
+  <title id="title">Layered design element detection illustration</title>
+  <rect width="640" height="400" fill="#f3f6fa"/>
+  <rect x="94" y="42" width="453" height="317" rx="12" fill="#fff" stroke="#dce5f0" stroke-width="2"/>
+  <rect x="116" y="64" width="409" height="273" rx="8" fill="#f0eee9"/>
+  <circle cx="212" cy="158" r="62" fill="#d4e0d9"/>
+  <circle cx="218" cy="154" r="45" fill="#8aabb0"/>
+  <path d="M342 80h146v101H342z" fill="#e6c9ad"/>
+  <path d="M342 118c47-41 96-18 146 24v39H342z" fill="#cd8c78"/>
+  <path d="M131 245c84-62 158-55 228 6s111 45 153-10v80H131z" fill="#d3dce6"/>
+  <path d="M273 236c69-92 151-67 220-12" fill="none" stroke="#c9a06d" stroke-width="25" stroke-linecap="round"/>
+  <rect x="152" y="263" width="107" height="13" rx="6" fill="#6586a5"/>
+  <rect x="152" y="285" width="182" height="9" rx="4.5" fill="#aabac8"/>
+  <rect x="152" y="304" width="144" height="9" rx="4.5" fill="#bdcbd6"/>
+  <g fill="none" stroke-width="3">
+    <rect x="142" y="88" width="147" height="139" rx="3" stroke="#4178a4"/>
+    <rect x="329" y="73" width="170" height="120" rx="3" stroke="#d17b70"/>
+    <rect x="265" y="170" width="244" height="120" rx="3" stroke="#c99a54"/>
+    <rect x="143" y="252" width="205" height="71" rx="3" stroke="#4178a4"/>
+  </g>
+  <g fill="#fff" font-family="Arial, sans-serif" font-size="10" font-weight="bold">
+    <rect x="142" y="77" width="49" height="13" rx="2" fill="#4178a4"/>
+    <text x="149" y="87">IMAGE</text>
+    <rect x="329" y="62" width="52" height="13" rx="2" fill="#d17b70"/>
+    <text x="336" y="72">LAYER</text>
+    <rect x="265" y="159" width="52" height="13" rx="2" fill="#c99a54"/>
+    <text x="272" y="169">SHAPE</text>
+    <rect x="143" y="241" width="42" height="13" rx="2" fill="#4178a4"/>
+    <text x="150" y="251">TEXT</text>
+  </g>
+</svg>

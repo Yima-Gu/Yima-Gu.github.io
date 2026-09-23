@@ -193,13 +193,6 @@ a:focus-visible, button:focus-visible { outline: 3px solid #79abdb; outline-offs
 .feature-copy .authors strong { color: var(--ink); font-weight: 700; }
 .feature-copy .venue { color: var(--muted); font-size: 14px; }
 .feature-copy .summary { color: #526070; font-size: 14px; }
-.item-type {
-  color: var(--blue);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .105em;
-  text-transform: uppercase;
-}
 .resource-links { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 15px; }
 .resource-links a, .blog-link {
   font-size: 14px;

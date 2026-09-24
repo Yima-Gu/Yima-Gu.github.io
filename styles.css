@@ -172,7 +172,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid #79abdb; outline-offs
   border-bottom: 1px solid var(--line);
   padding: 31px 0;
 }
-.feature-art { position: relative; min-width: 0; }
+.feature-art { min-width: 0; margin: 0; }
 .feature-art img {
   display: block;
   width: 100%;
@@ -181,17 +181,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid #79abdb; outline-offs
   border-radius: 3px;
   background: var(--soft);
 }
-.venue-badge {
-  position: absolute;
-  top: 14px;
-  left: -7px;
-  padding: 3px 10px 3px 14px;
-  background: var(--blue-strong);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .035em;
-}
+.feature-art figcaption { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .feature-copy { min-width: 0; }
 .feature-copy h3 {
   margin: 0 0 8px;
